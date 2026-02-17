@@ -1,1 +1,192 @@
 @import "tailwindcss";
+
+/* Chrome autofill override: prevents blue background */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #000000 inset !important;
+  box-shadow: 0 0 0 1000px #000000 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Smooth transitions for inputs */
+input:focus {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Body font smoothing */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   LUXURY ANIMATIONS
+   ============================================ */
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Text glow animation */
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5),
+                 0 0 30px rgba(220, 38, 38, 0.3),
+                 0 0 40px rgba(220, 38, 38, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(220, 38, 38, 0.8),
+                 0 0 50px rgba(220, 38, 38, 0.5),
+                 0 0 70px rgba(220, 38, 38, 0.3);
+  }
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  33% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  66% {
+    transform: translateY(10px) translateX(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Input glow animation */
+@keyframes inputGlow {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-input-glow {
+  animation: inputGlow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   STARFIELD
+   ============================================ */
+
+#starfield {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Shooting stars */
+@keyframes shoot {
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-300px) translateY(300px);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   LUXURY EFFECTS
+   ============================================ */
+
+/* Backdrop blur enhancement */
+.backdrop-blur-xl {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #7f1d1d;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #991b1b;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(220, 38, 38, 0.3);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: rgba(220, 38, 38, 0.3);
+  color: #ffffff;
+}
+
