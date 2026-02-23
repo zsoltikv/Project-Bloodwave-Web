@@ -2,6 +2,7 @@ import Router from './router.js';
 import Login from './pages/Login.js';
 import Register from './pages/Register.js';
 import ForgotPassword from './pages/ForgotPassword.js';
+import Main from './pages/Main.js';
 
 // Define routes
 const routes = [
@@ -16,6 +17,10 @@ const routes = [
   {
     path: '/forgot-password',
     component: ForgotPassword
+  },
+  {
+    path: '/main',
+    component: Main
   },
   {
     path: '/',
