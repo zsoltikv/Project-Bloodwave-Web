@@ -8,6 +8,10 @@ import Stats from './pages/Stats.js';
 // Define routes
 const routes = [
   {
+    path: '/',
+    component: Main
+  },
+  {
     path: '/login',
     component: Login
   },
