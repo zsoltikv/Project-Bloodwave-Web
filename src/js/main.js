@@ -3,6 +3,7 @@ import Login from './pages/Login.js';
 import Register from './pages/Register.js';
 import ForgotPassword from './pages/ForgotPassword.js';
 import Main from './pages/Main.js';
+import Stats from './pages/Stats.js';
 
 // Define routes
 const routes = [
@@ -21,6 +22,10 @@ const routes = [
   {
     path: '/main',
     component: Main
+  },
+  {
+    path: '/stats',
+    component: Stats
   },
   {
     path: '/',

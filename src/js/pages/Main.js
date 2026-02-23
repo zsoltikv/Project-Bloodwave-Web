@@ -140,27 +140,33 @@ export default function Main(container) {
         white-space: nowrap;
       }
 
-      .mn-link::after {
+      .mn-link span {
+        position: relative;
+        display: inline-block;
+      }
+
+      .mn-link span::after {
         content: '';
         position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
+        bottom: -3px;
+        left: 0;
+        width: calc(100% - clamp(3px, 1vw, 5px));
         height: 1px;
         background: linear-gradient(90deg, var(--crimson), var(--gold-light), var(--crimson));
-        transition: width 0.4s cubic-bezier(0.22,1,0.36,1);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
       }
 
       .mn-link:hover {
         color: rgba(255,255,255,0.92);
       }
-      .mn-link:hover::after { width: 100%; }
+      .mn-link:hover span::after { transform: scaleX(1); }
 
       .mn-link.active {
         color: rgba(212,175,55,0.75);
       }
-      .mn-link.active::after { width: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)); }
+      .mn-link.active span::after { transform: scaleX(1); background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)); }
 
       /* --- Right side --- */
       .mn-right {
@@ -426,8 +432,8 @@ export default function Main(container) {
 
           <!-- Desktop Center Links -->
           <div class="mn-links">
-            <a href="#" class="mn-link active">Feed</a>
-            <a href="#" class="mn-link">Discover</a>
+            <a href="/main" data-link class="mn-link active"><span>Matches</span></a>
+            <a href="/stats" data-link class="mn-link"><span>Stats</span></a>
           </div>
 
           <!-- Right: avatar + hamburger -->
@@ -453,8 +459,8 @@ export default function Main(container) {
         <!-- Mobile Dropdown -->
         <div class="mn-mobile-menu" id="mn-mobile-menu">
           <div class="mn-mobile-menu-inner">
-            <a href="#" class="mn-mobile-link">Feed</a>
-            <a href="#" class="mn-mobile-link">Discover</a>
+            <a href="/main" data-link class="mn-mobile-link">Matches</a>
+            <a href="/stats" data-link class="mn-mobile-link">Stats</a>
             <div class="mn-mobile-divider"></div>
             <button class="mn-mobile-profile" id="mn-profile-btn-mobile">
               <span class="mn-mobile-avatar">
