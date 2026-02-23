@@ -483,9 +483,9 @@ export default function Register(container) {
           <form class="rx-form" id="rxForm" novalidate>
 
             <div class="rx-field">
-              <label class="rx-label" for="rxName">Full Name</label>
+              <label class="rx-label" for="rxName">Username</label>
               <div class="rx-input-wrap">
-                <input type="text" id="rxName" class="rx-input" placeholder="Your name" required autocomplete="name" />
+                <input type="text" id="rxName" class="rx-input" placeholder="your_username" required autocomplete="username" />
                 <div class="rx-input-line"></div>
               </div>
               <span class="rx-error" id="rxNameError"></span>
@@ -575,7 +575,7 @@ export default function Register(container) {
     let valid = true;
 
     if (!nameInput.value.trim()) {
-      nameError.textContent = 'Name is required';
+      nameError.textContent = 'Username is required';
       valid = false;
     }
 

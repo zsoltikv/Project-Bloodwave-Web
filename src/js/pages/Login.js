@@ -209,6 +209,7 @@ export default function Login(container) {
       }
       .lx-field:nth-child(1) { animation-delay: 0.5s; }
       .lx-field:nth-child(2) { animation-delay: 0.65s; }
+      .lx-field:nth-child(3) { animation-delay: 0.80s; }
 
       @keyframes lx-field-in {
         from { opacity: 0; transform: translateX(-18px); }
@@ -508,9 +509,9 @@ export default function Login(container) {
           <form class="lx-form" id="lxForm">
 
             <div class="lx-field">
-              <label class="lx-label">Email Address</label>
+              <label class="lx-label">Username</label>
               <div class="lx-input-wrap">
-                <input type="email" id="lxEmail" class="lx-input" placeholder="your@email.com" required autocomplete="email" />
+                <input type="text" id="lxUsername" class="lx-input" placeholder="your_username" required autocomplete="username" />
                 <div class="lx-input-line"></div>
               </div>
             </div>
@@ -566,6 +567,7 @@ export default function Login(container) {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    const username  = document.getElementById('lxUsername').value;
     const email    = document.getElementById('lxEmail').value;
     const password = document.getElementById('lxPassword').value;
 
@@ -573,7 +575,7 @@ export default function Login(container) {
     btn.querySelector('.lx-btn-text').textContent = '✦  Welcome Back  ✦';
 
     setTimeout(() => {
-      console.log('Login:', { email, password });
+      console.log('Login:', { username, email, password });
       alert('Login successful!');
     }, 700);
   });
