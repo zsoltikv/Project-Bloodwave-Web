@@ -600,6 +600,8 @@ function initCanvas() {
   const ctx = canvas.getContext('2d');
 
   let W, H, cardCX, cardCY, cardW, cardH;
+  let stars = [];
+  let animId;
 
   function measure() {
     W = canvas.width  = window.innerWidth;
@@ -619,15 +621,69 @@ function initCanvas() {
     }
   }
 
-  measure();
-  window.addEventListener('resize', measure);
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < STAR_COUNT; i++) {
+      stars.push(makeStar(i < STAR_COUNT * 0.45, true));
+    }
+  }
 
   const STAR_COUNT = 220;
-  const stars = [];
 
-  for (let i = 0; i < STAR_COUNT; i++) {
-    stars.push(makeStar(i < STAR_COUNT * 0.45, true));
-  }
+  // Defer so the card has finished layout before we measure
+  requestAnimationFrame(() => {
+    measure();
+    initStars();
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        measure();
+        initStars();
+      }, 150);
+    });
+
+    let streakTimer = 0;
+
+    function draw() {
+      if (!document.getElementById('lx-canvas')) { cancelAnimationFrame(animId); return; }
+      ctx.clearRect(0, 0, W, H);
+
+      streakTimer++;
+      if (streakTimer > 180 + Math.random() * 180) {
+        drawStreak(ctx, cardCX, cardCY, cardW, cardH, W, H);
+        streakTimer = 0;
+      }
+
+      stars.forEach((s, i) => {
+        s.flicker += s.flickerSpeed;
+        s.life++;
+
+        const fade  = Math.min(s.life / 40, 1) * Math.max(1 - (s.life - s.maxLife * 0.8) / (s.maxLife * 0.2), 0);
+        const alpha = s.opacity * (0.65 + 0.35 * Math.sin(s.flicker)) * Math.max(fade, 0.01);
+        const extra = s.nearCard ? 1.25 : 1;
+
+        ctx.globalAlpha = Math.min(alpha * extra, 1);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.isRed ? '#CC1A1A' : s.isGold ? '#D4AF37' : '#FFE8D8';
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        s.x += s.vx;
+        s.y += s.vy;
+
+        if (s.life > s.maxLife || s.x < -20 || s.x > W + 20 || s.y < -20 || s.y > H + 20) {
+          stars[i] = makeStar(Math.random() < 0.45, false);
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    }
+
+    draw();
+  });
 
   function makeStar(nearCard, firstTime) {
     const isRed  = Math.random() < 0.07;
@@ -661,45 +717,6 @@ function initCanvas() {
       maxLife: 400 + Math.random() * 600,
     };
   }
-
-  let streakTimer = 0;
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    streakTimer++;
-    if (streakTimer > 180 + Math.random() * 180) {
-      drawStreak(ctx, cardCX, cardCY, cardW, cardH, W, H);
-      streakTimer = 0;
-    }
-
-    stars.forEach((s, i) => {
-      s.flicker += s.flickerSpeed;
-      s.life++;
-
-      const fade  = Math.min(s.life / 40, 1) * Math.max(1 - (s.life - s.maxLife * 0.8) / (s.maxLife * 0.2), 0);
-      const alpha = s.opacity * (0.65 + 0.35 * Math.sin(s.flicker)) * Math.max(fade, 0.01);
-      const extra = s.nearCard ? 1.25 : 1;
-
-      ctx.globalAlpha = Math.min(alpha * extra, 1);
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = s.isRed ? '#CC1A1A' : s.isGold ? '#D4AF37' : '#FFE8D8';
-      ctx.fill();
-      ctx.globalAlpha = 1;
-
-      s.x += s.vx;
-      s.y += s.vy;
-
-      if (s.life > s.maxLife || s.x < -20 || s.x > W + 20 || s.y < -20 || s.y > H + 20) {
-        stars[i] = makeStar(Math.random() < 0.45, false);
-      }
-    });
-
-    requestAnimationFrame(draw);
-  }
-
-  draw();
 }
 
 function drawStreak(ctx, cx, cy, cw, ch, W, H) {
