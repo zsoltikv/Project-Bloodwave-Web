@@ -1,19 +1,9 @@
+import { getUser, logout } from '../auth.js';
+
 export default function Main(container) {
   container.innerHTML = `
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap');
-
-      :root {
-        --crimson:        #8B0000;
-        --crimson-bright: #C0392B;
-        --gold:           #B8960C;
-        --gold-light:     #D4AF37;
-        --obsidian:       #080606;
-      }
-
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      html, body { height: 100%; }
-
+      /* === PAGE ROOT === */
       .mn-root {
         min-height: 100vh;
         min-height: 100dvh;
@@ -23,31 +13,10 @@ export default function Main(container) {
         overflow-x: hidden;
       }
 
-      /* === CANVAS === */
-      #mn-canvas {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      }
+      /* === PARTICLES are styled via .bw-particle in master.css === */
 
-      /* === PARTICLES === */
-      .mn-particle {
-        position: fixed;
-        pointer-events: none;
-        border-radius: 50%;
-        animation: mn-float linear infinite;
-        z-index: 2;
-        will-change: transform, opacity;
-      }
-      @keyframes mn-float {
-        0%   { transform: translateY(105vh) translateX(0px); opacity: 0; }
-        8%   { opacity: 1; }
-        92%  { opacity: 0.6; }
-        100% { transform: translateY(-10vh) translateX(var(--drift)); opacity: 0; }
-      }
+      /* =====================================================
+         NAVBAR
 
       /* =====================================================
          NAVBAR
@@ -319,6 +288,111 @@ export default function Main(container) {
       }
       .mn-mobile-avatar svg { width: 14px; height: 14px; color: rgba(212,175,55,0.6); }
 
+      /* === AVATAR DROPDOWN === */
+      .mn-avatar-wrap {
+        position: relative;
+      }
+
+      .mn-avatar-dropdown {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        min-width: 188px;
+        background: linear-gradient(160deg, rgba(14,4,4,0.98) 0%, rgba(8,2,2,0.99) 100%);
+        border: 1px solid rgba(139,0,0,0.28);
+        box-shadow:
+          0 8px 32px rgba(0,0,0,0.65),
+          0 0 0 1px rgba(212,175,55,0.06) inset;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22,1,0.36,1);
+        z-index: 200;
+      }
+      .mn-avatar-dropdown::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);
+      }
+      .mn-avatar-dropdown.open {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+
+      .mn-dd-header {
+        padding: 14px 16px 10px;
+        border-bottom: 1px solid rgba(139,0,0,0.14);
+      }
+      .mn-dd-username {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 15px;
+        font-weight: 400;
+        letter-spacing: 2px;
+        color: rgba(212,175,55,0.85);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mn-dd-role {
+        font-size: 8px;
+        letter-spacing: 3px;
+        color: rgba(255,255,255,0.25);
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+
+      .mn-dd-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 9px;
+        letter-spacing: 3.5px;
+        color: rgba(255,255,255,0.4);
+        text-transform: uppercase;
+        background: none;
+        border: none;
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.25s, background 0.25s, padding-left 0.25s;
+        text-align: left;
+      }
+      .mn-dd-item svg { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.6; transition: opacity 0.25s; }
+      .mn-dd-item:hover { color: rgba(255,255,255,0.82); background: rgba(139,0,0,0.08); padding-left: 20px; }
+      .mn-dd-item:hover svg { opacity: 1; }
+      .mn-dd-item.logout { color: rgba(192,57,43,0.55); }
+      .mn-dd-item.logout:hover { color: rgba(220,80,60,0.92); background: rgba(139,0,0,0.12); }
+      .mn-dd-divider { height: 1px; background: rgba(139,0,0,0.12); margin: 2px 0; }
+
+      /* mobile logout item */
+      .mn-mobile-logout {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 8px;
+        font-size: 9px;
+        font-weight: 400;
+        letter-spacing: 4px;
+        color: rgba(192,57,43,0.55);
+        text-transform: uppercase;
+        background: none;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+        transition: color 0.3s, padding-left 0.3s;
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
+      }
+      .mn-mobile-logout:hover { color: rgba(220,80,60,0.9); padding-left: 14px; }
+      .mn-mobile-logout svg { width: 14px; height: 14px; flex-shrink: 0; }
+
       /* === RESPONSIVE BREAKPOINTS === */
       @media (max-width: 768px) {
         .mn-links    { display: none; }
@@ -420,7 +494,7 @@ export default function Main(container) {
     </style>
 
     <div class="mn-root">
-      <canvas id="mn-canvas"></canvas>
+      <canvas id="mn-canvas" class="bw-canvas"></canvas>
       <div class="mn-glow"></div>
 
       <!-- ===== NAVBAR ===== -->
@@ -439,12 +513,34 @@ export default function Main(container) {
           <!-- Right: avatar + hamburger -->
           <div class="mn-right">
 
-            <!-- Profile Avatar (desktop) -->
-            <button class="mn-avatar" id="mn-profile-btn" aria-label="Profile & Settings">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-              </svg>
-            </button>
+            <!-- Profile Avatar + dropdown (desktop) -->
+            <div class="mn-avatar-wrap">
+              <button class="mn-avatar" id="mn-avatar-btn" aria-label="Profile menu" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>
+              </button>
+              <div class="mn-avatar-dropdown" id="mn-avatar-dropdown" role="menu">
+                <div class="mn-dd-header">
+                  <div class="mn-dd-username" id="mn-dd-username">—</div>
+                  <div class="mn-dd-role">Member</div>
+                </div>
+                <a href="/settings" data-link class="mn-dd-item" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  </svg>
+                  Settings
+                </a>
+                <div class="mn-dd-divider"></div>
+                <button class="mn-dd-item logout" id="mn-dd-logout" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            </div>
 
             <!-- Hamburger (mobile) -->
             <button class="mn-hamburger" id="mn-hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -462,13 +558,19 @@ export default function Main(container) {
             <a href="/main" data-link class="mn-mobile-link">Matches</a>
             <a href="/stats" data-link class="mn-mobile-link">Stats</a>
             <div class="mn-mobile-divider"></div>
-            <button class="mn-mobile-profile" id="mn-profile-btn-mobile">
+            <div class="mn-mobile-profile" style="pointer-events:none; cursor:default;">
               <span class="mn-mobile-avatar">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                 </svg>
               </span>
-              Profile &amp; Settings
+              <span id="mn-mobile-username">—</span>
+            </div>
+            <button class="mn-mobile-logout" id="mn-mobile-logout">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+              </svg>
+              Logout
             </button>
           </div>
         </div>
@@ -494,6 +596,15 @@ export default function Main(container) {
   initMnCanvas();
   spawnMnParticles();
 
+  // ── Populate username ────────────────────────────────────────────────────
+  const user = getUser();
+  const displayName = user?.username ?? user?.email ?? 'Member';
+
+  const ddUsername     = container.querySelector('#mn-dd-username');
+  const mobileUsername = container.querySelector('#mn-mobile-username');
+  if (ddUsername)     ddUsername.textContent     = displayName;
+  if (mobileUsername) mobileUsername.textContent = displayName;
+
   // ── Hamburger toggle ──────────────────────────────────────────────────────
   const hamburger   = container.querySelector('#mn-hamburger');
   const mobileMenu  = container.querySelector('#mn-mobile-menu');
@@ -516,14 +627,47 @@ export default function Main(container) {
     });
   });
 
-  // ── Profile navigation (placeholder) ────────────────────────────────────
-  const goToProfile = () => {
-    // TODO: window.router.navigate('/profile') when route exists
-    console.log('Navigate to profile/settings');
+  // ── Desktop avatar dropdown ───────────────────────────────────────────────
+  const avatarBtn  = container.querySelector('#mn-avatar-btn');
+  const avatarDrop = container.querySelector('#mn-avatar-dropdown');
+  let dropOpen = false;
+
+  function openDrop() {
+    dropOpen = true;
+    avatarDrop.classList.add('open');
+    avatarBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeDrop() {
+    dropOpen = false;
+    avatarDrop.classList.remove('open');
+    avatarBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  avatarBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropOpen ? closeDrop() : openDrop();
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (dropOpen && !avatarDrop.contains(e.target) && e.target !== avatarBtn) {
+      closeDrop();
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dropOpen) closeDrop();
+  });
+
+  // ── Logout ───────────────────────────────────────────────────────────────
+  const doLogout = async () => {
+    await logout();
+    // logout() already navigates to /login
   };
 
-  container.querySelector('#mn-profile-btn')?.addEventListener('click', goToProfile);
-  container.querySelector('#mn-profile-btn-mobile')?.addEventListener('click', goToProfile);
+  container.querySelector('#mn-dd-logout')?.addEventListener('click', doLogout);
+  container.querySelector('#mn-mobile-logout')?.addEventListener('click', doLogout);
 }
 
 /* ======================================================================
@@ -634,7 +778,7 @@ function spawnMnParticles() {
 
   for (let i = 0; i < 18; i++) {
     const p        = document.createElement('div');
-    p.className    = 'mn-particle';
+    p.className    = 'bw-particle';
     const size     = Math.random() * 2.2 + 0.4;
     const delay    = Math.random() * 20;
     const duration = 18 + Math.random() * 22;

@@ -1,19 +1,7 @@
 export default function Stats(container) {
   container.innerHTML = `
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap');
-
-      :root {
-        --crimson:        #8B0000;
-        --crimson-bright: #C0392B;
-        --gold:           #B8960C;
-        --gold-light:     #D4AF37;
-        --obsidian:       #080606;
-      }
-
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      html, body { height: 100%; }
-
+      /* === PAGE ROOT === */
       .st-root {
         min-height: 100vh;
         min-height: 100dvh;
@@ -23,31 +11,7 @@ export default function Stats(container) {
         overflow-x: hidden;
       }
 
-      /* === CANVAS === */
-      #st-canvas {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      }
-
-      /* === PARTICLES === */
-      .st-particle {
-        position: fixed;
-        pointer-events: none;
-        border-radius: 50%;
-        animation: st-float linear infinite;
-        z-index: 2;
-        will-change: transform, opacity;
-      }
-      @keyframes st-float {
-        0%   { transform: translateY(105vh) translateX(0px); opacity: 0; }
-        8%   { opacity: 1; }
-        92%  { opacity: 0.6; }
-        100% { transform: translateY(-10vh) translateX(var(--drift)); opacity: 0; }
-      }
+      /* === PARTICLES are styled via .bw-particle in master.css === */
 
       /* =====================================================
          NAVBAR
@@ -493,7 +457,7 @@ export default function Stats(container) {
     </style>
 
     <div class="st-root">
-      <canvas id="st-canvas"></canvas>
+      <canvas id="st-canvas" class="bw-canvas"></canvas>
       <div class="st-glow"></div>
 
       <!-- ===== NAVBAR ===== -->
@@ -804,7 +768,7 @@ function spawnStParticles() {
   if (!root) return;
   for (let i = 0; i < 18; i++) {
     const p        = document.createElement('div');
-    p.className    = 'st-particle';
+    p.className    = 'bw-particle';
     const size     = Math.random() * 2.2 + 0.4;
     const isRed    = Math.random() < 0.28;
     const isGold   = !isRed && Math.random() < 0.15;

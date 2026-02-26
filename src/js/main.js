@@ -9,7 +9,7 @@ import Stats from './pages/Stats.js';
 const routes = [
   {
     path: '/',
-    component: Main
+    component: Login   // Default → login screen
   },
   {
     path: '/login',
@@ -30,10 +30,6 @@ const routes = [
   {
     path: '/stats',
     component: Stats
-  },
-  {
-    path: '/',
-    component: Login // Default to login
   }
 ];
 
