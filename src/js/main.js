@@ -4,6 +4,7 @@ import Register from './pages/Register.js';
 import ForgotPassword from './pages/ForgotPassword.js';
 import Main from './pages/Main.js';
 import Stats from './pages/Stats.js';
+import ToS from './pages/ToS.js';
 
 // Define routes
 const routes = [
@@ -22,6 +23,10 @@ const routes = [
   {
     path: '/forgot-password',
     component: ForgotPassword
+  },
+  {
+    path: '/tos',
+    component: ToS
   },
   {
     path: '/main',

@@ -821,3 +821,127 @@ html, body { height: 100%; }
 #pwStrengthLine.bw-pw-pulse {
   transform: scaleX(1) scaleY(2.5);
 }
+
+/* ============================================
+   TOS & COOKIE POLICY CHECKBOX
+   ============================================ */
+
+.bw-checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bw-checkbox-label {
+  font-size: clamp(9px, 2.2vw, 11px);
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.bw-checkbox-label a {
+  transition: color 0.3s ease;
+}
+
+.bw-checkbox-label a:hover {
+  color: var(--bw-gold-light, #D4AF37);
+  text-decoration: underline;
+}
+
+/* ============================================
+   TERMS OF SERVICE PAGE
+   ============================================ */
+
+.bw-tos-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 12px;
+  animation: bw-fade-in 0.8s ease both 0.3s;
+}
+
+.bw-tos-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bw-tos-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.bw-tos-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--crimson), var(--gold-light));
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+
+.bw-tos-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #c0392b, #e6b84d);
+}
+
+.bw-tos-section {
+  margin-bottom: clamp(24px, 5vw, 36px);
+}
+
+.bw-tos-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 4vw, 24px);
+  font-weight: 400;
+  letter-spacing: clamp(2px, 0.8vw, 4px);
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: clamp(12px, 3vw, 18px);
+  text-shadow: 0 0 15px rgba(212,175,55,0.3);
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+  padding-bottom: 8px;
+}
+
+.bw-tos-subheading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(12px, 2.8vw, 16px);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.7);
+  margin-top: clamp(16px, 3.5vw, 22px);
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.bw-tos-text {
+  font-size: clamp(10px, 2.3vw, 13px);
+  font-weight: 300;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.8;
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.bw-tos-text strong {
+  color: rgba(255,255,255,0.65);
+  font-weight: 400;
+}
+
+.bw-tos-list {
+  list-style: none;
+  padding-left: clamp(16px, 4vw, 24px);
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+.bw-tos-list li {
+  font-size: clamp(10px, 2.3vw, 13px);
+  font-weight: 300;
+  letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.8;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.bw-tos-list li::before {
+  content: '◆';
+  position: absolute;
+  left: -16px;
+  color: var(--crimson);
+  font-size: 8px;
+}

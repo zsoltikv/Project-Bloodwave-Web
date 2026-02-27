@@ -145,7 +145,6 @@ export async function register(username, email, password) {
   const data = await res.json();
   if (!res.ok || !data.success) throw new Error(data.message || 'Registration failed');
 
-  saveSession(data);
   return data;
 }
 

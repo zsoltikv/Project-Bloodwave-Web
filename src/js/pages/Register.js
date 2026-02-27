@@ -73,6 +73,16 @@ export default function Register(container) {
               <span class="bw-error" id="rxConfirmError"></span>
             </div>
 
+            <div class="bw-field" style="margin-top: 1.5rem;">
+              <label class="bw-checkbox-wrapper">
+                <input type="checkbox" id="rxTosAccept" class="bw-checkbox" required />
+                <span class="bw-checkbox-label">
+                  I accept the <a href="/tos" data-link style="color: var(--bw-crimson); text-decoration: underline;">Terms of Service &amp; Cookie Policy</a>
+                </span>
+              </label>
+              <span class="bw-error" id="rxTosError"></span>
+            </div>
+
             <button type="submit" class="bw-btn" id="rxBtn">
               <div class="bw-btn-shimmer"></div>
               <span class="bw-btn-text">Create Account</span>
@@ -103,15 +113,17 @@ export default function Register(container) {
   const emailInput    = document.getElementById('rxEmail');
   const pwInput       = document.getElementById('rxPassword');
   const confirmInput  = document.getElementById('rxConfirm');
+  const tosCheckbox   = document.getElementById('rxTosAccept');
 
   const nameError    = document.getElementById('rxNameError');
   const emailError   = document.getElementById('rxEmailError');
   const pwError      = document.getElementById('rxPasswordError');
   const confirmError = document.getElementById('rxConfirmError');
+  const tosError     = document.getElementById('rxTosError');
 
   // --- Validation helpers ---
   function clearErrors() {
-    [nameError, emailError, pwError, confirmError].forEach(el => el.textContent = '');
+    [nameError, emailError, pwError, confirmError, tosError].forEach(el => el.textContent = '');
   }
 
   function validate() {
@@ -147,6 +159,11 @@ export default function Register(container) {
       valid = false;
     }
 
+    if (!tosCheckbox.checked) {
+      tosError.textContent = 'You must accept the Terms of Service & Cookie Policy';
+      valid = false;
+    }
+
     return valid;
   }
 
@@ -166,8 +183,8 @@ export default function Register(container) {
         pwInput.value
       );
       btn.classList.add('success');
-      btn.querySelector('.bw-btn-text').textContent = '✦  Welcome  ✦';
-      setTimeout(() => window.router.navigate('/main'), 700);
+      btn.querySelector('.bw-btn-text').textContent = '✦  Account Created  ✦';
+      setTimeout(() => window.router.navigate('/login'), 900);
     } catch (err) {
       // Show server error under the name field (general form error)
       nameError.textContent = err.message || 'Registration failed. Please try again.';
