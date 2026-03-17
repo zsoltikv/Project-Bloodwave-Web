@@ -55,20 +55,84 @@ export default function Stats(container) {
       }
 
       .st-logo {
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 400;
-        font-size: clamp(18px, 3.5vw, 24px);
-        letter-spacing: clamp(4px, 1.2vw, 8px);
-        color: #fff;
+        font-family: 'Cinzel', 'Cormorant Garamond', serif;
+        font-weight: 700;
+        font-size: clamp(18px, 3.2vw, 24px);
+        letter-spacing: clamp(3.4px, 1.1vw, 7.2px);
+        color: rgba(255,255,255,0.94);
         text-transform: uppercase;
         text-decoration: none;
-        text-shadow: 0 0 20px rgba(180,0,0,0.5), 0 0 50px rgba(139,0,0,0.2);
+        position: relative;
+        display: inline-block;
+        padding: 2px 0 6px;
+        background: linear-gradient(
+          100deg,
+          rgba(255,255,255,0.96) 8%,
+          rgba(245,226,155,0.98) 28%,
+          rgba(212,175,55,0.98) 47%,
+          rgba(255,243,196,0.98) 62%,
+          rgba(255,255,255,0.96) 92%
+        );
+        background-size: 240% 100%;
+        background-position: 0% 50%;
+        text-shadow: 0 0 12px rgba(212,175,55,0.2), 0 0 26px rgba(180,0,0,0.34), 0 0 56px rgba(139,0,0,0.22);
         flex-shrink: 0;
         user-select: none;
-        transition: text-shadow 0.4s;
+        transition: text-shadow 0.4s, letter-spacing 0.35s, filter 0.35s;
+        animation: st-logo-shine 7.5s ease-in-out infinite, st-logo-breathe 4.8s ease-in-out infinite;
+      }
+      @supports (-webkit-background-clip: text) {
+        .st-logo {
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+      @keyframes st-logo-shine {
+        0%, 100% { background-position: 0% 50%; }
+        50%      { background-position: 100% 50%; }
+      }
+      @keyframes st-logo-breathe {
+        0%, 100% { filter: drop-shadow(0 0 0 rgba(212,175,55,0)); }
+        50%      { filter: drop-shadow(0 0 6px rgba(212,175,55,0.28)); }
+      }
+      .st-logo::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(212,175,55,0), rgba(255,228,128,0.9), rgba(212,175,55,0));
+        opacity: 0.78;
+        transform-origin: center;
+        transform: scaleX(0.76);
+        transition: transform 0.35s ease, opacity 0.35s ease;
+      }
+      .st-logo::after {
+        content: '✦';
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        transform: translateY(-52%) scale(0.9);
+        font-size: 8px;
+        color: rgba(212,175,55,0.72);
+        text-shadow: 0 0 8px rgba(212,175,55,0.38);
+        opacity: 0.72;
+        transition: opacity 0.35s ease, transform 0.35s ease;
       }
       .st-logo:hover {
-        text-shadow: 0 0 28px rgba(192,57,43,0.75), 0 0 70px rgba(139,0,0,0.35);
+        letter-spacing: clamp(3.6px, 1.15vw, 7.6px);
+        text-shadow: 0 0 16px rgba(255,228,128,0.3), 0 0 30px rgba(192,57,43,0.62), 0 0 80px rgba(139,0,0,0.34);
+        animation-duration: 3.2s, 2.6s;
+      }
+      .st-logo:hover::before {
+        opacity: 0.95;
+        transform: scaleX(1);
+      }
+      .st-logo:hover::after {
+        opacity: 0.95;
+        transform: translateY(-52%) scale(1);
       }
 
       .st-links {
