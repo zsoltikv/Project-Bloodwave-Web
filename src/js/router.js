@@ -95,6 +95,8 @@ class Router {
       this.currentRoute = route;
       const app = document.getElementById('app');
       app.setAttribute('data-route', route.path);
+      const showFooter = FOOTER_VISIBLE_PATHS.includes(route.path);
+      app.setAttribute('data-has-footer', String(showFooter));
       app.innerHTML = '';
 
       const routeView = document.createElement('div');
@@ -103,7 +105,7 @@ class Router {
 
       route.component(routeView);
 
-      if (FOOTER_VISIBLE_PATHS.includes(route.path)) {
+      if (showFooter) {
         app.appendChild(createGlobalFooter(loggedIn));
       }
     }
