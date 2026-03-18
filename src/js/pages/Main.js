@@ -91,14 +91,21 @@ export default function Main(container) {
 
       <!-- ===== MAIN CONTENT ===== -->
       <main class="mn-content">
-        <div class="mn-placeholder">
-          <div class="mn-ornament">
-            <div class="mn-ornament-line"></div>
-            <div class="mn-ornament-diamond"></div>
-            <div class="mn-ornament-line"></div>
+        <div class="mn-matches-shell">
+          <div class="mn-matches-head">
+            <div class="mn-ornament">
+              <div class="mn-ornament-line"></div>
+              <div class="mn-ornament-diamond"></div>
+              <div class="mn-ornament-line"></div>
+            </div>
+            <h1 class="mn-placeholder-title">Played Matches</h1>
+            <p class="mn-placeholder-sub">Select a run to view details</p>
           </div>
-          <h1 class="mn-placeholder-title">Welcome Back</h1>
-          <p class="mn-placeholder-sub">Your&nbsp;&nbsp;feed&nbsp;&nbsp;is&nbsp;&nbsp;loading</p>
+
+          <div class="mn-matches-layout">
+            <div class="mn-matches-list" id="mn-matches-list" role="listbox" aria-label="Played matches"></div>
+            <section class="mn-match-panel" id="mn-match-panel" aria-live="polite"></section>
+          </div>
         </div>
       </main>
 
@@ -117,6 +124,83 @@ export default function Main(container) {
   const mobileUsername = container.querySelector('#mn-mobile-username');
   if (ddUsername)     ddUsername.textContent     = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
+
+  // ── Matches list + details ───────────────────────────────────────────────
+  const matches = getMockMatches();
+  const matchesList = container.querySelector('#mn-matches-list');
+  const matchPanel  = container.querySelector('#mn-match-panel');
+  let selectedMatchId = matches[0]?.id ?? null;
+
+  function renderMatchPanel(match) {
+    if (!matchPanel) return;
+
+    if (!match) {
+      matchPanel.innerHTML = `
+        <div class="mn-match-empty">No played matches yet.</div>
+      `;
+      return;
+    }
+
+    matchPanel.innerHTML = `
+      <h2 class="mn-panel-title">Run Summary</h2>
+      <div class="mn-panel-grid">
+        <div class="mn-panel-stat">
+          <div class="mn-panel-label">Duration</div>
+          <div class="mn-panel-value">${formatDuration(match.durationSeconds)}</div>
+        </div>
+        <div class="mn-panel-stat">
+          <div class="mn-panel-label">Level Reached</div>
+          <div class="mn-panel-value">${match.levelReached}</div>
+        </div>
+        <div class="mn-panel-stat">
+          <div class="mn-panel-label">Played At</div>
+          <div class="mn-panel-value">${formatPlayedAt(match.playedAt)}</div>
+        </div>
+      </div>
+      <div class="mn-panel-note">More match data can be shown here later (kills, build, map, rewards, etc.).</div>
+    `;
+  }
+
+  function renderMatches() {
+    if (!matchesList) return;
+
+    if (!matches.length) {
+      matchesList.innerHTML = '<div class="mn-match-empty">No played matches yet.</div>';
+      renderMatchPanel(null);
+      return;
+    }
+
+    matchesList.innerHTML = matches.map((match) => {
+      const isActive = match.id === selectedMatchId;
+      return `
+        <button
+          type="button"
+          class="mn-match-item${isActive ? ' active' : ''}"
+          data-match-id="${match.id}"
+          role="option"
+          aria-selected="${String(isActive)}"
+        >
+          <div class="mn-match-meta">
+            <span class="mn-match-chip">${formatDuration(match.durationSeconds)}</span>
+            <span class="mn-match-chip">Lv ${match.levelReached}</span>
+          </div>
+          <div class="mn-match-time">${formatPlayedAt(match.playedAt)}</div>
+        </button>
+      `;
+    }).join('');
+
+    renderMatchPanel(matches.find((m) => m.id === selectedMatchId));
+  }
+
+  matchesList?.addEventListener('click', (e) => {
+    const target = e.target.closest('.mn-match-item');
+    if (!target) return;
+
+    selectedMatchId = target.dataset.matchId;
+    renderMatches();
+  });
+
+  renderMatches();
 
   // ── Hamburger toggle ──────────────────────────────────────────────────────
   const hamburger   = container.querySelector('#mn-hamburger');
@@ -313,5 +397,37 @@ function spawnMnParticles() {
     `;
     root.appendChild(p);
   }
+}
+
+function formatDuration(totalSeconds) {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function formatPlayedAt(isoDateString) {
+  return new Intl.DateTimeFormat('hu-HU', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(isoDateString));
+}
+
+function getMockMatches() {
+  return [
+    { id: 'run-001', durationSeconds: 2194, levelReached: 24, playedAt: '2026-03-17T20:43:00' },
+    { id: 'run-002', durationSeconds: 1548, levelReached: 19, playedAt: '2026-03-16T22:11:00' },
+    { id: 'run-003', durationSeconds: 2872, levelReached: 31, playedAt: '2026-03-15T18:08:00' },
+    { id: 'run-004', durationSeconds: 984,  levelReached: 12, playedAt: '2026-03-14T14:30:00' },
+    { id: 'run-005', durationSeconds: 3321, levelReached: 36, playedAt: '2026-03-13T21:56:00' },
+  ];
 }
 
