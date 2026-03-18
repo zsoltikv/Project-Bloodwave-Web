@@ -149,7 +149,7 @@ export async function register(username, email, password) {
 }
 
 export async function login(username, password, rememberMe = false) {
-  const res  = await fetch(`${API_BASE}/api/Auth/login`, {
+  const res  = await fetch(`${API_BASE}/api/user/login`, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify({ username, password }),
