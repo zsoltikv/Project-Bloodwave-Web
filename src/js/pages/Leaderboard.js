@@ -302,11 +302,11 @@ export default function Leaderboard(container) {
             <div class="lb-card-stats">
               <div class="lb-stat">
                 <span class="lb-stat-label">Level</span>
-                <span class="lb-stat-value">${entry.level || 0}</span>
+                <span class="lb-stat-value js-lb-count" data-type="int" data-target="${entry.level || 0}">${entry.level || 0}</span>
               </div>
               <div class="lb-stat">
                 <span class="lb-stat-label">Run Time</span>
-                <span class="lb-stat-value">${formatTime(entry.runTime || 0)}</span>
+                <span class="lb-stat-value js-lb-count" data-type="time-hm" data-target="${entry.runTime || 0}">${formatTime(entry.runTime || 0)}</span>
               </div>
             </div>
           </div>
@@ -314,6 +314,8 @@ export default function Leaderboard(container) {
 
         grid.appendChild(card);
       });
+
+      animateLbStats(grid);
     } catch (error) {
       console.error('Leaderboard error:', error);
       document.getElementById('lb-grid').innerHTML = '<div class="lb-empty">Failed to load leaderboard</div>';
@@ -326,6 +328,59 @@ export default function Leaderboard(container) {
     const minutes = Math.floor((seconds % 3600) / 60);
     if (hours > 0) return `${hours}h ${minutes}m`;
     return `${minutes}m`;
+  }
+
+  function animateLbStats(container) {
+    const valueEls = container.querySelectorAll('.js-lb-count');
+    if (!valueEls.length) return;
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    const formatInt = (value) => Math.round(value).toLocaleString('en-US');
+
+    valueEls.forEach((el, index) => {
+      const type = el.dataset.type || 'int';
+      const targetValue = Number(el.dataset.target);
+      if (!Number.isFinite(targetValue)) return;
+
+      const startDelay = 140 + index * 48;
+      const duration = type === 'time-hm' ? 980 : 860;
+      const startValue = 0;
+
+      const render = (value) => {
+        if (type === 'time-hm') {
+          el.textContent = formatTime(value);
+          return;
+        }
+        el.textContent = formatInt(value);
+      };
+
+      el.classList.add('is-counting');
+      render(startValue);
+
+      const run = () => {
+        const startTs = performance.now();
+
+        const step = (now) => {
+          const progress = Math.min(1, (now - startTs) / duration);
+          const eased = easeOutCubic(progress);
+          const current = startValue + (targetValue - startValue) * eased;
+          render(current);
+
+          if (progress < 1) {
+            requestAnimationFrame(step);
+            return;
+          }
+
+          render(targetValue);
+          el.classList.remove('is-counting');
+        };
+
+        requestAnimationFrame(step);
+      };
+
+      window.setTimeout(run, startDelay);
+    });
   }
 
   // ========== INIT ==========

@@ -672,6 +672,22 @@
         letter-spacing: 1px;
       }
 
+      .lb-stat-value.is-counting {
+        animation: lb-count-pulse 0.42s ease-in-out infinite alternate;
+        color: rgba(255,245,215,0.98);
+      }
+
+      @keyframes lb-count-pulse {
+        from {
+          text-shadow: 0 0 8px rgba(212,175,55,0.2), 0 0 18px rgba(139,0,0,0.2);
+          transform: translateY(1px);
+        }
+        to {
+          text-shadow: 0 0 14px rgba(212,175,55,0.34), 0 0 26px rgba(139,0,0,0.24);
+          transform: translateY(0);
+        }
+      }
+
       /* Top 3 Rankings */
       .lb-rank-1 {
         grid-column: 1 / 2;
