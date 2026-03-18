@@ -242,6 +242,7 @@
   padding: clamp(13px, 3vw, 18px) clamp(14px, 4vw, 22px);
   background: rgba(0,0,0,0.55);
   border: 1px solid rgba(139,0,0,0.25);
+  color-scheme: dark;
   color: #F2EAEA !important;
   -webkit-text-fill-color: #F2EAEA !important;
   caret-color: #F2EAEA;
@@ -283,11 +284,20 @@
 .bw-input:-webkit-autofill:hover,
 .bw-input:-webkit-autofill:focus,
 .bw-input:-webkit-autofill:active {
+  color: #F2EAEA !important;
   -webkit-text-fill-color: #F2EAEA !important;
+  text-shadow: 0 0 0 #F2EAEA;
   caret-color: #F2EAEA;
   -webkit-box-shadow: 0 0 0 1000px rgba(12,2,2,0.75) inset !important;
   box-shadow: 0 0 0 1000px rgba(12,2,2,0.75) inset !important;
   transition: background-color 9999s ease-in-out 0s;
+}
+
+.bw-input:-moz-autofill,
+.bw-input:-moz-autofill:focus {
+  color: #F2EAEA !important;
+  caret-color: #F2EAEA;
+  box-shadow: 0 0 0 1000px rgba(12,2,2,0.75) inset !important;
 }
 
 .bw-input-line {
