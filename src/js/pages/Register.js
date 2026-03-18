@@ -1,10 +1,10 @@
 import '../../css/pages/Register.css';
 import { register } from '../auth.js';
+import { ensureGlobalStarfield } from '../global-starfield.js';
 
 export default function Register(container) {
   container.innerHTML = `
     <div class="bw-root">
-      <canvas id="rx-canvas" class="bw-canvas"></canvas>
       <div class="bw-glow-center"></div>
 
       <div class="bw-card">
@@ -105,8 +105,7 @@ export default function Register(container) {
     </div>
   `;
 
-  initRegisterCanvas();
-  spawnRegisterParticles();
+  ensureGlobalStarfield();
 
   const form          = document.getElementById('rxForm');
   const btn           = document.getElementById('rxBtn');

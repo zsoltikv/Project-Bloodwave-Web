@@ -1,8 +1,10 @@
 import { isLoggedIn } from './auth.js';
+import { ensureGlobalStarfield, setGlobalStarfieldEnabled } from './global-starfield.js';
 
 const PROTECTED_PATHS = ['/main', '/stats', '/leaderboard', '/user-panel'];
 const GUEST_ONLY_PATHS = ['/login', '/register', '/forgot-password', '/'];
 const FOOTER_VISIBLE_PATHS = ['/main', '/stats', '/leaderboard', '/user-panel'];
+const STARFIELD_PATHS = ['/', '/login', '/register', '/forgot-password', '/tos', '/main', '/stats', '/leaderboard', '/user-panel'];
 const GITHUB_PROJECT_URL = 'https://github.com/zsoltikv/Project-Bloodwave-Web';
 
 function createGlobalFooter(loggedIn) {
@@ -46,6 +48,7 @@ class Router {
   constructor(routes) {
     this.routes = routes;
     this.currentRoute = null;
+    ensureGlobalStarfield();
     
     // Handle initial load
     window.addEventListener('DOMContentLoaded', (e) => {
@@ -60,9 +63,14 @@ class Router {
     
     // Intercept link clicks
     document.addEventListener('click', (e) => {
-      if (e.target.matches('[data-link]')) {
-        this.navigate(e.target.getAttribute('href'));
-      }
+      const link = e.target.closest('[data-link]');
+      if (!link) return;
+
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      this.navigate(href);
     });
   }
   
@@ -90,6 +98,8 @@ class Router {
     // Unknown path → login (or main if logged in, handled by the guard above on next call)
     const route = this.routes.find(r => r.path === path)
                || this.routes.find(r => r.path === '/login');
+
+    setGlobalStarfieldEnabled(STARFIELD_PATHS.includes(path));
     
     if (route) {
       this.currentRoute = route;

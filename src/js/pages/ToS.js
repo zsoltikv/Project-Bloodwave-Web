@@ -1,5 +1,6 @@
 import '../../css/pages/ToS.css';
 import { isLoggedIn } from '../auth.js';
+import { ensureGlobalStarfield } from '../global-starfield.js';
 export default function ToS(container) {
   const loggedIn = isLoggedIn();
   const ctaHref = loggedIn ? '/main' : '/register';
@@ -7,7 +8,6 @@ export default function ToS(container) {
 
   container.innerHTML = `
     <div class="bw-root">
-      <canvas id="tos-canvas" class="bw-canvas"></canvas>
       <div class="bw-glow-center"></div>
 
       <div class="bw-card" style="max-width: 800px; width: 90%;">
@@ -135,8 +135,7 @@ export default function ToS(container) {
     </div>
   `;
 
-  initToSCanvas();
-  spawnToSParticles();
+  ensureGlobalStarfield();
 }
 
 /* ============================================================

@@ -1,10 +1,10 @@
 import '../../css/pages/Login.css';
 import { login } from '../auth.js';
+import { ensureGlobalStarfield } from '../global-starfield.js';
 
 export default function Login(container) {
   container.innerHTML = `
     <div class="bw-root">
-      <canvas id="lx-canvas" class="bw-canvas"></canvas>
       <div class="bw-glow-center"></div>
 
       <div class="bw-card">
@@ -79,8 +79,7 @@ export default function Login(container) {
     </div>
   `;
 
-  initCanvas();
-  spawnParticles();
+  ensureGlobalStarfield();
 
   const form = document.getElementById('lxForm');
   const btn  = document.getElementById('lxBtn');

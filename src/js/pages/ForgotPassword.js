@@ -1,8 +1,8 @@
 import '../../css/pages/ForgotPassword.css';
+import { ensureGlobalStarfield } from '../global-starfield.js';
 export default function ForgotPassword(container) {
   container.innerHTML = `
     <div class="bw-root">
-      <canvas id="fp-canvas" class="bw-canvas"></canvas>
       <div class="bw-glow-center"></div>
 
       <div class="bw-card">
@@ -76,8 +76,7 @@ export default function ForgotPassword(container) {
     </div>
   `;
 
-  initFpCanvas();
-  spawnFpParticles();
+  ensureGlobalStarfield();
 
   const form       = document.getElementById('fpForm');
   const btn        = document.getElementById('fpBtn');

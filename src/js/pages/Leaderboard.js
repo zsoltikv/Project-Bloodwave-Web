@@ -1,6 +1,7 @@
 import '../../css/pages/Leaderboard.css';
 import { getUser, logout, authFetch } from '../auth.js';
 import { confirmLogout } from '../logout-confirm.js';
+import { ensureGlobalStarfield } from '../global-starfield.js';
 
 const API_BASE = 'http://5.38.140.128:5000';
 
@@ -9,7 +10,6 @@ export default function Leaderboard(container) {
     
 
     <div class="lb-root">
-      <canvas id="lb-canvas" class="bw-canvas"></canvas>
       <div class="lb-glow"></div>
 
       <!-- ===== NAVBAR ===== -->
@@ -382,6 +382,6 @@ export default function Leaderboard(container) {
   }
 
   // ========== INIT ==========
-  initLbCanvas();
+  ensureGlobalStarfield();
   loadLeaderboard();
 }

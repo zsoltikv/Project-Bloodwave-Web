@@ -1,13 +1,13 @@
 import '../../css/pages/Stats.css';
 import { getUser, logout } from '../auth.js';
 import { confirmLogout } from '../logout-confirm.js';
+import { ensureGlobalStarfield } from '../global-starfield.js';
 
 export default function Stats(container) {
   container.innerHTML = `
     
 
     <div class="st-root">
-      <canvas id="st-canvas" class="bw-canvas"></canvas>
       <div class="st-glow"></div>
 
       <!-- ===== NAVBAR ===== -->
@@ -226,8 +226,7 @@ export default function Stats(container) {
   `;
 
   // ── Canvas starfield ──────────────────────────────────────────────────────
-  initStCanvas();
-  spawnStParticles();
+  ensureGlobalStarfield();
   animateStStats(container);
 
   const user = getUser();

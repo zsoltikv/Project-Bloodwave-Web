@@ -1,13 +1,13 @@
 import '../../css/pages/Main.css';
 import { getUser, logout } from '../auth.js';
 import { confirmLogout } from '../logout-confirm.js';
+import { ensureGlobalStarfield } from '../global-starfield.js';
 
 export default function Main(container) {
   container.innerHTML = `
     
 
     <div class="mn-root">
-      <canvas id="mn-canvas" class="bw-canvas"></canvas>
       <div class="mn-glow"></div>
 
       <!-- ===== NAVBAR ===== -->
@@ -116,8 +116,7 @@ export default function Main(container) {
   `;
 
   // ── Canvas starfield ──────────────────────────────────────────────────────
-  initMnCanvas();
-  spawnMnParticles();
+  ensureGlobalStarfield();
 
   // ── Populate username ────────────────────────────────────────────────────
   const user = getUser();
