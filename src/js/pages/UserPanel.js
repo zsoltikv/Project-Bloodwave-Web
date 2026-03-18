@@ -31,6 +31,7 @@ export default function UserPanel(container) {
           <div class="up-mobile-menu-inner">
             <a href="/main" data-link class="up-mobile-link">Matches</a>
             <a href="/stats" data-link class="up-mobile-link">Stats</a>
+            <a href="/leaderboard" data-link class="up-mobile-link">Leaderboard</a>
             <div class="up-mobile-divider"></div>
             <div class="up-mobile-profile" style="pointer-events:none; cursor:default;">
               <span class="up-mobile-avatar">

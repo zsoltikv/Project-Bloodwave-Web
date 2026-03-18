@@ -4,6 +4,7 @@ import Register from './pages/Register.js';
 import ForgotPassword from './pages/ForgotPassword.js';
 import Main from './pages/Main.js';
 import Stats from './pages/Stats.js';
+import Leaderboard from './pages/Leaderboard.js';
 import ToS from './pages/ToS.js';
 import UserPanel from './pages/UserPanel.js';
 
@@ -36,6 +37,10 @@ const routes = [
   {
     path: '/stats',
     component: Stats
+  },
+  {
+    path: '/leaderboard',
+    component: Leaderboard
   },
   {
     path: '/user-panel',

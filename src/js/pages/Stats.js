@@ -18,6 +18,7 @@ export default function Stats(container) {
           <div class="st-links">
             <a href="/main" data-link class="st-link"><span>Matches</span></a>
             <a href="/stats" data-link class="st-link active"><span>Stats</span></a>
+            <a href="/leaderboard" data-link class="st-link"><span>Leaderboard</span></a>
           </div>
 
           <div class="st-right">
@@ -61,6 +62,7 @@ export default function Stats(container) {
           <div class="st-mobile-menu-inner">
             <a href="/main" data-link class="st-mobile-link">Matches</a>
             <a href="/stats" data-link class="st-mobile-link">Stats</a>
+            <a href="/leaderboard" data-link class="st-mobile-link">Leaderboard</a>
             <div class="st-mobile-divider"></div>
             <div class="st-mobile-profile" style="pointer-events:none; cursor:default;">
               <span class="st-mobile-avatar">
