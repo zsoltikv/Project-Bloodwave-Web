@@ -4,8 +4,7 @@
       .up-root {
         --up-nav-h: clamp(56px, 7vh, 68px);
         --up-ornament-gap: clamp(26px, 4.2vh, 36px);
-        min-height: 100vh;
-        min-height: 100dvh;
+        min-height: 100%;
         background: var(--obsidian);
         font-family: 'Montserrat', sans-serif;
         position: relative;
@@ -292,11 +291,10 @@
         position: relative;
         z-index: 10;
         padding-top: calc(var(--up-nav-h) + var(--up-ornament-gap));
-        min-height: 100vh;
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding-bottom: clamp(40px, 8vh, 80px);
+        padding-bottom: clamp(16px, 3vh, 28px);
       }
 
       .up-container {

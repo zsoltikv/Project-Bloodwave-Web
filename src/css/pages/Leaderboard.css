@@ -4,8 +4,7 @@
       .lb-root {
         --lb-nav-h: clamp(56px, 7vh, 68px);
         --lb-ornament-gap: clamp(26px, 4.2vh, 36px);
-        min-height: 100vh;
-        min-height: 100dvh;
+        min-height: 100%;
         background: var(--obsidian);
         font-family: 'Montserrat', sans-serif;
         position: relative;
@@ -477,7 +476,6 @@
         position: relative;
         z-index: 10;
         padding-top: clamp(56px, 7vh, 68px);
-        min-height: 100vh;
         display: flex;
         justify-content: center;
       }
@@ -485,7 +483,7 @@
       .lb-inner {
         width: 100%;
         max-width: 1120px;
-        padding: clamp(32px, 6vh, 64px) clamp(16px, 4vw, 48px) clamp(40px, 7vh, 72px);
+        padding: clamp(24px, 4.5vh, 48px) clamp(16px, 4vw, 48px) clamp(14px, 3vh, 24px);
         margin: 0 auto;
       }
 
