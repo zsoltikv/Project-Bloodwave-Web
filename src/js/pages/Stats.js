@@ -21,11 +21,32 @@ export default function Stats(container) {
           </div>
 
           <div class="st-right">
-            <button class="st-avatar" id="st-profile-btn" aria-label="Profile & Settings">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-              </svg>
-            </button>
+            <div class="st-avatar-wrap">
+              <button class="st-avatar" id="st-avatar-btn" aria-label="Profile menu" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>
+              </button>
+              <div class="st-avatar-dropdown" id="st-avatar-dropdown" role="menu">
+                <div class="st-dd-header">
+                  <div class="st-dd-username" id="st-dd-username">-</div>
+                  <div class="st-dd-role">Member</div>
+                </div>
+                <a href="/user-panel" data-link class="st-dd-item" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15a7.488 7.488 0 0 0-5.982 3.725m11.964 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275m11.963 0A24.973 24.973 0 0 1 12 16.5a24.973 24.973 0 0 1-5.982 2.275" />
+                  </svg>
+                  Profile
+                </a>
+                <div class="st-dd-divider"></div>
+                <button class="st-dd-item logout" id="st-dd-logout" role="menuitem">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            </div>
 
             <button class="st-hamburger" id="st-hamburger" aria-label="Toggle menu" aria-expanded="false">
               <span class="st-bar"></span>
@@ -207,7 +228,9 @@ export default function Stats(container) {
 
   const user = getUser();
   const displayName = user?.username ?? user?.email ?? 'Member';
+  const ddUsername     = container.querySelector('#st-dd-username');
   const mobileUsername = container.querySelector('#st-mobile-username');
+  if (ddUsername)     ddUsername.textContent     = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
 
   // ── Hamburger toggle ──────────────────────────────────────────────────────
@@ -231,22 +254,44 @@ export default function Stats(container) {
     });
   });
 
-  // ── Profile navigation ────────────────────────────────────────────────────
-  const goToProfile = () => {
-    window.router?.navigate('/user-panel');
-  };
-  container.querySelector('#st-profile-btn')?.addEventListener('click', goToProfile);
-  container.querySelector('#st-profile-btn-mobile')?.addEventListener('click', goToProfile);
+  // ── Desktop avatar dropdown ───────────────────────────────────────────────
+  const avatarBtn  = container.querySelector('#st-avatar-btn');
+  const avatarDrop = container.querySelector('#st-avatar-dropdown');
+  let dropOpen = false;
 
-  // ── Logout functionality ──────────────────────────────────────────────────
-  const logoutBtn = container.querySelector('#st-mobile-logout');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      logoutBtn.disabled = true;
-      logoutBtn.innerHTML = '✦ Logging out… ✦';
-      await logout();
-    });
+  function openDrop() {
+    dropOpen = true;
+    avatarDrop.classList.add('open');
+    avatarBtn.setAttribute('aria-expanded', 'true');
   }
+  function closeDrop() {
+    dropOpen = false;
+    avatarDrop.classList.remove('open');
+    avatarBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  avatarBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropOpen ? closeDrop() : openDrop();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (dropOpen && !avatarDrop.contains(e.target) && e.target !== avatarBtn) {
+      closeDrop();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dropOpen) closeDrop();
+  });
+
+  // ── Logout ───────────────────────────────────────────────────────────────
+  const doLogout = async () => {
+    await logout();
+  };
+
+  container.querySelector('#st-dd-logout')?.addEventListener('click', doLogout);
+  container.querySelector('#st-mobile-logout')?.addEventListener('click', doLogout);
 }
 
 /* ======================================================================
