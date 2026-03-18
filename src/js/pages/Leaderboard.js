@@ -286,7 +286,7 @@ export default function Leaderboard(container) {
         card.className = 'lb-card';
         if (index < 3) card.classList.add(`lb-rank-${index + 1}`);
 
-        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+        const medal = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
 
         card.innerHTML = `
           <div class="lb-card-corner lb-card-corner--tl"></div>
