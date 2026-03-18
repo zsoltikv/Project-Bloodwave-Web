@@ -772,6 +772,10 @@
           grid-template-columns: 1fr;
         }
 
+        .mn-match-panel {
+          margin-top: 32px;
+        }
+
         .mn-matches-list {
           min-height: unset;
         }
@@ -780,10 +784,11 @@
       @media (max-width: 768px) {
         .mn-content {
           --mn-summary-height: clamp(248px, 34dvh, 300px);
+          --mn-summary-gap: 32px;
         }
 
         .mn-matches-shell {
-          padding-bottom: calc(var(--mn-summary-height) + 8px + env(safe-area-inset-bottom, 0px));
+          padding-bottom: calc(var(--mn-summary-height) + var(--mn-summary-gap) + env(safe-area-inset-bottom, 0px));
         }
 
         .mn-matches-layout {
@@ -803,6 +808,7 @@
           z-index: 130;
           height: var(--mn-summary-height);
           overflow: hidden;
+          margin-top: 0;
           padding: 12px;
           background: linear-gradient(155deg, rgba(24,8,8,0.97) 0%, rgba(11,3,3,0.99) 100%);
         }
