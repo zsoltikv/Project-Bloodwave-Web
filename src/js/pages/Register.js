@@ -59,7 +59,7 @@ export default function Register(container) {
               <span class="bw-error" id="rxPasswordError"></span>
             </div>
 
-            <div class="bw-field">
+            <div class="bw-field bw-field--confirm">
               <label class="bw-label" for="rxConfirm">Confirm Password</label>
               <div class="bw-input-wrap">
                 <input type="password" id="rxConfirm" class="bw-input" placeholder="············" required autocomplete="new-password" style="padding-right: clamp(40px, 9vw, 52px);" />
@@ -74,11 +74,11 @@ export default function Register(container) {
               <span class="bw-error" id="rxConfirmError"></span>
             </div>
 
-            <div class="bw-field" style="margin-top: 1.5rem;">
+            <div class="bw-field bw-field--tos">
               <label class="bw-checkbox-wrapper">
                 <input type="checkbox" id="rxTosAccept" class="bw-checkbox" required />
                 <span class="bw-checkbox-label">
-                  I accept the <a href="/tos" data-link style="color: var(--bw-crimson); text-decoration: underline;">Terms of Service &amp; Cookie Policy</a>
+                  I accept the <a href="/tos" data-link class="bw-forgot">Terms of Service &amp; Cookie Policy</a>
                 </span>
               </label>
               <span class="bw-error" id="rxTosError"></span>
