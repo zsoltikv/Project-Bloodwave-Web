@@ -136,7 +136,7 @@ export async function ensureValidToken() {
 // ─── Auth endpoints ────────────────────────────────────────────────────────────
 
 export async function register(username, email, password) {
-  const res  = await fetch(`${API_BASE}/api/Auth/register`, {
+  const res  = await fetch(`${API_BASE}/api/user/register`, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify({ username, email, password }),
@@ -165,7 +165,7 @@ export async function login(username, password, rememberMe = false) {
 export async function logout() {
   try {
     const token = getToken();
-    await fetch(`${API_BASE}/api/Auth/logout`, {
+    await fetch(`${API_BASE}/api/user/logout`, {
       method:  'POST',
       headers: token ? { 'Authorization': `Bearer ${token}` } : {},
     });
