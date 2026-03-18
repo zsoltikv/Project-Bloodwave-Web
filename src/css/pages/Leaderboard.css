@@ -497,40 +497,45 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 12px;
-        margin-bottom: 12px;
+        gap: 14px;
+        margin-bottom: 20px;
       }
 
       .lb-ornament-line {
-        flex: 0 1 30px;
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent);
+        width: clamp(28px, 6vw, 48px);
+        background: linear-gradient(90deg, transparent, var(--gold));
       }
+      .lb-ornament-line:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
 
       .lb-ornament-diamond {
-        width: 8px;
-        height: 8px;
-        background: rgba(212,175,55,0.6);
+        width: 7px;
+        height: 7px;
+        background: var(--gold-light);
         transform: rotate(45deg);
+        box-shadow: 0 0 8px rgba(212,175,55,0.45);
+        flex-shrink: 0;
+        animation: lb-diamond-pulse 3s ease-in-out infinite;
       }
+      @keyframes lb-diamond-pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
 
       .lb-title {
-        font-family: 'Cinzel', 'Cormorant Garamond', serif;
-        font-size: clamp(24px, 5vw, 48px);
-        font-weight: 700;
-        letter-spacing: clamp(2px, 0.8vw, 4px);
-        color: rgba(255,255,255,0.94);
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(28px, 5.5vw, 44px);
+        font-weight: 300;
+        letter-spacing: clamp(5px, 1.8vw, 12px);
+        color: rgba(255,255,255,0.88);
         text-transform: uppercase;
-        margin: 0;
-        text-shadow: 0 0 20px rgba(212,175,55,0.2);
+        text-shadow: 0 0 40px rgba(139,0,0,0.4);
+        margin-bottom: 10px;
       }
 
       .lb-subtitle {
-        font-size: clamp(10px, 1.8vw, 12px);
-        letter-spacing: 3px;
-        color: rgba(212,175,55,0.6);
+        font-size: clamp(7px, 1.8vw, 9.5px);
+        font-weight: 300;
+        letter-spacing: clamp(3px, 1.2vw, 6px);
+        color: rgba(212,175,55,0.4);
         text-transform: uppercase;
-        margin-top: 6px;
       }
 
       /* === LEADERBOARD GRID === */
