@@ -248,40 +248,25 @@ export default function Leaderboard(container) {
 
   // ========== FETCH LEADERBOARD DATA ==========
   async function loadLeaderboard() {
-    // Mock data for testing
-    const mockLeaderboard = [
-      { username: 'ShadowNinja', level: 47, runTime: 3847 },
-      { username: 'PhoenixRise', level: 45, runTime: 3652 },
-      { username: 'StormBreaker', level: 44, runTime: 3521 },
-      { username: 'VoidWalker', level: 42, runTime: 3248 },
-      { username: 'IceQueen', level: 41, runTime: 3156 },
-      { username: 'ThunderLord', level: 40, runTime: 2987 },
-      { username: 'MysticMage', level: 39, runTime: 2845 },
-      { username: 'SilentAssassin', level: 38, runTime: 2634 },
-      { username: 'NeonGhost', level: 37, runTime: 2521 },
-      { username: 'IronFist', level: 36, runTime: 2418 },
-      { username: 'VenomStrike', level: 35, runTime: 2305 },
-      { username: 'LunarEclipse', level: 34, runTime: 2187 },
-      { username: 'DarkSoul', level: 33, runTime: 2056 },
-      { username: 'BlazingInferno', level: 32, runTime: 1945 },
-      { username: 'CrimsonBlade', level: 31, runTime: 1834 },
-    ];
-
     try {
-      // Uncomment when API is ready:
-      // const response = await authFetch(`${API_BASE}/leaderboard`);
-      // if (!response.ok) throw new Error('Failed to fetch leaderboard');
-      // const data = await response.json();
+      const response = await authFetch(`${API_BASE}/api/Match`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' }
+      });
+      if (!response.ok) throw new Error('Failed to fetch leaderboard');
+      const matches = await response.json();
 
       const grid = document.getElementById('lb-grid');
       grid.innerHTML = '';
 
-      if (!mockLeaderboard || mockLeaderboard.length === 0) {
+      const leaderboardRows = buildLeaderboardRows(matches, user);
+
+      if (!leaderboardRows.length) {
         grid.innerHTML = '<div class="lb-empty">No players yet</div>';
         return;
       }
 
-      mockLeaderboard.forEach((entry, index) => {
+      leaderboardRows.forEach((entry, index) => {
         const card = document.createElement('div');
         card.className = 'lb-card';
         if (index < 3) card.classList.add(`lb-rank-${index + 1}`);
@@ -304,7 +289,7 @@ export default function Leaderboard(container) {
               </div>
               <div class="lb-stat">
                 <span class="lb-stat-label">Run Time</span>
-                <span class="lb-stat-value js-lb-count" data-type="time-hm" data-target="${entry.runTime || 0}">${formatTime(entry.runTime || 0)}</span>
+                <span class="lb-stat-value js-lb-count" data-type="time-hm" data-target="${Math.max(0, Math.round(entry.runTimeMs || 0))}">${formatTime(entry.runTimeMs || 0)}</span>
               </div>
             </div>
           </div>
@@ -320,12 +305,67 @@ export default function Leaderboard(container) {
     }
   }
 
-  function formatTime(seconds) {
-    if (!seconds) return '0m';
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+  function normalizeRunTimeMs(rawTime) {
+    const numeric = Number(rawTime);
+    if (!Number.isFinite(numeric) || numeric < 0) return 0;
+
+    // Backend currently sends milliseconds. Keep a fallback for second-based values.
+    if (numeric < 10000) return numeric * 1000;
+    return numeric;
+  }
+
+  function compareByRank(a, b) {
+    if (b.level !== a.level) return b.level - a.level;
+    if (a.runTimeMs !== b.runTimeMs) return a.runTimeMs - b.runTimeMs;
+    return a.username.localeCompare(b.username);
+  }
+
+  function resolveUsername(matchEntry, currentUser) {
+    if (matchEntry?.username) return String(matchEntry.username);
+    if (matchEntry?.user?.username) return String(matchEntry.user.username);
+
+    const userId = Number(matchEntry?.userId);
+    if (currentUser?.id === userId && currentUser?.username) {
+      return currentUser.username;
+    }
+
+    return `User #${userId || 'Unknown'}`;
+  }
+
+  function buildLeaderboardRows(matches, currentUser) {
+    if (!Array.isArray(matches)) return [];
+
+    const bestByUserId = new Map();
+
+    matches.forEach((matchEntry) => {
+      const userId = Number(matchEntry?.userId);
+      if (!Number.isFinite(userId)) return;
+
+      const candidate = {
+        userId,
+        username: resolveUsername(matchEntry, currentUser),
+        level: Number(matchEntry?.level) || 0,
+        runTimeMs: normalizeRunTimeMs(matchEntry?.time)
+      };
+
+      const existing = bestByUserId.get(userId);
+      if (!existing || compareByRank(candidate, existing) < 0) {
+        bestByUserId.set(userId, candidate);
+      }
+    });
+
+    return Array.from(bestByUserId.values()).sort(compareByRank);
+  }
+
+  function formatTime(timeMs) {
+    const totalSeconds = Math.max(0, Math.round(Number(timeMs || 0) / 1000));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
     if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
+    if (minutes > 0) return `${minutes}m ${seconds}s`;
+    return `${seconds}s`;
   }
 
   function animateLbStats(container) {
