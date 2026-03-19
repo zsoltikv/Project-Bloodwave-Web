@@ -661,6 +661,38 @@
         word-break: break-word;
       }
 
+      .lb-card-username-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .lb-you-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 7px;
+        border: 1px solid rgba(212,175,55,0.55);
+        background: linear-gradient(180deg, rgba(212,175,55,0.24), rgba(170,24,24,0.18));
+        color: rgba(255,247,214,0.95);
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      .lb-card-you {
+        border-color: rgba(212,175,55,0.55);
+        box-shadow: 0 0 24px rgba(212,175,55,0.14), inset 0 0 20px rgba(212,175,55,0.05);
+      }
+
+      .lb-card-you .lb-card-username {
+        color: rgba(255,247,210,0.98);
+      }
+
       .lb-card-sep {
         height: 1px;
         background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);

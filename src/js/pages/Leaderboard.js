@@ -295,6 +295,7 @@ export default function Leaderboard(container) {
         const card = document.createElement('div');
         card.className = 'lb-card';
         if (index < 3) card.classList.add(`lb-rank-${index + 1}`);
+        if (entry.isCurrentUser) card.classList.add('lb-card-you');
 
         const medal = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
 
@@ -305,7 +306,10 @@ export default function Leaderboard(container) {
           <div class="lb-card-corner lb-card-corner--br"></div>
           <div class="lb-card-body">
             <div class="lb-card-rank">${medal}</div>
-            <div class="lb-card-username" data-user-id="${entry.userId}">Loading…</div>
+            <div class="lb-card-username-wrap">
+              <div class="lb-card-username" data-user-id="${entry.userId}">Loading…</div>
+              ${entry.isCurrentUser ? '<span class="lb-you-badge">YOU</span>' : ''}
+            </div>
             <div class="lb-card-sep"></div>
             <div class="lb-card-stats">
               <div class="lb-stat">
@@ -377,9 +381,22 @@ export default function Leaderboard(container) {
     return `User #${userId || 'Unknown'}`;
   }
 
+  function resolveCurrentUserId(currentUser) {
+    const candidates = [currentUser?.id, currentUser?.userId, currentUser?.playerId];
+    for (const candidate of candidates) {
+      const parsed = Number(candidate);
+      if (Number.isInteger(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+
+    return null;
+  }
+
   function buildLeaderboardRows(matches, currentUser) {
     if (!Array.isArray(matches)) return [];
 
+    const currentUserId = resolveCurrentUserId(currentUser);
     const bestByUserId = new Map();
 
     matches.forEach((matchEntry) => {
@@ -390,7 +407,8 @@ export default function Leaderboard(container) {
         userId,
         username: resolveUsername(matchEntry, currentUser),
         level: Number(matchEntry?.level) || 0,
-        runTimeMs: normalizeRunTimeMs(matchEntry?.time)
+        runTimeMs: normalizeRunTimeMs(matchEntry?.time),
+        isCurrentUser: currentUserId !== null && userId === currentUserId,
       };
 
       const existing = bestByUserId.get(userId);
