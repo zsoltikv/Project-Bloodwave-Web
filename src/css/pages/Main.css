@@ -505,6 +505,7 @@
         gap: 10px;
         min-height: 360px;
         overflow-y: auto;
+        scroll-behavior: smooth;
         overscroll-behavior: contain;
       }
 
