@@ -1,7 +1,9 @@
 import '../../css/pages/Stats.css';
-import { getUser, logout } from '../auth.js';
+import { getUser, logout, authFetch } from '../auth.js';
 import { confirmLogout } from '../logout-confirm.js';
 import { ensureGlobalStarfield } from '../global-starfield.js';
+
+const API_BASE = 'http://5.38.140.128:5000';
 
 export default function Stats(container) {
   container.innerHTML = `
@@ -118,7 +120,7 @@ export default function Stats(container) {
                 </div>
                 <div class="st-card-name">Damage Dealt</div>
                 <div class="st-card-sep"></div>
-                <div class="st-card-value js-st-count" data-type="int" data-target="1482390">1,482,390</div>
+                <div class="st-card-value js-st-count" data-stat="damage" data-type="int" data-target="0">0</div>
                 <div class="st-card-unit">total damage</div>
               </div>
             </div>
@@ -137,7 +139,7 @@ export default function Stats(container) {
                 </div>
                 <div class="st-card-name">Enemies Killed</div>
                 <div class="st-card-sep"></div>
-                <div class="st-card-value js-st-count" data-type="int" data-target="8741">8,741</div>
+                <div class="st-card-value js-st-count" data-stat="kills" data-type="int" data-target="0">0</div>
                 <div class="st-card-unit">eliminations</div>
               </div>
             </div>
@@ -156,27 +158,8 @@ export default function Stats(container) {
                 </div>
                 <div class="st-card-name">Time Lived</div>
                 <div class="st-card-sep"></div>
-                <div class="st-card-value js-st-count" data-type="time-hm" data-target="20832">347h 12m</div>
+                <div class="st-card-value js-st-count" data-stat="time-lived" data-type="time-hm" data-target="0">0h 0m</div>
                 <div class="st-card-unit">total survival time</div>
-              </div>
-            </div>
-
-            <!-- Deaths -->
-            <div class="st-card">
-              <div class="st-card-corner st-card-corner--tl"></div>
-              <div class="st-card-corner st-card-corner--tr"></div>
-              <div class="st-card-corner st-card-corner--bl"></div>
-              <div class="st-card-corner st-card-corner--br"></div>
-              <div class="st-card-body">
-                <div class="st-card-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="rgba(192,57,43,0.8)" stroke-width="1.2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                  </svg>
-                </div>
-                <div class="st-card-name">Deaths</div>
-                <div class="st-card-sep"></div>
-                <div class="st-card-value js-st-count" data-type="int" data-target="2103">2,103</div>
-                <div class="st-card-unit">times fallen</div>
               </div>
             </div>
 
@@ -194,12 +177,12 @@ export default function Stats(container) {
                 </div>
                 <div class="st-card-name">Matches Played</div>
                 <div class="st-card-sep"></div>
-                <div class="st-card-value js-st-count" data-type="int" data-target="3256">3,256</div>
+                <div class="st-card-value js-st-count" data-stat="matches" data-type="int" data-target="0">0</div>
                 <div class="st-card-unit">total games</div>
               </div>
             </div>
 
-            <!-- K/D Ratio -->
+            <!-- Coins Collected -->
             <div class="st-card">
               <div class="st-card-corner st-card-corner--tl"></div>
               <div class="st-card-corner st-card-corner--tr"></div>
@@ -211,10 +194,10 @@ export default function Stats(container) {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
                   </svg>
                 </div>
-                <div class="st-card-name">K / D Ratio</div>
+                <div class="st-card-name">Coins Collected</div>
                 <div class="st-card-sep"></div>
-                <div class="st-card-value js-st-count" data-type="decimal" data-target="4.16">4.16</div>
-                <div class="st-card-unit">kills per death</div>
+                <div class="st-card-value js-st-count" data-stat="coins" data-type="int" data-target="0">0</div>
+                <div class="st-card-unit">total coins</div>
               </div>
             </div>
 
@@ -227,7 +210,6 @@ export default function Stats(container) {
 
   // ── Canvas starfield ──────────────────────────────────────────────────────
   ensureGlobalStarfield();
-  animateStStats(container);
 
   const user = getUser();
   const displayName = user?.username ?? user?.email ?? 'Member';
@@ -235,6 +217,8 @@ export default function Stats(container) {
   const mobileUsername = container.querySelector('#st-mobile-username');
   if (ddUsername)     ddUsername.textContent     = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
+
+  loadAllTimeStats(container, user);
 
   // ── Hamburger toggle ──────────────────────────────────────────────────────
   const hamburger  = container.querySelector('#st-hamburger');
@@ -298,6 +282,134 @@ export default function Stats(container) {
 
   container.querySelector('#st-dd-logout')?.addEventListener('click', doLogout);
   container.querySelector('#st-mobile-logout')?.addEventListener('click', doLogout);
+}
+
+async function loadAllTimeStats(container, user) {
+  const playerId = resolvePlayerId(user);
+  const fallbackStats = {
+    damageDealt: 0,
+    enemiesKilled: 0,
+    totalMinutesLived: 0,
+    matchesPlayed: 0,
+    coinsCollected: 0,
+  };
+
+  if (!playerId) {
+    applyStatsToCards(container, fallbackStats);
+    animateStStats(container);
+    return;
+  }
+
+  try {
+    const response = await authFetch(`${API_BASE}/api/Match/player?playerId=${encodeURIComponent(playerId)}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch player matches');
+    }
+
+    const apiMatches = await parseResponsePayload(response);
+    const stats = aggregateMatchStats(apiMatches);
+    applyStatsToCards(container, stats);
+  } catch {
+    applyStatsToCards(container, fallbackStats);
+  }
+
+  animateStStats(container);
+}
+
+function applyStatsToCards(container, stats) {
+  const setStatTarget = (statKey, value) => {
+    const valueEl = container.querySelector(`.js-st-count[data-stat="${statKey}"]`);
+    if (!valueEl) return;
+    valueEl.dataset.target = String(value);
+  };
+
+  setStatTarget('damage', toNonNegativeInt(stats.damageDealt));
+  setStatTarget('kills', toNonNegativeInt(stats.enemiesKilled));
+  setStatTarget('time-lived', toNonNegativeInt(stats.totalMinutesLived));
+  setStatTarget('matches', toNonNegativeInt(stats.matchesPlayed));
+  setStatTarget('coins', toNonNegativeInt(stats.coinsCollected));
+}
+
+function aggregateMatchStats(apiMatches) {
+  if (!Array.isArray(apiMatches)) {
+    return {
+      damageDealt: 0,
+      enemiesKilled: 0,
+      totalMinutesLived: 0,
+      matchesPlayed: 0,
+      coinsCollected: 0,
+    };
+  }
+
+  let totalDamageDealt = 0;
+  let totalEnemiesKilled = 0;
+  let totalDurationSeconds = 0;
+  let totalCoinsCollected = 0;
+
+  apiMatches.forEach((match) => {
+    totalDamageDealt += toNonNegativeInt(match?.damageDealt);
+    totalEnemiesKilled += toNonNegativeInt(match?.enemiesKilled);
+    totalDurationSeconds += normalizeDurationSeconds(match?.time);
+    totalCoinsCollected += toNonNegativeInt(match?.coinsCollected);
+  });
+
+  return {
+    damageDealt: totalDamageDealt,
+    enemiesKilled: totalEnemiesKilled,
+    totalMinutesLived: Math.round(totalDurationSeconds / 60),
+    matchesPlayed: apiMatches.length,
+    coinsCollected: totalCoinsCollected,
+  };
+}
+
+async function parseResponsePayload(response) {
+  const raw = await response.text();
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function resolvePlayerId(user) {
+  const candidates = [user?.id, user?.userId, user?.playerId];
+  for (const candidate of candidates) {
+    const value = Number(candidate);
+    if (Number.isInteger(value) && value > 0) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function normalizeDurationSeconds(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+
+  const nonNegative = Math.max(0, parsed);
+
+  // API currently returns match time in milliseconds.
+  if (nonNegative >= 86_400) {
+    return Math.round(nonNegative / 1000);
+  }
+
+  return Math.round(nonNegative);
+}
+
+function toNonNegativeInt(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, Math.round(parsed));
 }
 
 /* ======================================================================
