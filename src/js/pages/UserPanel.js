@@ -6,7 +6,7 @@ import { ensureGlobalStarfield } from '../global-starfield.js';
 const API_BASE = 'http://5.38.140.128:5000';
 
 export default function UserPanel(container) {
-  const user = getUser();
+  const cachedUser = getUser();
 
   container.innerHTML = `
     
@@ -73,17 +73,17 @@ export default function UserPanel(container) {
           <div class="up-info-grid">
             <div class="up-info-card">
               <span class="up-info-label">👤 Username</span>
-              <span class="up-info-value">${escapeHtml(user?.username || 'N/A')}</span>
+              <span class="up-info-value" id="up-username-value">${escapeHtml(cachedUser?.username || 'N/A')}</span>
             </div>
 
             <div class="up-info-card">
               <span class="up-info-label">✉ Email</span>
-              <span class="up-info-value">${escapeHtml(user?.email || 'N/A')}</span>
+              <span class="up-info-value" id="up-email-value">${escapeHtml(cachedUser?.email || 'N/A')}</span>
             </div>
 
             <div class="up-info-card">
               <span class="up-info-label">📅 Member Since</span>
-              <span class="up-info-value">${formatDate(user?.createdAt || 'N/A')}</span>
+              <span class="up-info-value" id="up-created-at-value">${formatDate(cachedUser?.createdAt || 'N/A')}</span>
             </div>
           </div>
 
@@ -240,7 +240,40 @@ export default function UserPanel(container) {
 
   const mobileUsername = document.getElementById('up-mobile-username');
   if (mobileUsername) {
-    mobileUsername.textContent = user?.username || user?.email || 'Member';
+    mobileUsername.textContent = cachedUser?.username || cachedUser?.email || 'Member';
+  }
+
+  function applyUserToUi(userData) {
+    if (!userData) return;
+
+    const usernameEl = document.getElementById('up-username-value');
+    const emailEl = document.getElementById('up-email-value');
+    const createdAtEl = document.getElementById('up-created-at-value');
+
+    if (usernameEl) usernameEl.textContent = userData.username || 'N/A';
+    if (emailEl) emailEl.textContent = userData.email || 'N/A';
+    if (createdAtEl) createdAtEl.textContent = formatDate(userData.createdAt || '');
+    if (mobileUsername) {
+      mobileUsername.textContent = userData.username || userData.email || 'Member';
+    }
+  }
+
+  async function fetchCurrentUser() {
+    try {
+      const res = await authFetch(`${API_BASE}/api/User/me`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to load profile (${res.status})`);
+      }
+
+      const userData = await res.json();
+      applyUserToUi(userData);
+    } catch (err) {
+      console.error('Failed to fetch current user profile:', err);
+    }
   }
 
   const hamburger = document.getElementById('up-hamburger');
@@ -556,5 +589,6 @@ export default function UserPanel(container) {
 
   // ========== INIT ==========
   ensureGlobalStarfield();
+  fetchCurrentUser();
 }
 
