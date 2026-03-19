@@ -1,5 +1,6 @@
 import '../../css/pages/ForgotPassword.css';
 import { ensureGlobalStarfield } from '../global-starfield.js';
+import { API_BASE } from '../auth.js';
 export default function ForgotPassword(container) {
   container.innerHTML = `
     <div class="bw-root">
@@ -84,7 +85,7 @@ export default function ForgotPassword(container) {
   const emailError = document.getElementById('fpEmailError');
   const successPanel = document.getElementById('fpSuccess');
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     emailError.textContent = '';
 
@@ -101,8 +102,19 @@ export default function ForgotPassword(container) {
     btn.classList.add('success');
     btn.querySelector('.bw-btn-text').textContent = '✦  Sent  ✦';
 
+    // Example API call using API_BASE
+    try {
+      await fetch(`${API_BASE}/api/Auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailInput.value.trim() })
+      });
+    } catch (err) {
+      // Optionally handle error
+      console.error('API error:', err);
+    }
+
     setTimeout(() => {
-      console.log('Password reset requested for:', emailInput.value.trim());
       form.style.cssText = 'opacity:0; pointer-events:none; transform:translateY(-8px); transition:opacity 0.35s ease, transform 0.35s ease;';
       setTimeout(() => {
         form.style.display = 'none';
