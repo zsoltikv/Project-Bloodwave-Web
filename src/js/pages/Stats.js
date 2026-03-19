@@ -217,8 +217,28 @@ export default function Stats(container) {
   const mobileUsername = container.querySelector('#st-mobile-username');
   if (ddUsername)     ddUsername.textContent     = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
+  refreshNavbarUsername();
 
   loadAllTimeStats(container, user);
+
+  async function refreshNavbarUsername() {
+    try {
+      const res = await authFetch(`${API_BASE}/api/User/me`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!res.ok) return;
+
+      const userData = await res.json();
+      const liveDisplayName = userData?.username ?? userData?.email ?? displayName;
+
+      if (ddUsername) ddUsername.textContent = liveDisplayName;
+      if (mobileUsername) mobileUsername.textContent = liveDisplayName;
+    } catch {
+      // Keep cached display name on fetch failure.
+    }
+  }
 
   // ── Hamburger toggle ──────────────────────────────────────────────────────
   const hamburger  = container.querySelector('#st-hamburger');

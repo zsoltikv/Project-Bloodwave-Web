@@ -128,6 +128,26 @@ export default function Main(container) {
   const mobileUsername = container.querySelector('#mn-mobile-username');
   if (ddUsername)     ddUsername.textContent     = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
+  refreshNavbarUsername();
+
+  async function refreshNavbarUsername() {
+    try {
+      const res = await authFetch(`${API_BASE}/api/User/me`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!res.ok) return;
+
+      const userData = await res.json();
+      const liveDisplayName = userData?.username ?? userData?.email ?? displayName;
+
+      if (ddUsername) ddUsername.textContent = liveDisplayName;
+      if (mobileUsername) mobileUsername.textContent = liveDisplayName;
+    } catch {
+      // Keep cached display name on fetch failure.
+    }
+  }
 
   // ── Matches list + details ───────────────────────────────────────────────
   let matches = [];
@@ -562,13 +582,23 @@ function formatDuration(totalSeconds) {
 }
 
 function formatPlayedAt(isoDateString) {
+  const raw = typeof isoDateString === 'string' ? isoDateString.trim() : '';
+  const hasTimezone = /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw);
+  const normalized = raw && !hasTimezone ? `${raw}Z` : raw;
+  const parsedDate = new Date(normalized);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return '-';
+  }
+
   return new Intl.DateTimeFormat('hu-HU', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-  }).format(new Date(isoDateString));
+    timeZone: 'Europe/Budapest',
+  }).format(parsedDate);
 }
 
 async function parseResponsePayload(response) {
@@ -608,7 +638,7 @@ function mapApiMatches(apiMatches) {
         playedAt,
       };
     })
-    .sort((left, right) => new Date(right.playedAt).getTime() - new Date(left.playedAt).getTime());
+    .sort((left, right) => parseBackendDate(right.playedAt).getTime() - parseBackendDate(left.playedAt).getTime());
 }
 
 function normalizeDurationSeconds(value) {
@@ -633,10 +663,19 @@ function toNonNegativeInt(value) {
 }
 
 function normalizePlayedAt(value) {
-  const date = value ? new Date(value) : null;
-  if (date && !Number.isNaN(date.getTime())) {
-    return date.toISOString();
+  const raw = typeof value === 'string' ? value.trim() : '';
+  const parsed = raw ? parseBackendDate(raw) : null;
+
+  if (parsed && !Number.isNaN(parsed.getTime())) {
+    return raw;
   }
 
   return new Date(0).toISOString();
+}
+
+function parseBackendDate(value) {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  const hasTimezone = /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw);
+  const normalized = raw && !hasTimezone ? `${raw}Z` : raw;
+  return new Date(normalized);
 }

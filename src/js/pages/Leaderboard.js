@@ -195,6 +195,28 @@ export default function Leaderboard(container) {
   const user = getUser();
   document.getElementById('lb-dd-username').textContent = user?.username || '—';
   document.getElementById('lb-mobile-username').textContent = user?.username || '—';
+  refreshNavbarUsername();
+
+  async function refreshNavbarUsername() {
+    try {
+      const res = await authFetch(`${API_BASE}/api/User/me`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!res.ok) return;
+
+      const userData = await res.json();
+      const liveDisplayName = userData?.username ?? userData?.email ?? user?.username ?? '—';
+
+      const ddUsernameEl = document.getElementById('lb-dd-username');
+      const mobileUsernameEl = document.getElementById('lb-mobile-username');
+      if (ddUsernameEl) ddUsernameEl.textContent = liveDisplayName;
+      if (mobileUsernameEl) mobileUsernameEl.textContent = liveDisplayName;
+    } catch {
+      // Keep cached display name on fetch failure.
+    }
+  }
 
   const hamburger = document.getElementById('lb-hamburger');
   const mobileMenu = document.getElementById('lb-mobile-menu');
@@ -266,6 +288,9 @@ export default function Leaderboard(container) {
         return;
       }
 
+      // Map: userId -> card DOM element
+      const userIdToCard = new Map();
+
       leaderboardRows.forEach((entry, index) => {
         const card = document.createElement('div');
         card.className = 'lb-card';
@@ -280,7 +305,7 @@ export default function Leaderboard(container) {
           <div class="lb-card-corner lb-card-corner--br"></div>
           <div class="lb-card-body">
             <div class="lb-card-rank">${medal}</div>
-            <div class="lb-card-username">${entry.username || 'Unknown'}</div>
+            <div class="lb-card-username" data-user-id="${entry.userId}">Loading…</div>
             <div class="lb-card-sep"></div>
             <div class="lb-card-stats">
               <div class="lb-stat">
@@ -296,7 +321,27 @@ export default function Leaderboard(container) {
         `;
 
         grid.appendChild(card);
+        userIdToCard.set(entry.userId, card.querySelector('.lb-card-username'));
       });
+
+      // Fetch usernames for all unique userIds
+      const userIdList = Array.from(userIdToCard.keys());
+      await Promise.all(userIdList.map(async (userId) => {
+        try {
+          const res = await authFetch(`${API_BASE}/api/User/name?id=${encodeURIComponent(userId)}`, {
+            method: 'GET',
+            headers: { Accept: 'application/json' },
+          });
+          if (!res.ok) throw new Error('User not found');
+          const data = await res.json();
+          const username = data?.username || `User #${userId}`;
+          const el = userIdToCard.get(userId);
+          if (el) el.textContent = username;
+        } catch {
+          const el = userIdToCard.get(userId);
+          if (el) el.textContent = `User #${userId}`;
+        }
+      }));
 
       animateLbStats(grid);
     } catch (error) {
