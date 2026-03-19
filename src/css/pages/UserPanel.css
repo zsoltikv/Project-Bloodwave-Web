@@ -652,9 +652,9 @@
           linear-gradient(165deg, rgba(34,10,10,0.98) 0%, rgba(14,4,4,0.99) 55%, rgba(9,2,2,0.99) 100%);
         border: 1.5px solid rgba(212,175,55,0.28);
         border-radius: 2px;
-        max-width: 400px;
+        max-width: 480px;
         width: 100%;
-        padding: clamp(24px, 5vw, 32px);
+        padding: clamp(24px, 5vw, 36px);
         position: relative;
         overflow: hidden;
         box-shadow:
@@ -939,6 +939,18 @@
           text-transform: none;
         }
 
+        .up-modal-card {
+          max-width: 100%;
+          padding: clamp(20px, 5vw, 28px);
+        }
+
+
+      @media (min-width: 992px) {
+        .up-modal-card {
+          max-width: 620px;
+          padding: 34px 38px;
+        }
+      }
         .up-logo {
           letter-spacing: 3px;
           padding-bottom: 4px;
