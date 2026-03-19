@@ -1,6 +1,11 @@
 const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, select, summary, label, [data-link]';
-const TRAIL_LENGTH = 10;
+const TRAIL_LENGTH = 8;
 const MOBILE_UA_REGEX = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i;
+const CURSOR_LERP_MIN = 0.45;
+const CURSOR_LERP_MAX = 0.9;
+const CURSOR_DISTANCE_FOR_MAX_SPEED = 80;
+const CURSOR_CATCHUP_DISTANCE = 28;
+const FRAME_MS_BASELINE = 16.67;
 
 let cursorRoot = null;
 let trailLayerEl = null;
@@ -13,6 +18,7 @@ let targetX = 0;
 let targetY = 0;
 let pointerActive = false;
 let listenersController = null;
+let lastFrameTime = 0;
 
 function supportsFancyCursor() {
   if (isPhoneDevice()) return false;
@@ -62,6 +68,7 @@ function teardownCustomCursor() {
   trailDots = [];
   trailPoints = [];
   pointerActive = false;
+  lastFrameTime = 0;
 }
 
 function prefersReducedMotion() {
@@ -106,25 +113,39 @@ function updateTrail() {
   trailPoints[0].y = currentY;
 
   for (let i = 1; i < TRAIL_LENGTH; i += 1) {
-    trailPoints[i].x += (trailPoints[i - 1].x - trailPoints[i].x) * 0.33;
-    trailPoints[i].y += (trailPoints[i - 1].y - trailPoints[i].y) * 0.33;
+    trailPoints[i].x += (trailPoints[i - 1].x - trailPoints[i].x) * 0.56;
+    trailPoints[i].y += (trailPoints[i - 1].y - trailPoints[i].y) * 0.56;
   }
 
   for (let i = 0; i < TRAIL_LENGTH; i += 1) {
     const dot = trailDots[i];
     const point = trailPoints[i];
     const ratio = 1 - i / TRAIL_LENGTH;
-    const scale = 0.32 + ratio * 0.92;
-    const opacity = pointerActive ? ratio * 0.5 : 0;
+    const scale = 0.24 + ratio * 0.86;
+    const opacity = pointerActive ? ratio * 0.36 : 0;
 
     dot.style.transform = `translate3d(${point.x}px, ${point.y}px, 0) translate(-50%, -50%) scale(${scale.toFixed(3)})`;
     dot.style.opacity = opacity.toFixed(3);
   }
 }
 
-function animate() {
-  currentX += (targetX - currentX) * 0.18;
-  currentY += (targetY - currentY) * 0.18;
+function animate(time) {
+  const now = Number.isFinite(time) ? time : performance.now();
+  const frameMs = lastFrameTime ? Math.min(34, Math.max(8, now - lastFrameTime)) : FRAME_MS_BASELINE;
+  const frameRatio = frameMs / FRAME_MS_BASELINE;
+  lastFrameTime = now;
+
+  const dx = targetX - currentX;
+  const dy = targetY - currentY;
+  const distance = Math.hypot(dx, dy);
+
+  const speedFactor = Math.min(distance / CURSOR_DISTANCE_FOR_MAX_SPEED, 1);
+  const catchupBoost = distance > CURSOR_CATCHUP_DISTANCE ? 0.22 : 0;
+  const lerpBase = Math.min(CURSOR_LERP_MAX, CURSOR_LERP_MIN + (CURSOR_LERP_MAX - CURSOR_LERP_MIN) * speedFactor + catchupBoost);
+  const lerp = 1 - ((1 - lerpBase) ** frameRatio);
+
+  currentX += dx * lerp;
+  currentY += dy * lerp;
 
   if (cursorRoot) {
     cursorRoot.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
