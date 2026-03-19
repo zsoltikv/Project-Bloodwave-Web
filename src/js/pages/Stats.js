@@ -207,25 +207,6 @@ export default function Stats(container) {
               </div>
             </div>
 
-            <!-- Total Levels Reached -->
-            <div class="st-card">
-              <div class="st-card-corner st-card-corner--tl"></div>
-              <div class="st-card-corner st-card-corner--tr"></div>
-              <div class="st-card-corner st-card-corner--bl"></div>
-              <div class="st-card-corner st-card-corner--br"></div>
-              <div class="st-card-body">
-                <div class="st-card-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="rgba(192,57,43,0.8)" stroke-width="1.2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 17h16M7 17V9m5 8V5m5 12v-6" />
-                  </svg>
-                </div>
-                <div class="st-card-name">Total Levels Reached</div>
-                <div class="st-card-sep"></div>
-                <div class="st-card-value js-st-count" data-stat="levels-total" data-type="int" data-target="0">0</div>
-                <div class="st-card-unit">sum of levels across runs</div>
-              </div>
-            </div>
-
               </div>
             </section>
 
@@ -795,7 +776,6 @@ function applyStatsToCards(container, stats) {
   setStatTarget('time-lived', toNonNegativeInt(stats.totalMinutesLived));
   setStatTarget('matches', toNonNegativeInt(stats.matchesPlayed));
   setStatTarget('coins', toNonNegativeInt(stats.coinsCollected));
-  setStatTarget('levels-total', toNonNegativeInt(stats.totalLevelsReached));
   setStatTarget('avg-damage-match', toNonNegativeInt(stats.averageDamagePerMatch));
   setStatTarget('avg-kills-match', toNonNegativeInt(stats.averageKillsPerMatch));
   setStatTarget('avg-coins-match', toNonNegativeInt(stats.averageCoinsPerMatch));
