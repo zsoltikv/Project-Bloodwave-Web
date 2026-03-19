@@ -510,6 +510,7 @@
 
       .mn-match-item {
         width: 100%;
+        flex-shrink: 0;
         border: 1px solid rgba(139,0,0,0.22);
         background: linear-gradient(145deg, rgba(28,9,9,0.78), rgba(14,5,5,0.92));
         color: rgba(255,255,255,0.84);
@@ -797,6 +798,9 @@
 
         .mn-matches-list {
           height: clamp(220px, 48dvh, 420px);
+          overflow-y: auto;
+          overflow-x: hidden;
+          touch-action: pan-y;
           -webkit-overflow-scrolling: touch;
         }
 
