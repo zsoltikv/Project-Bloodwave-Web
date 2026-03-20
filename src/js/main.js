@@ -5,6 +5,7 @@ import ForgotPassword from './pages/ForgotPassword.js';
 import Main from './pages/Main.js';
 import Stats from './pages/Stats.js';
 import Leaderboard from './pages/Leaderboard.js';
+import Achievements from './pages/Achievements.js';
 import ToS from './pages/ToS.js';
 import UserPanel from './pages/UserPanel.js';
 import ensureCustomCursor from './custom-cursor.js';
@@ -42,6 +43,10 @@ const routes = [
   {
     path: '/leaderboard',
     component: Leaderboard
+  },
+  {
+    path: '/achievements',
+    component: Achievements
   },
   {
     path: '/user-panel',
