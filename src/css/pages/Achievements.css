@@ -6,6 +6,10 @@
   z-index: 2;
 }
 
+.ach-inner .lb-header {
+  margin-bottom: clamp(18px, 3.4vh, 28px);
+}
+
 .ach-summary {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
