@@ -242,8 +242,10 @@ export default function Main(container) {
       return;
     }
 
-    matchesList.innerHTML = matches.map((match) => {
+    matchesList.innerHTML = matches.map((match, index) => {
       const isActive = match.id === selectedMatchId;
+      const swipeDelayMs = Math.min(index * 55, 440);
+      const swipeShiftPx = Math.min(20 + index * 3, 42);
       return `
         <button
           type="button"
@@ -251,6 +253,7 @@ export default function Main(container) {
           data-match-id="${match.id}"
           role="option"
           aria-selected="${String(isActive)}"
+          style="--mn-row-delay:${swipeDelayMs}ms; --mn-row-shift:${swipeShiftPx}px;"
         >
           <div class="mn-match-meta">
             <span class="mn-match-chip">${formatDuration(match.durationSeconds)}</span>
