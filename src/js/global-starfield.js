@@ -5,11 +5,35 @@ let height = 0;
 let stars = [];
 let started = false;
 let enabled = true;
+let resizeFrameId = 0;
 
 function measureCanvas() {
-  if (!canvas) return;
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
+  if (!canvas || !ctx) return;
+
+  const nextWidth = Math.max(1, window.innerWidth);
+  const nextHeight = Math.max(1, window.innerHeight);
+  const prevWidth = width;
+  const prevHeight = height;
+  const devicePixelRatio = Math.max(1, window.devicePixelRatio || 1);
+
+  width = nextWidth;
+  height = nextHeight;
+
+  canvas.width = Math.round(nextWidth * devicePixelRatio);
+  canvas.height = Math.round(nextHeight * devicePixelRatio);
+  canvas.style.width = `${nextWidth}px`;
+  canvas.style.height = `${nextHeight}px`;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+  if (!stars.length || prevWidth <= 0 || prevHeight <= 0) return;
+
+  const scaleX = nextWidth / prevWidth;
+  const scaleY = nextHeight / prevHeight;
+
+  stars.forEach((star) => {
+    star.x *= scaleX;
+    star.y *= scaleY;
+  });
 }
 
 function initStars() {
@@ -81,7 +105,13 @@ function createCanvas() {
   initStars();
 
   window.addEventListener('resize', () => {
-    measureCanvas();
+    if (resizeFrameId) {
+      cancelAnimationFrame(resizeFrameId);
+    }
+    resizeFrameId = requestAnimationFrame(() => {
+      resizeFrameId = 0;
+      measureCanvas();
+    });
   });
 }
 
