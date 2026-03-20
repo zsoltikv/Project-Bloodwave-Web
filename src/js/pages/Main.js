@@ -647,9 +647,10 @@ function normalizeDurationSeconds(value) {
 
   const nonNegative = Math.max(0, parsed);
 
-  // API currently returns match time in milliseconds.
-  // Values above one day in seconds are treated as ms to keep UI readable.
-  if (nonNegative >= 86_400) {
+  // Backend match time is stored in ms in current API responses.
+  // For compatibility with potential legacy second-based values,
+  // only convert to seconds when the number is clearly ms-sized.
+  if (nonNegative >= 10_000) {
     return Math.round(nonNegative / 1000);
   }
 
