@@ -131,6 +131,26 @@ export default function Stats(container) {
               </div>
             </div>
 
+            <!-- Damage Taken -->
+            <div class="st-card">
+              <div class="st-card-corner st-card-corner--tl"></div>
+              <div class="st-card-corner st-card-corner--tr"></div>
+              <div class="st-card-corner st-card-corner--bl"></div>
+              <div class="st-card-corner st-card-corner--br"></div>
+              <div class="st-card-body">
+                <div class="st-card-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="rgba(192,57,43,0.8)" stroke-width="1.2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v6c0 5.25-3.438 8.813-7 10-3.563-1.188-7-4.75-7-10V6l7-3Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 10.5" />
+                  </svg>
+                </div>
+                <div class="st-card-name">Damage Taken</div>
+                <div class="st-card-sep"></div>
+                <div class="st-card-value js-st-count" data-stat="damage-taken" data-type="int" data-target="0">0</div>
+                <div class="st-card-unit">total damage received</div>
+              </div>
+            </div>
+
             <!-- Enemies Killed -->
             <div class="st-card">
               <div class="st-card-corner st-card-corner--tl"></div>
@@ -620,6 +640,7 @@ export default function Stats(container) {
   if (ddUsername)     ddUsername.textContent     = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
   refreshNavbarUsername();
+  reorderStatCards(container);
 
   loadAllTimeStats(container, user);
 
@@ -706,10 +727,73 @@ export default function Stats(container) {
   container.querySelector('#st-mobile-logout')?.addEventListener('click', doLogout);
 }
 
+function reorderStatCards(container) {
+  const sectionOrders = {
+    'Core Totals': [
+      'matches',
+      'time-lived',
+      'damage',
+      'damage-taken',
+      'kills',
+      'coins',
+    ],
+    'Per Match Efficiency': [
+      'avg-survival-match',
+      'avg-damage-match',
+      'avg-damage-minute',
+      'avg-kills-match',
+      'avg-kills-minute',
+      'avg-coins-match',
+    ],
+    'Peak Records': [
+      'best-score',
+      'highest-level',
+      'best-survival',
+      'best-damage',
+      'best-kills',
+      'best-coins',
+    ],
+    'Run Shape And Stability': [
+      'short-match-ratio',
+      'long-match-ratio',
+      'performance-volatility',
+    ],
+  };
+
+  const sections = container.querySelectorAll('.st-stat-section');
+  sections.forEach((sectionEl) => {
+    const titleEl = sectionEl.querySelector('.st-section-title');
+    const gridEl = sectionEl.querySelector('.st-grid--section');
+    if (!titleEl || !gridEl) return;
+
+    const desiredOrder = sectionOrders[titleEl.textContent?.trim()];
+    if (!Array.isArray(desiredOrder) || !desiredOrder.length) return;
+
+    const cards = Array.from(gridEl.querySelectorAll('.st-card'));
+    const cardsByStat = new Map();
+
+    cards.forEach((cardEl) => {
+      const valueEl = cardEl.querySelector('.js-st-count[data-stat]');
+      const statKey = valueEl?.dataset?.stat;
+      if (statKey) {
+        cardsByStat.set(statKey, cardEl);
+      }
+    });
+
+    desiredOrder.forEach((statKey) => {
+      const cardEl = cardsByStat.get(statKey);
+      if (cardEl) {
+        gridEl.appendChild(cardEl);
+      }
+    });
+  });
+}
+
 async function loadAllTimeStats(container, user) {
   const playerId = resolvePlayerId(user);
   const fallbackStats = {
     damageDealt: 0,
+    damageTaken: 0,
     enemiesKilled: 0,
     totalMinutesLived: 0,
     matchesPlayed: 0,
@@ -772,6 +856,7 @@ function applyStatsToCards(container, stats) {
   };
 
   setStatTarget('damage', toNonNegativeInt(stats.damageDealt));
+  setStatTarget('damage-taken', toNonNegativeInt(stats.damageTaken));
   setStatTarget('kills', toNonNegativeInt(stats.enemiesKilled));
   setStatTarget('time-lived', toNonNegativeInt(stats.totalMinutesLived));
   setStatTarget('matches', toNonNegativeInt(stats.matchesPlayed));
@@ -797,6 +882,7 @@ function aggregateMatchStats(apiMatches) {
   if (!Array.isArray(apiMatches)) {
     return {
       damageDealt: 0,
+      damageTaken: 0,
       enemiesKilled: 0,
       totalMinutesLived: 0,
       matchesPlayed: 0,
@@ -825,6 +911,7 @@ function aggregateMatchStats(apiMatches) {
   const LONG_MATCH_THRESHOLD_SECONDS = 10 * 60;
 
   let totalDamageDealt = 0;
+  let totalDamageTaken = 0;
   let totalEnemiesKilled = 0;
   let totalDurationSeconds = 0;
   let totalCoinsCollected = 0;
@@ -841,12 +928,14 @@ function aggregateMatchStats(apiMatches) {
 
   apiMatches.forEach((match) => {
     const damageDealt = toNonNegativeInt(match?.damageDealt);
+    const damageTaken = toNonNegativeInt(match?.damageTaken);
     const enemiesKilled = toNonNegativeInt(match?.enemiesKilled);
     const durationSeconds = normalizeDurationSeconds(match?.time);
     const coinsCollected = toNonNegativeInt(match?.coinsCollected);
     const levelReached = toNonNegativeInt(match?.level);
 
     totalDamageDealt += damageDealt;
+    totalDamageTaken += damageTaken;
     totalEnemiesKilled += enemiesKilled;
     totalDurationSeconds += durationSeconds;
     totalCoinsCollected += coinsCollected;
@@ -880,6 +969,7 @@ function aggregateMatchStats(apiMatches) {
 
   return {
     damageDealt: totalDamageDealt,
+    damageTaken: totalDamageTaken,
     enemiesKilled: totalEnemiesKilled,
     totalMinutesLived: Math.round(totalDurationSeconds / 60),
     matchesPlayed,
