@@ -2,6 +2,7 @@ import Router from './router.js';
 import Login from './pages/Login.js';
 import Register from './pages/Register.js';
 import ForgotPassword from './pages/ForgotPassword.js';
+import ResetPassword from './pages/ResetPassword.js';
 import Main from './pages/Main.js';
 import Stats from './pages/Stats.js';
 import Leaderboard from './pages/Leaderboard.js';
@@ -27,6 +28,10 @@ const routes = [
   {
     path: '/forgot-password',
     component: ForgotPassword
+  },
+  {
+    path: '/reset-password',
+    component: ResetPassword
   },
   {
     path: '/tos',

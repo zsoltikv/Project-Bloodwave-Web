@@ -104,7 +104,7 @@ export default function ForgotPassword(container) {
 
     // Example API call using API_BASE
     try {
-      await fetch(`${API_BASE}/api/Auth/forgot-password`, {
+      await fetch(`${API_BASE}/api/user/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailInput.value.trim() })

@@ -78,6 +78,7 @@ body {
 #app[data-route="/login"],
 #app[data-route="/register"],
 #app[data-route="/forgot-password"],
+#app[data-route="/reset-password"],
 #app[data-route="/"] {
   --bw-content-width: 480px;
   --bw-content-inset: 16px;
