@@ -23,6 +23,7 @@ export default function Leaderboard(container) {
             <a href="/stats" data-link class="lb-link"><span>Stats</span></a>
             <a href="/leaderboard" data-link class="lb-link active"><span>Leaderboard</span></a>
             <a href="/achievements" data-link class="lb-link"><span>Achievements</span></a>
+            <a href="/android-download" data-link class="lb-link"><span>Installation</span></a>
           </div>
 
           <!-- Right: avatar + hamburger -->
@@ -73,6 +74,7 @@ export default function Leaderboard(container) {
             <a href="/stats" data-link class="lb-mobile-link">Stats</a>
             <a href="/leaderboard" data-link class="lb-mobile-link">Leaderboard</a>
             <a href="/achievements" data-link class="lb-mobile-link">Achievements</a>
+            <a href="/android-download" data-link class="lb-mobile-link">Installation</a>
             <div class="lb-mobile-divider"></div>
             <div class="lb-mobile-profile" style="pointer-events:none; cursor:default;">
               <span class="lb-mobile-avatar">

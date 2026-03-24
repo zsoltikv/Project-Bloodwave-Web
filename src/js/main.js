@@ -9,6 +9,7 @@ import Leaderboard from './pages/Leaderboard.js';
 import Achievements from './pages/Achievements.js';
 import ToS from './pages/ToS.js';
 import UserPanel from './pages/UserPanel.js';
+import AndroidDownload from './pages/AndroidDownload.js';
 import ensureCustomCursor from './custom-cursor.js';
 
 // Define routes
@@ -36,6 +37,10 @@ const routes = [
   {
     path: '/tos',
     component: ToS
+  },
+  {
+    path: '/android-download',
+    component: AndroidDownload
   },
   {
     path: '/main',

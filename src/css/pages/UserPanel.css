@@ -567,10 +567,10 @@
 
       /* === LOGOUT SECTION === */
       .up-logout-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 520px;
+        margin: 0 auto;
         gap: 12px;
         margin-bottom: 0;
         animation: up-logout-in 1.3s cubic-bezier(0.22,1,0.36,1) both 0.6s;
@@ -598,6 +598,7 @@
         transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
         outline: none;
         -webkit-tap-highlight-color: transparent;
+        white-space: nowrap;
       }
 
       .up-logout-btn::before {

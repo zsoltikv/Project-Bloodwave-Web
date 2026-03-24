@@ -156,16 +156,16 @@
       .lb-links {
         display: flex;
         align-items: center;
-        gap: clamp(28px, 5vw, 56px);
+        gap: clamp(16px, 2.8vw, 34px);
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
       }
 
       .lb-link {
-        font-size: clamp(8px, 1.5vw, 10px);
+        font-size: clamp(7px, 1vw, 9px);
         font-weight: 400;
-        letter-spacing: clamp(3px, 1vw, 5px);
+        letter-spacing: clamp(1.8px, 0.55vw, 3.2px);
         color: rgba(255,255,255,0.38);
         text-transform: uppercase;
         text-decoration: none;
@@ -185,7 +185,7 @@
         position: absolute;
         bottom: -3px;
         left: 0;
-        width: calc(100% - clamp(3px, 1vw, 5px));
+        width: calc(100% - clamp(1.8px, 0.55vw, 3.2px));
         height: 1px;
         background: linear-gradient(90deg, var(--crimson), var(--gold-light), var(--crimson));
         transform: scaleX(0);

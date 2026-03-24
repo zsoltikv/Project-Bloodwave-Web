@@ -65,6 +65,7 @@ export default function Main(container) {
             <a href="/stats" data-link class="mn-link"><span>Stats</span></a>
             <a href="/leaderboard" data-link class="mn-link"><span>Leaderboard</span></a>
             <a href="/achievements" data-link class="mn-link"><span>Achievements</span></a>
+            <a href="/android-download" data-link class="mn-link"><span>Installation</span></a>
           </div>
 
           <!-- Right: avatar + hamburger -->
@@ -116,6 +117,7 @@ export default function Main(container) {
             <a href="/stats" data-link class="mn-mobile-link">Stats</a>
             <a href="/leaderboard" data-link class="mn-mobile-link">Leaderboard</a>
             <a href="/achievements" data-link class="mn-mobile-link">Achievements</a>
+            <a href="/android-download" data-link class="mn-mobile-link">Installation</a>
             <div class="mn-mobile-divider"></div>
             <div class="mn-mobile-profile" style="pointer-events:none; cursor:default;">
               <span class="mn-mobile-avatar">

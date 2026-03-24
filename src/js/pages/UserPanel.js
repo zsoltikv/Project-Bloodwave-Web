@@ -145,7 +145,7 @@ export default function UserPanel(container) {
           <!-- LOGOUT SECTION -->
           <div class="up-logout-section">
             <button class="up-logout-btn up-delete-btn" id="upDeleteAccount">✦ Delete Account ✦</button>
-            <button class="up-logout-btn" id="upLogout">✦ Logout ✦</button>
+            <button class="up-logout-btn up-delete-btn" id="upLogout">✦ Sign Out Now ✦</button>
           </div>
 
         </div>

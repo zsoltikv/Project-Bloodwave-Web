@@ -4,7 +4,7 @@ import { ensureGlobalStarfield, setGlobalStarfieldEnabled } from './global-starf
 const PROTECTED_PATHS = ['/main', '/stats', '/leaderboard', '/achievements', '/user-panel'];
 const GUEST_ONLY_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/'];
 const FOOTER_VISIBLE_PATHS = ['/main', '/stats', '/leaderboard', '/achievements', '/user-panel'];
-const STARFIELD_PATHS = ['/', '/login', '/register', '/forgot-password', '/reset-password', '/tos', '/main', '/stats', '/leaderboard', '/achievements', '/user-panel'];
+const STARFIELD_PATHS = ['/', '/login', '/register', '/forgot-password', '/reset-password', '/tos', '/android-download', '/main', '/stats', '/leaderboard', '/achievements', '/user-panel'];
 const GITHUB_PROJECT_URL = 'https://github.com/zsoltikv/Project-Bloodwave-Web';
 
 function forceScrollTop() {
