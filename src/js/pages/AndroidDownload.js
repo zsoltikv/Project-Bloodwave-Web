@@ -76,7 +76,7 @@ export default function AndroidDownload(container) {
                   </li>
                   <li class="bw-apk-step-item">
                     <span class="bw-apk-step-index">4</span>
-                    <p>Launch Bloodwave and sign in with your existing account.</p>
+                    <p>Launch Project: Bloodwave and sign in with your existing account.</p>
                   </li>
                 </ol>
               </section>

@@ -1088,6 +1088,10 @@
           padding-bottom: clamp(14px, 3vh, 24px);
         }
 
+        .mn-player-stats {
+          margin-bottom: 14px;
+        }
+
         .mn-root.mn-view-mode .mn-match-panel {
           position: relative;
           left: auto;

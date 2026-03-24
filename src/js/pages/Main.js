@@ -1,4 +1,5 @@
 import '../../css/pages/Main.css';
+import '../../css/pages/Stats.css';
 import { API_BASE, getUser, logout, authFetch } from '../auth.js';
 import { confirmLogout } from '../logout-confirm.js';
 import { ensureGlobalStarfield } from '../global-starfield.js';
@@ -164,6 +165,8 @@ export default function Main(container) {
             <div class="mn-matches-list" id="mn-matches-list" role="listbox" aria-label="Played matches"></div>
             <section class="mn-match-panel" id="mn-match-panel" aria-live="polite"></section>
           </div>
+
+          <section class="mn-player-stats" id="mn-player-stats" hidden></section>
         </div>
       </main>
 
@@ -207,7 +210,14 @@ export default function Main(container) {
   let matches = [];
   const matchesList = container.querySelector('#mn-matches-list');
   const matchPanel  = container.querySelector('#mn-match-panel');
+  const playerStatsSection = container.querySelector('#mn-player-stats');
+  const viewedPlayerId = getViewedPlayerIdFromQuery();
   let selectedMatchId = null;
+
+  if (playerStatsSection && viewedPlayerId) {
+    playerStatsSection.hidden = false;
+    renderPlayerStats(playerStatsSection, buildPlayerStats(matches));
+  }
 
   function renderMatchPanel(match) {
     if (!matchPanel) return;
@@ -342,10 +352,16 @@ export default function Main(container) {
       const apiMatches = await parseResponsePayload(response);
       matches = mapApiMatches(apiMatches);
       selectedMatchId = matches[0]?.id ?? null;
+      if (playerStatsSection && viewedPlayerId) {
+        renderPlayerStats(playerStatsSection, buildPlayerStats(matches));
+      }
       renderMatches();
     } catch {
       matches = [];
       selectedMatchId = null;
+      if (playerStatsSection && viewedPlayerId) {
+        renderPlayerStats(playerStatsSection, buildPlayerStats(matches));
+      }
       renderMatches();
     }
   }
@@ -590,6 +606,16 @@ function resolvePlayerId(user) {
   return null;
 }
 
+function getViewedPlayerIdFromQuery() {
+  const queryParams = new URLSearchParams(window.location.search);
+  const userIdParam = queryParams.get('userId');
+  if (!userIdParam) return null;
+
+  const value = Number(userIdParam);
+  if (!Number.isInteger(value) || value <= 0) return null;
+  return value;
+}
+
 function updateNavbarLinksForPlayer(container) {
   const queryParams = new URLSearchParams(window.location.search);
   const userIdParam = queryParams.get('userId');
@@ -730,8 +756,321 @@ function renderEntityTable(title, entities, type) {
   `;
 }
 
+function renderPlayerStats(container, stats) {
+  if (!container) return;
+
+  const sections = [
+    {
+      title: 'Core Totals',
+      subtitle: 'Overall lifetime volume',
+      cards: [
+        { stat: 'matches', type: 'int', name: 'Matches Played', unit: 'total games' },
+        { stat: 'time-lived', type: 'time-hm', name: 'Time Lived', unit: 'total survival time' },
+        { stat: 'damage', type: 'int', name: 'Damage Dealt', unit: 'total damage' },
+        { stat: 'damage-taken', type: 'int', name: 'Damage Taken', unit: 'total damage received' },
+        { stat: 'kills', type: 'int', name: 'Enemies Killed', unit: 'eliminations' },
+        { stat: 'coins', type: 'int', name: 'Coins Collected', unit: 'total coins' },
+      ],
+    },
+    {
+      title: 'Per Match Efficiency',
+      subtitle: 'Average output and pace',
+      cards: [
+        { stat: 'avg-survival-match', type: 'time-hms', name: 'Avg Survival / Match', unit: 'time per game' },
+        { stat: 'avg-damage-match', type: 'int', name: 'Avg Damage / Match', unit: 'damage per game' },
+        { stat: 'avg-damage-minute', type: 'int', name: 'Avg Damage / Minute', unit: 'damage per minute' },
+        { stat: 'avg-kills-match', type: 'int', name: 'Avg Kills / Match', unit: 'kills per game' },
+        { stat: 'avg-kills-minute', type: 'int', name: 'Avg Kills / Minute', unit: 'kills per minute' },
+        { stat: 'avg-coins-match', type: 'int', name: 'Avg Coins / Match', unit: 'coins per game' },
+      ],
+    },
+    {
+      title: 'Peak Records',
+      subtitle: 'Best single-run highlights',
+      cards: [
+        { stat: 'best-score', type: 'int', name: 'Best Match Score', unit: 'top weighted run score' },
+        { stat: 'highest-level', type: 'int', name: 'Highest Level Reached', unit: 'all-time best level' },
+        { stat: 'best-survival', type: 'time-hms', name: 'Best Match Survival', unit: 'longest single match' },
+        { stat: 'best-damage', type: 'int', name: 'Best Match Damage', unit: 'top single-match damage' },
+        { stat: 'best-kills', type: 'int', name: 'Best Match Kills', unit: 'top single-match kills' },
+        { stat: 'best-coins', type: 'int', name: 'Best Match Coins', unit: 'top single-match coins' },
+      ],
+    },
+    {
+      title: 'Run Shape And Stability',
+      subtitle: 'Session length distribution and consistency',
+      cards: [
+        { stat: 'short-match-ratio', type: 'int', name: 'Short Match Ratio', unit: 'under 2 min (%)' },
+        { stat: 'long-match-ratio', type: 'int', name: 'Long Match Ratio', unit: 'over 10 min (%)' },
+        { stat: 'performance-volatility', type: 'int', name: 'Performance Volatility', unit: 'lower = more stable (%)' },
+      ],
+    },
+  ];
+
+  container.innerHTML = `
+    <div class="st-sections">
+      ${sections.map((section) => `
+        <section class="st-stat-section">
+          <div class="st-section-head">
+            <h2 class="st-section-title">${section.title}</h2>
+            <p class="st-section-subtitle">${section.subtitle}</p>
+          </div>
+          <div class="st-grid st-grid--section">
+            ${section.cards.map((card) => `
+              <div class="st-card">
+                <div class="st-card-corner st-card-corner--tl"></div>
+                <div class="st-card-corner st-card-corner--tr"></div>
+                <div class="st-card-corner st-card-corner--bl"></div>
+                <div class="st-card-corner st-card-corner--br"></div>
+                <div class="st-card-body">
+                  <div class="st-card-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="rgba(192,57,43,0.8)" stroke-width="1.2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16" />
+                    </svg>
+                  </div>
+                  <div class="st-card-name">${card.name}</div>
+                  <div class="st-card-sep"></div>
+                  <div class="st-card-value js-st-count" data-stat="${card.stat}" data-type="${card.type}" data-target="0">0</div>
+                  <div class="st-card-unit">${card.unit}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+      `).join('')}
+    </div>
+  `;
+
+  applyStatsToCards(container, stats);
+  animateStStats(container);
+}
+
+function buildPlayerStats(matches) {
+  const rows = Array.isArray(matches) ? matches : [];
+
+  let totalDamageDealt = 0;
+  let totalDamageTaken = 0;
+  let totalEnemiesKilled = 0;
+  let totalCoinsCollected = 0;
+  let totalDurationSeconds = 0;
+  let totalLevelsReached = 0;
+  let bestMatchDamage = 0;
+  let bestMatchKills = 0;
+  let bestMatchSurvivalSeconds = 0;
+  let highestLevelReached = 0;
+  let bestMatchCoins = 0;
+  let bestMatchScore = 0;
+  let shortMatchesCount = 0;
+  let longMatchesCount = 0;
+  const performanceScores = [];
+
+  const SHORT_MATCH_THRESHOLD_SECONDS = 2 * 60;
+  const LONG_MATCH_THRESHOLD_SECONDS = 10 * 60;
+
+  rows.forEach((match) => {
+    const damageDealt = toNonNegativeInt(match?.damageDealt);
+    const damageTaken = toNonNegativeInt(match?.damageTaken);
+    const enemiesKilled = toNonNegativeInt(match?.enemiesKilled);
+    const coinsCollected = toNonNegativeInt(match?.coinsCollected);
+    const durationSeconds = toNonNegativeInt(match?.durationSeconds);
+    const levelReached = toNonNegativeInt(match?.levelReached);
+
+    totalDamageDealt += damageDealt;
+    totalDamageTaken += damageTaken;
+    totalEnemiesKilled += enemiesKilled;
+    totalCoinsCollected += coinsCollected;
+    totalDurationSeconds += durationSeconds;
+    totalLevelsReached += levelReached;
+
+    bestMatchDamage = Math.max(bestMatchDamage, damageDealt);
+    bestMatchKills = Math.max(bestMatchKills, enemiesKilled);
+    bestMatchSurvivalSeconds = Math.max(bestMatchSurvivalSeconds, durationSeconds);
+    highestLevelReached = Math.max(highestLevelReached, levelReached);
+    bestMatchCoins = Math.max(bestMatchCoins, coinsCollected);
+
+    if (durationSeconds < SHORT_MATCH_THRESHOLD_SECONDS) {
+      shortMatchesCount += 1;
+    }
+    if (durationSeconds > LONG_MATCH_THRESHOLD_SECONDS) {
+      longMatchesCount += 1;
+    }
+
+    const performanceScore =
+      damageDealt +
+      enemiesKilled * 120 +
+      coinsCollected * 4 +
+      levelReached * 250;
+    bestMatchScore = Math.max(bestMatchScore, performanceScore);
+    performanceScores.push(performanceScore);
+  });
+
+  const matchesPlayed = rows.length;
+  const totalDurationMinutes = totalDurationSeconds / 60;
+
+  return {
+    matchesPlayed,
+    totalDamageDealt,
+    totalDamageTaken,
+    totalEnemiesKilled,
+    totalCoinsCollected,
+    totalMinutesLived: Math.round(totalDurationSeconds / 60),
+    totalLevelsReached,
+    bestMatchDamage,
+    bestMatchKills,
+    bestMatchSurvivalSeconds,
+    highestLevelReached,
+    bestMatchCoins,
+    bestMatchScore,
+    averageDamagePerMatch: toNonNegativeInt(safeDivide(totalDamageDealt, matchesPlayed)),
+    averageKillsPerMatch: toNonNegativeInt(safeDivide(totalEnemiesKilled, matchesPlayed)),
+    averageCoinsPerMatch: toNonNegativeInt(safeDivide(totalCoinsCollected, matchesPlayed)),
+    averageDamagePerMinute: toNonNegativeInt(safeDivide(totalDamageDealt, totalDurationMinutes)),
+    averageKillsPerMinute: toNonNegativeInt(safeDivide(totalEnemiesKilled, totalDurationMinutes)),
+    averageSurvivalSecondsPerMatch: toNonNegativeInt(safeDivide(totalDurationSeconds, matchesPlayed)),
+    shortMatchRatioPercent: toNonNegativeInt(safeDivide(shortMatchesCount * 100, matchesPlayed)),
+    longMatchRatioPercent: toNonNegativeInt(safeDivide(longMatchesCount * 100, matchesPlayed)),
+    performanceVolatilityPercent: toNonNegativeInt(calculateCoefficientOfVariationPercent(performanceScores)),
+  };
+}
+
+function applyStatsToCards(container, stats) {
+  const setStatTarget = (statKey, value) => {
+    const valueEl = container.querySelector(`.js-st-count[data-stat="${statKey}"]`);
+    if (!valueEl) return;
+    valueEl.dataset.target = String(value);
+  };
+
+  setStatTarget('damage', toNonNegativeInt(stats.damageDealt));
+  setStatTarget('damage-taken', toNonNegativeInt(stats.damageTaken));
+  setStatTarget('kills', toNonNegativeInt(stats.enemiesKilled));
+  setStatTarget('time-lived', toNonNegativeInt(stats.totalMinutesLived));
+  setStatTarget('matches', toNonNegativeInt(stats.matchesPlayed));
+  setStatTarget('coins', toNonNegativeInt(stats.coinsCollected));
+  setStatTarget('avg-damage-match', toNonNegativeInt(stats.averageDamagePerMatch));
+  setStatTarget('avg-kills-match', toNonNegativeInt(stats.averageKillsPerMatch));
+  setStatTarget('avg-coins-match', toNonNegativeInt(stats.averageCoinsPerMatch));
+  setStatTarget('avg-kills-minute', toNonNegativeInt(stats.averageKillsPerMinute));
+  setStatTarget('avg-damage-minute', toNonNegativeInt(stats.averageDamagePerMinute));
+  setStatTarget('avg-survival-match', toNonNegativeInt(stats.averageSurvivalSecondsPerMatch));
+  setStatTarget('best-damage', toNonNegativeInt(stats.bestMatchDamage));
+  setStatTarget('best-kills', toNonNegativeInt(stats.bestMatchKills));
+  setStatTarget('best-survival', toNonNegativeInt(stats.bestMatchSurvivalSeconds));
+  setStatTarget('highest-level', toNonNegativeInt(stats.highestLevelReached));
+  setStatTarget('best-coins', toNonNegativeInt(stats.bestMatchCoins));
+  setStatTarget('best-score', toNonNegativeInt(stats.bestMatchScore));
+  setStatTarget('short-match-ratio', toNonNegativeInt(stats.shortMatchRatioPercent));
+  setStatTarget('long-match-ratio', toNonNegativeInt(stats.longMatchRatioPercent));
+  setStatTarget('performance-volatility', toNonNegativeInt(stats.performanceVolatilityPercent));
+}
+
 function formatCount(value) {
   return toNonNegativeInt(value).toLocaleString('en-US');
+}
+
+function calculateCoefficientOfVariationPercent(values) {
+  if (!Array.isArray(values) || values.length < 2) return 0;
+
+  const normalized = values
+    .map((value) => Number(value))
+    .filter((value) => Number.isFinite(value) && value >= 0);
+
+  if (normalized.length < 2) return 0;
+
+  const mean = normalized.reduce((sum, value) => sum + value, 0) / normalized.length;
+  if (mean <= 0) return 0;
+
+  const variance = normalized
+    .map((value) => Math.pow(value - mean, 2))
+    .reduce((sum, value) => sum + value, 0) / normalized.length;
+
+  const standardDeviation = Math.sqrt(variance);
+  return safeDivide(standardDeviation * 100, mean);
+}
+
+function animateStStats(container) {
+  const valueEls = container.querySelectorAll('.js-st-count');
+  if (!valueEls.length) return;
+
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  function formatInt(value) {
+    return Math.round(value).toLocaleString('en-US');
+  }
+
+  function formatHoursMinutes(totalMinutesFloat) {
+    const totalMinutes = Math.max(0, Math.round(totalMinutesFloat));
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}h ${minutes}m`;
+  }
+
+  function formatHoursMinutesSeconds(totalSecondsFloat) {
+    const totalSeconds = Math.max(0, Math.round(totalSecondsFloat));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  valueEls.forEach((el, index) => {
+    const type = el.dataset.type || 'int';
+    const targetValue = Number(el.dataset.target);
+    if (!Number.isFinite(targetValue)) return;
+
+    const startDelay = 120 + index * 55;
+    const duration = type === 'int' ? 900 : 780;
+    const startValue = 0;
+
+    el.classList.add('is-counting');
+
+    const render = (value) => {
+      if (type === 'time-hm') {
+        el.textContent = formatHoursMinutes(value);
+        return;
+      }
+      if (type === 'time-hms') {
+        el.textContent = formatHoursMinutesSeconds(value);
+        return;
+      }
+      el.textContent = formatInt(value);
+    };
+
+    render(startValue);
+
+    const run = () => {
+      const startTs = performance.now();
+
+      const step = (now) => {
+        const progress = Math.min(1, (now - startTs) / duration);
+        const eased = easeOutCubic(progress);
+        const current = startValue + (targetValue - startValue) * eased;
+        render(current);
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+          return;
+        }
+
+        render(targetValue);
+        el.classList.remove('is-counting');
+      };
+
+      requestAnimationFrame(step);
+    };
+
+    window.setTimeout(run, startDelay);
+  });
+}
+
+function safeDivide(numerator, denominator) {
+  const left = Number(numerator);
+  const right = Number(denominator);
+  if (!Number.isFinite(left) || !Number.isFinite(right) || right <= 0) {
+    return 0;
+  }
+
+  return left / right;
 }
 
 function escapeHtml(value) {
