@@ -291,3 +291,54 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideInFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bw-apk-hero {
+  opacity: 0;
+  animation: slideInFadeUp 0.6s ease-out both;
+  animation-delay: 0ms;
+}
+
+/* AndroidDownload speciális gombanimáció felülírás */
+.bw-apk-btn,
+.bw-apk-back-btn {
+  animation: none !important;
+}
+
+.bw-apk-download-card {
+  opacity: 0;
+  animation: slideInFadeUp 0.6s ease-out both;
+  animation-delay: 0ms;
+}
+
+.bw-apk-panel:nth-of-type(1) {
+  opacity: 0;
+  animation: slideInFadeUp 0.6s ease-out both;
+  animation-delay: 300ms;
+}
+
+.bw-apk-panel:nth-of-type(2) {
+  opacity: 0;
+  animation: slideInFadeUp 0.6s ease-out both;
+  animation-delay: 400ms;
+}
+
+.bw-apk-footer-link {
+  opacity: 0;
+  animation: slideInFadeUp 0.6s ease-out both;
+  animation-delay: 0ms;
+}
