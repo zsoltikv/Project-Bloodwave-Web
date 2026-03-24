@@ -304,6 +304,19 @@ body {
   background: linear-gradient(135deg, rgba(212, 66, 49, 0.34), rgba(160, 18, 18, 0.28));
 }
 
+.bw-error-title {
+  color: rgba(220, 80, 60, 0.95) !important;
+  text-shadow: 0 0 24px rgba(192, 57, 43, 0.55), 0 0 12px rgba(139, 0, 0, 0.45) !important;
+}
+
+.bw-error-hint {
+  margin-top: 16px !important;
+  font-size: clamp(10px, 2.2vw, 12px) !important;
+  color: rgba(212, 175, 55, 0.68) !important;
+  font-style: italic;
+  opacity: 0.88;
+}
+
 @keyframes bw-confirm-fade {
   from { opacity: 0; }
   to { opacity: 1; }

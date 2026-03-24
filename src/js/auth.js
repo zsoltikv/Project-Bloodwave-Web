@@ -180,8 +180,19 @@ export async function logout() {
 // Falls back to a single retry on an unexpected 401.
 
 export async function authFetch(url, options = {}) {
+  const skipAutoLogout = options.skipAutoLogout;
+  
   // Proactive refresh before the request
-  await ensureValidToken();
+  try {
+    await ensureValidToken();
+  } catch (err) {
+    if (skipAutoLogout) {
+      // Don't auto-logout for certain critical requests like account deletion
+      // Re-throw the error so the caller can handle it
+      throw err;
+    }
+    throw err;
+  }
 
   const makeHeaders = () => ({
     'Content-Type': 'application/json',
@@ -197,8 +208,10 @@ export async function authFetch(url, options = {}) {
       await refreshSession();
       res = await fetch(url, { ...options, headers: makeHeaders() });
     } catch {
-      clearSession();
-      window.router?.navigate('/login');
+      if (!skipAutoLogout) {
+        clearSession();
+        window.router?.navigate('/login');
+      }
       throw new Error('Session expired. Please log in again.');
     }
   }

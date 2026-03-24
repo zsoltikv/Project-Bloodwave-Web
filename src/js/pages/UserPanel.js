@@ -1,6 +1,6 @@
 import '../../css/pages/UserPanel.css';
 import { API_BASE, getUser, logout, authFetch } from '../auth.js';
-import { confirmLogout, confirmDeleteAccount } from '../logout-confirm.js';
+import { confirmLogout, confirmDeleteAccount, showDeleteAccountError } from '../logout-confirm.js';
 import { ensureGlobalStarfield } from '../global-starfield.js';
 
 export default function UserPanel(container) {
@@ -617,6 +617,7 @@ export default function UserPanel(container) {
         body: JSON.stringify({
           password: confirmation.password,
         }),
+        skipAutoLogout: true,
       });
 
       if (!response.ok) {
@@ -624,10 +625,16 @@ export default function UserPanel(container) {
         throw new Error(errorPayload?.message || 'Failed to delete account.');
       }
 
+      // Sikeres törlés - kijelentkeztetés
       await logout();
+      return;
     } catch (err) {
+      // HIBA - NEM logout, marad az oldalon
       console.error('Delete account error:', err);
-      window.alert(err?.message || 'Could not delete account. Please try again.');
+      await showDeleteAccountError(
+        err?.message || 'Could not delete account. Please try again.',
+        'Please verify your username and password are correct.'
+      );
       if (button) {
         button.disabled = false;
         button.textContent = originalText;

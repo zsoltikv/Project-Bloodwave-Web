@@ -225,3 +225,82 @@ function escapeHtml(text) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 }
+
+export function showDeleteAccountError(errorMessage, description) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'bw-confirm-overlay';
+    overlay.innerHTML = `
+      <div class="bw-confirm-card" role="dialog" aria-modal="true" aria-labelledby="bw-error-title" aria-describedby="bw-error-copy">
+        <div class="bw-confirm-corner bw-confirm-corner--tl"></div>
+        <div class="bw-confirm-corner bw-confirm-corner--tr"></div>
+        <div class="bw-confirm-corner bw-confirm-corner--bl"></div>
+        <div class="bw-confirm-corner bw-confirm-corner--br"></div>
+
+        <div class="bw-confirm-ornament" aria-hidden="true">
+          <span class="bw-confirm-ornament-line"></span>
+          <span class="bw-confirm-ornament-diamond"></span>
+          <span class="bw-confirm-ornament-line"></span>
+        </div>
+
+        <h2 class="bw-confirm-title bw-error-title" id="bw-error-title">Deletion Failed</h2>
+        <p class="bw-confirm-kicker">Error</p>
+        <p class="bw-confirm-copy" id="bw-error-copy">${escapeHtml(errorMessage || 'Could not delete account. Please try again.')}</p>
+        ${description ? `<p class="bw-confirm-copy bw-error-hint">${escapeHtml(description)}</p>` : ''}
+
+        <div class="bw-confirm-actions">
+          <button type="button" class="bw-confirm-btn bw-confirm-btn-cancel" data-action="ok">OK</button>
+        </div>
+      </div>
+    `;
+
+    const okBtn = overlay.querySelector('[data-action="ok"]');
+    const card = overlay.querySelector('.bw-confirm-card');
+    let isClosing = false;
+
+    const cleanup = () => {
+      document.removeEventListener('keydown', onKeyDown);
+      overlay.remove();
+    };
+
+    const finish = (animated = false) => {
+      if (isClosing) return;
+
+      if (!animated) {
+        cleanup();
+        resolve(undefined);
+        return;
+      }
+
+      isClosing = true;
+      overlay.classList.add('bw-confirm-overlay--closing');
+
+      const done = () => {
+        cleanup();
+        resolve(undefined);
+      };
+
+      card?.addEventListener('animationend', done, { once: true });
+      window.setTimeout(done, 260);
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape' || event.key === 'Enter') {
+        event.preventDefault();
+        finish(true);
+      }
+    };
+
+    okBtn?.addEventListener('click', () => finish(true));
+
+    overlay.addEventListener('click', (event) => {
+      if (event.target === overlay) {
+        finish(true);
+      }
+    });
+
+    document.addEventListener('keydown', onKeyDown);
+    document.body.appendChild(overlay);
+    okBtn?.focus();
+  });
+}
