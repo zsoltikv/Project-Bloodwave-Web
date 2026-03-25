@@ -12,6 +12,33 @@ import UserPanel from './pages/UserPanel.js';
 import AndroidDownload from './pages/AndroidDownload.js';
 import ensureCustomCursor from './custom-cursor.js';
 
+function disableZoomOnMobile() {
+  const preventDefault = (event) => {
+    event.preventDefault();
+  };
+
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((eventName) => {
+    document.addEventListener(eventName, preventDefault, { passive: false });
+  });
+
+  // iOS Safari pinch zoom fallback.
+  document.addEventListener('touchmove', (event) => {
+    if (event.scale && event.scale !== 1) {
+      event.preventDefault();
+    }
+  }, { passive: false });
+
+  // Prevent double-tap to zoom.
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+}
+
 // Define routes
 const routes = [
   {
@@ -66,6 +93,11 @@ const routes = [
 
 // Initialize router
 const router = new Router(routes);
+
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+  disableZoomOnMobile();
+}
+
 ensureCustomCursor();
 
 // Make router globally accessible

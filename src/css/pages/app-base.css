@@ -20,6 +20,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #080606;
+  touch-action: manipulation;
 }
 
 :root {
@@ -31,6 +32,8 @@ body {
   --bw-cursor-core: rgba(255, 240, 214, 0.95);
   --bw-cursor-gold: rgba(212, 175, 55, 0.95);
   --bw-cursor-blood: rgba(192, 57, 43, 0.75);
+  touch-action: pan-x pan-y;
+  height: 100% 
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
