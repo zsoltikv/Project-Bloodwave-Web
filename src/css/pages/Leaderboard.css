@@ -899,7 +899,7 @@
         }
       }
 
-      @media (max-width: 768px) {
+      @media (max-width: 1024px) {
         .lb-links    { display: none; }
         .lb-hamburger { display: flex; }
         .lb-mobile-menu { display: block; }

@@ -469,7 +469,7 @@
       .mn-mobile-logout svg { width: 14px; height: 14px; flex-shrink: 0; }
 
       /* === RESPONSIVE BREAKPOINTS === */
-      @media (max-width: 768px) {
+      @media (max-width: 1024px) {
         .mn-links    { display: none; }
         .mn-nav-link { display: none !important; }
         .mn-hamburger { display: flex; }

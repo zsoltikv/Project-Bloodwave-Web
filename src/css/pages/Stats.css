@@ -406,7 +406,7 @@
       .st-mobile-logout:hover { color: rgba(220,80,60,0.9); padding-left: 14px; }
       .st-mobile-logout svg { width: 14px; height: 14px; flex-shrink: 0; }
 
-      @media (max-width: 768px) {
+      @media (max-width: 1024px) {
         .st-links     { display: none; }
         .st-nav-link  { display: none !important; }
         .st-hamburger { display: flex; }
