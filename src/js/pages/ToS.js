@@ -202,7 +202,7 @@ const ToS = page({
                 Box().className('bw-btn-text').text(() => ctx.cta.label),
               )
                 .href(ctx.cta.href)
-                .dataLink()
+                .routerLink()
                 .className('bw-btn')
                 .style({ display: 'inline-block', marginTop: '1rem' }),
             )

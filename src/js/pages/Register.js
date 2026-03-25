@@ -205,10 +205,14 @@ function PasswordStrengthLine({ active, pulse, gradient, glow }) {
   return Box()
     .id('pwStrengthLine')
     .className('bw-input-line')
-    .bindClass('bw-pw-active', () => active.get())
-    .bindClass('bw-pw-pulse', () => pulse.get())
-    .bindStyle('--pw-gradient', () => gradient.get())
-    .bindStyle('boxShadow', () => glow.get());
+    .className({
+      'bw-pw-active': () => active.get(),
+      'bw-pw-pulse': () => pulse.get(),
+    })
+    .style({
+      '--pw-gradient': () => gradient.get(),
+      boxShadow: () => glow.get(),
+    });
 }
 
 function TermsField(field) {
@@ -222,7 +226,7 @@ function TermsField(field) {
         'I accept the ',
         Link('Terms of Service & Cookie Policy')
           .href('/tos')
-          .dataLink()
+          .routerLink()
           .className('bw-forgot'),
       ).className('bw-checkbox-label'),
     ).className('bw-checkbox-wrapper'),
@@ -244,7 +248,7 @@ function FooterLink() {
       'Already a member? ',
       Link('Sign In')
         .href('/login')
-        .dataLink()
+        .routerLink()
         .className('bw-forgot'),
     ),
   ).className('bw-footer-link');
@@ -491,7 +495,7 @@ const Register = page({
                 Box().className('bw-btn-text').text(() => ctx.submit.label.get()),
               )
                 .className('bw-btn')
-                .bindClass('success', () => ctx.submit.success.get())
+                .className({ success: () => ctx.submit.success.get() })
                 .id('rxBtn'),
               Divider(),
               FooterLink(),

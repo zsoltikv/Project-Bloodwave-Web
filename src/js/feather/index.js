@@ -10,7 +10,7 @@ export {
   Container,
   El,
   Emphasis,
-  Field as FieldBox,
+  FieldNode as FieldBox,
   Footer,
   ForEach,
   Form,

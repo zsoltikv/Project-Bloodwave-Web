@@ -468,7 +468,7 @@ function createMainView(ctx) {
           Paragraph('Select a run to view details').className('mn-placeholder-sub'),
           Box(
             Span('Viewing').className('mn-viewing-kicker'),
-            Span(ctx.view.viewedPlayerName).className('mn-viewing-name').id('mn-viewing-name'),
+            Span(() => ctx.view.viewedPlayerName.get()).className('mn-viewing-name').id('mn-viewing-name'),
           ).className('mn-viewing-user').id('mn-viewing-user').style({ display: ctx.view.isViewingPlayer ? 'inline-flex' : 'none' }),
         ).className('mn-matches-head'),
         Box(

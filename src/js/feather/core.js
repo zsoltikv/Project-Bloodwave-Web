@@ -144,32 +144,40 @@ function warnBinding(message) {
   console.warn(message);
 }
 
-function isReactiveGetter(value) {
-  return typeof value === 'function' && value.length === 0;
-}
-
-function isGetterBinding(value) {
-  if (isReactiveGetter(value)) {
+function isBindingGetter(value) {
+  if (typeof value === 'function' && value.length === 0) {
     return true;
   }
 
   if (Array.isArray(value)) {
-    return value.some(isGetterBinding);
+    return value.some(isBindingGetter);
   }
 
   if (isPlainObject(value)) {
-    return Object.values(value).some(isGetterBinding);
+    return Object.values(value).some(isBindingGetter);
   }
 
   return false;
 }
 
-function isReactiveBinding(value) {
-  return isGetterBinding(value) || containsReactive(value);
+function isBinding(value) {
+  if (isBindingGetter(value) || isReactive(value)) {
+    return true;
+  }
+
+  if (Array.isArray(value)) {
+    return value.some(isBinding);
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.values(value).some(isBinding);
+  }
+
+  return false;
 }
 
 function unwrapBinding(value) {
-  if (isReactiveGetter(value)) {
+  if (typeof value === 'function' && value.length === 0) {
     return unwrapBinding(value());
   }
 
@@ -190,28 +198,16 @@ function unwrapBinding(value) {
   return value;
 }
 
-function readCurrentValue(value) {
-  if (isReactiveGetter(value)) {
-    return unwrapBinding(value());
-  }
-
-  if (containsReactive(value)) {
-    return unwrapBinding(value);
-  }
-
-  return read(value);
-}
-
-function createReactiveGetter(value, legacyMessage = null) {
-  if (isReactiveGetter(value)) {
+function createBindingGetter(value, legacyMessage = null) {
+  if (typeof value === 'function' && value.length === 0) {
     return () => unwrapBinding(value());
   }
 
-  if (isGetterBinding(value)) {
+  if (isBindingGetter(value)) {
     return () => unwrapBinding(value);
   }
 
-  if (containsReactive(value)) {
+  if (isBinding(value)) {
     if (legacyMessage) {
       warnBinding(legacyMessage);
     }
@@ -222,13 +218,13 @@ function createReactiveGetter(value, legacyMessage = null) {
   return null;
 }
 
-function mapReactive(value, mapper, legacyMessage = null) {
-  const reactiveGetter = createReactiveGetter(value, legacyMessage);
-  if (reactiveGetter) {
-    return () => mapper(reactiveGetter());
+function mapBinding(value, mapper, legacyMessage = null) {
+  const bindingGetter = createBindingGetter(value, legacyMessage);
+  if (bindingGetter) {
+    return () => mapper(bindingGetter());
   }
 
-  return mapper(readCurrentValue(value));
+  return mapper(unwrapBinding(value));
 }
 
 function resolveModelBindings(props = {}) {
@@ -239,7 +235,7 @@ function resolveModelBindings(props = {}) {
     return props;
   }
 
-  const currentType = readCurrentValue(type);
+  const currentType = unwrapBinding(type);
   const nextType = type === undefined ? currentType : type;
   const isCheckboxLike = currentType === 'checkbox' || currentType === 'radio';
   const invalidAttrs = field?.invalid
@@ -298,7 +294,7 @@ function resolveFormProps(props = {}) {
 }
 
 function resolveSemanticClass(group, value, fallbackPrefix) {
-  return mapReactive(value, (resolvedValue) => {
+  return mapBinding(value, (resolvedValue) => {
     const semanticClass = token(`${group}.${resolvedValue}`);
 
     if (semanticClass) {
@@ -353,7 +349,7 @@ function resolveAlignClass(value) {
 }
 
 function resolveAnimateClass(value = 'pulse') {
-  return mapReactive(value, (resolvedValue) => {
+  return mapBinding(value, (resolvedValue) => {
     const semanticAnimation = token(`animation.${resolvedValue}`);
 
     if (semanticAnimation) {
@@ -534,13 +530,13 @@ function resolveBoxModelStyles(property, args) {
     return styles;
   }
 
-  if (args.some(isReactiveBinding)) {
+  if (args.some(isBinding)) {
     return {
-      [property]: () => args.map((value) => readCurrentValue(value)).join(' '),
+      [property]: () => args.map((value) => unwrapBinding(value)).join(' '),
     };
   }
 
-  return { [property]: args.map((value) => readCurrentValue(value)).join(' ') };
+  return { [property]: args.map((value) => unwrapBinding(value)).join(' ') };
 }
 
 function resolveShadowValue(args) {
@@ -561,21 +557,21 @@ function resolveShadowValue(args) {
         color = 'currentColor',
       } = value;
 
-      if ([inset, x, y, blur, spread, color].some(isReactiveBinding)) {
-        return () => `${readCurrentValue(inset) ? 'inset ' : ''}${readCurrentValue(x)} ${readCurrentValue(y)} ${readCurrentValue(blur)} ${readCurrentValue(spread)} ${readCurrentValue(color)}`.trim();
+      if ([inset, x, y, blur, spread, color].some(isBinding)) {
+        return () => `${unwrapBinding(inset) ? 'inset ' : ''}${unwrapBinding(x)} ${unwrapBinding(y)} ${unwrapBinding(blur)} ${unwrapBinding(spread)} ${unwrapBinding(color)}`.trim();
       }
 
-      return `${readCurrentValue(inset) ? 'inset ' : ''}${readCurrentValue(x)} ${readCurrentValue(y)} ${readCurrentValue(blur)} ${readCurrentValue(spread)} ${readCurrentValue(color)}`.trim();
+      return `${unwrapBinding(inset) ? 'inset ' : ''}${unwrapBinding(x)} ${unwrapBinding(y)} ${unwrapBinding(blur)} ${unwrapBinding(spread)} ${unwrapBinding(color)}`.trim();
     }
 
-    return readCurrentValue(value);
+    return unwrapBinding(value);
   }
 
-  if (args.some(isReactiveBinding)) {
-    return () => args.map((value) => readCurrentValue(value)).join(' ');
+  if (args.some(isBinding)) {
+    return () => args.map((value) => unwrapBinding(value)).join(' ');
   }
 
-  return args.map((value) => readCurrentValue(value)).join(' ');
+  return args.map((value) => unwrapBinding(value)).join(' ');
 }
 
 function addAttributes(node, nextAttributes) {
@@ -628,22 +624,6 @@ function addModifierMethod(node, name, implementation) {
   });
 }
 
-function containsReactive(value) {
-  if (isReactive(value)) {
-    return true;
-  }
-
-  if (Array.isArray(value)) {
-    return value.some(containsReactive);
-  }
-
-  if (value && typeof value === 'object') {
-    return Object.values(value).some(containsReactive);
-  }
-
-  return false;
-}
-
 function applyPrimitiveModifier(node, name, value) {
   const modifier = node.meta?.modifiers?.[name];
   if (typeof modifier === 'function') {
@@ -693,23 +673,21 @@ function withModifiers(node) {
     ...cloneNode(node),
     nodeType: read(value) || node.nodeType,
   }));
-  addModifierMethod(node, 'bind', (key, value) => setNodeProp(node, key, value));
-  addModifierMethod(node, 'bindAttr', (key, value) => addAttributes(node, { [key]: value }));
   addModifierMethod(node, 'aria', (key, value = true) => addAttributes(node, {
     [`aria-${String(key).replace(/^aria-/, '')}`]: value,
   }));
   addModifierMethod(node, 'ariaInvalid', (value = true) => node.aria('invalid', value));
   addModifierMethod(node, 'ariaLabel', (value) => node.aria('label', value));
+  addModifierMethod(node, 'ariaLabelledBy', (value) => node.aria('labelledby', value));
   addModifierMethod(node, 'ariaDescribedBy', (value) => node.aria('describedby', value));
+  addModifierMethod(node, 'ariaHidden', (value = true) => node.aria('hidden', value));
   addModifierMethod(node, 'className', (value) => addClass(node, value));
   addModifierMethod(node, 'class', (value) => addClass(node, value));
-  addModifierMethod(node, 'bindClass', (name, condition = true) => addClass(node, {
+  addModifierMethod(node, 'toggleClass', (name, condition = true) => addClass(node, {
     [name]: condition,
   }));
-  addModifierMethod(node, 'toggleClass', (name, condition = true) => node.bindClass(name, condition));
   addModifierMethod(node, 'tw', (...values) => addClass(node, values.filter(Boolean).join(' ')));
   addModifierMethod(node, 'style', (value) => addStyles(node, value));
-  addModifierMethod(node, 'bindStyle', (key, value) => addStyleEntries(node, { [key]: value }));
   addModifierMethod(node, 'padding', (...args) => addStyleEntries(node, resolveBoxModelStyles('padding', args)));
   addModifierMethod(node, 'paddingRight', (value) => addStyleEntries(node, { paddingRight: value }));
   addModifierMethod(node, 'paddingLeft', (value) => addStyleEntries(node, { paddingLeft: value }));
@@ -724,7 +702,7 @@ function withModifiers(node) {
   addModifierMethod(node, 'alignItems', (value) => addStyleEntries(node, { alignItems: value }));
   addModifierMethod(node, 'alignSelf', (value) => addStyleEntries(node, { alignSelf: value }));
   addModifierMethod(node, 'placeItems', (value) => addStyleEntries(node, { placeItems: value }));
-  addModifierMethod(node, 'displayStyle', (value) => addStyleEntries(node, { display: value }));
+  addModifierMethod(node, 'display', (value) => addStyleEntries(node, { display: value }));
   addModifierMethod(node, 'position', (value) => addStyleEntries(node, { position: value }));
   addModifierMethod(node, 'top', (value) => addStyleEntries(node, { top: value }));
   addModifierMethod(node, 'right', (value) => addStyleEntries(node, { right: value }));
@@ -734,7 +712,7 @@ function withModifiers(node) {
   addModifierMethod(node, 'overflow', (value) => addStyleEntries(node, { overflow: value }));
   addModifierMethod(node, 'overflowX', (value) => addStyleEntries(node, { overflowX: value }));
   addModifierMethod(node, 'overflowY', (value) => addStyleEntries(node, { overflowY: value }));
-  addModifierMethod(node, 'opacityStyle', (value) => addStyleEntries(node, { opacity: value }));
+  addModifierMethod(node, 'opacity', (value) => addStyleEntries(node, { opacity: value }));
   addModifierMethod(node, 'fontSize', (value) => addStyleEntries(node, { fontSize: value }));
   addModifierMethod(node, 'fontWeight', (value) => addStyleEntries(node, { fontWeight: value }));
   addModifierMethod(node, 'lineHeight', (value) => addStyleEntries(node, { lineHeight: value }));
@@ -742,12 +720,12 @@ function withModifiers(node) {
   addModifierMethod(node, 'color', (value) => addStyleEntries(node, { color: value }));
   addModifierMethod(node, 'backgroundColor', (value) => addStyleEntries(node, { backgroundColor: value }));
   addModifierMethod(node, 'borderRadius', (...args) => addStyleEntries(node, resolveBoxModelStyles('borderRadius', args)));
-  addModifierMethod(node, 'borderColorStyle', (value) => addStyleEntries(node, { borderColor: value }));
+  addModifierMethod(node, 'borderColor', (value) => addStyleEntries(node, { borderColor: value }));
   addModifierMethod(node, 'borderWidth', (value) => addStyleEntries(node, { borderWidth: value }));
   addModifierMethod(node, 'boxShadow', (...args) => addStyleEntries(node, { boxShadow: resolveShadowValue(args) }));
   addModifierMethod(node, 'shadow', (...args) => addStyleEntries(node, { boxShadow: resolveShadowValue(args) }));
   addModifierMethod(node, 'transform', (value) => addStyleEntries(node, { transform: value }));
-  addModifierMethod(node, 'transitionStyle', (value) => addStyleEntries(node, { transition: value }));
+  addModifierMethod(node, 'transition', (value) => addStyleEntries(node, { transition: value }));
   addModifierMethod(node, 'pointerEvents', (value) => addStyleEntries(node, { pointerEvents: value }));
   addModifierMethod(node, 'cursor', (value) => addStyleEntries(node, { cursor: value }));
   addModifierMethod(node, 'id', (value) => setNodeProp(node, 'id', value));
@@ -766,7 +744,7 @@ function withModifiers(node) {
   addModifierMethod(node, 'text', (value) => setNodeProp(node, 'text', value));
   addModifierMethod(node, 'html', (value) => setNodeProp(node, 'html', value));
   addModifierMethod(node, 'ref', (value) => setNodeProp(node, 'ref', value));
-  addModifierMethod(node, 'dataLink', (value = true) => setNodeProp(node, 'dataLink', value));
+  addModifierMethod(node, 'routerLink', (value = true) => setNodeProp(node, 'routerLink', value));
   addModifierMethod(node, 'attr', (key, value) => addAttributes(node, { [key]: value }));
   addModifierMethod(node, 'attrs', (value) => addAttributes(node, value));
   addModifierMethod(node, 'data', (key, value) => setDatasetEntry(node, key, value));
@@ -794,7 +772,6 @@ function withModifiers(node) {
       handler(event);
     }
   }));
-  addModifierMethod(node, 'modifier', (fn) => (typeof fn === 'function' ? fn(node) : node));
   addModifierMethod(node, 'variant', (value) => applyPrimitiveModifier(node, 'variant', value));
   addModifierMethod(node, 'tone', (value) => applyPrimitiveModifier(node, 'tone', value));
   addModifierMethod(node, 'size', (value) => applyPrimitiveModifier(node, 'size', value));
@@ -805,46 +782,46 @@ function withModifiers(node) {
   addModifierMethod(node, 'disabledWhen', (value = true) => node.disabled(value));
   addModifierMethod(node, 'submit', () => cloneNode(node, { props: { type: 'submit' } }));
 
-  addModifierMethod(node, 'width', (value) => addClass(node, mapReactive(value, (nextValue) => resolveTailwindSize('w', nextValue))));
-  addModifierMethod(node, 'height', (value) => addClass(node, mapReactive(value, (nextValue) => resolveTailwindSize('h', nextValue))));
-  addModifierMethod(node, 'minWidth', (value) => addClass(node, mapReactive(value, (nextValue) => resolveTailwindSize('min-w', nextValue))));
-  addModifierMethod(node, 'minHeight', (value) => addClass(node, mapReactive(value, (nextValue) => resolveTailwindSize('min-h', nextValue))));
-  addModifierMethod(node, 'maxWidth', (value) => addClass(node, mapReactive(value, (nextValue) => resolveTailwindSize('max-w', nextValue))));
-  addModifierMethod(node, 'maxHeight', (value) => addClass(node, mapReactive(value, (nextValue) => resolveTailwindSize('max-h', nextValue))));
-  addModifierMethod(node, 'widthStyle', (value) => addStyleEntries(node, { width: value }));
-  addModifierMethod(node, 'heightStyle', (value) => addStyleEntries(node, { height: value }));
-  addModifierMethod(node, 'minWidthStyle', (value) => addStyleEntries(node, { minWidth: value }));
-  addModifierMethod(node, 'minHeightStyle', (value) => addStyleEntries(node, { minHeight: value }));
-  addModifierMethod(node, 'maxWidthStyle', (value) => addStyleEntries(node, { maxWidth: value }));
-  addModifierMethod(node, 'maxHeightStyle', (value) => addStyleEntries(node, { maxHeight: value }));
-  addModifierMethod(node, 'rounded', (value = 'md') => addClass(node, mapReactive(value, (nextValue) => (nextValue === 'none' ? 'rounded-none' : `rounded-${nextValue}`))));
+  addModifierMethod(node, 'width', (value) => addStyleEntries(node, { width: value }));
+  addModifierMethod(node, 'height', (value) => addStyleEntries(node, { height: value }));
+  addModifierMethod(node, 'minWidth', (value) => addStyleEntries(node, { minWidth: value }));
+  addModifierMethod(node, 'minHeight', (value) => addStyleEntries(node, { minHeight: value }));
+  addModifierMethod(node, 'maxWidth', (value) => addStyleEntries(node, { maxWidth: value }));
+  addModifierMethod(node, 'maxHeight', (value) => addStyleEntries(node, { maxHeight: value }));
+  addModifierMethod(node, 'widthClass', (value) => addClass(node, mapBinding(value, (nextValue) => resolveTailwindSize('w', nextValue))));
+  addModifierMethod(node, 'heightClass', (value) => addClass(node, mapBinding(value, (nextValue) => resolveTailwindSize('h', nextValue))));
+  addModifierMethod(node, 'minWidthClass', (value) => addClass(node, mapBinding(value, (nextValue) => resolveTailwindSize('min-w', nextValue))));
+  addModifierMethod(node, 'minHeightClass', (value) => addClass(node, mapBinding(value, (nextValue) => resolveTailwindSize('min-h', nextValue))));
+  addModifierMethod(node, 'maxWidthClass', (value) => addClass(node, mapBinding(value, (nextValue) => resolveTailwindSize('max-w', nextValue))));
+  addModifierMethod(node, 'maxHeightClass', (value) => addClass(node, mapBinding(value, (nextValue) => resolveTailwindSize('max-h', nextValue))));
+  addModifierMethod(node, 'rounded', (value = 'md') => addClass(node, mapBinding(value, (nextValue) => (nextValue === 'none' ? 'rounded-none' : `rounded-${nextValue}`))));
   addModifierMethod(node, 'background', (value) => addClass(node, resolveSemanticClass('background', value, 'bg')));
   addModifierMethod(node, 'textColor', (value) => addClass(node, resolveSemanticClass('text', value, 'text')));
-  addModifierMethod(node, 'border', (value = true) => addClass(node, mapReactive(value, (nextValue) => (nextValue === true ? 'border' : `border-${nextValue}`))));
-  addModifierMethod(node, 'borderColor', (value) => addClass(node, resolveSemanticClass('border', value, 'border')));
-  addModifierMethod(node, 'opacity', (value) => addClass(node, mapReactive(value, (nextValue) => `opacity-${nextValue}`)));
-  addModifierMethod(node, 'display', (value) => addClass(node, mapReactive(value, (nextValue) => String(nextValue))));
-  addModifierMethod(node, 'font', (value) => addClass(node, mapReactive(value, (nextValue) => `font-${nextValue}`)));
-  addModifierMethod(node, 'textSize', (value) => addClass(node, mapReactive(value, (nextValue) => `text-${nextValue}`)));
-  addModifierMethod(node, 'leading', (value) => addClass(node, mapReactive(value, (nextValue) => `leading-${nextValue}`)));
-  addModifierMethod(node, 'tracking', (value) => addClass(node, mapReactive(value, (nextValue) => `tracking-${nextValue}`)));
-  addModifierMethod(node, 'justify', (value) => addClass(node, mapReactive(value, (nextValue) => resolveJustifyClass(nextValue))));
-  addModifierMethod(node, 'align', (value) => addClass(node, mapReactive(value, (nextValue) => resolveAlignClass(nextValue))));
-  addModifierMethod(node, 'items', (value) => addClass(node, mapReactive(value, (nextValue) => `items-${nextValue}`)));
-  addModifierMethod(node, 'self', (value) => addClass(node, mapReactive(value, (nextValue) => `self-${nextValue}`)));
-  addModifierMethod(node, 'grow', (value = true) => addClass(node, mapReactive(value, (nextValue) => (nextValue === true ? 'grow' : `grow-${nextValue}`))));
-  addModifierMethod(node, 'shrink', (value = true) => addClass(node, mapReactive(value, (nextValue) => (nextValue === true ? 'shrink' : `shrink-${nextValue}`))));
-  addModifierMethod(node, 'transition', (value = 'colors') => addClass(node, mapReactive(value, (nextValue) => `transition-${nextValue === 'colors' ? 'colors' : nextValue}`)));
-  addModifierMethod(node, 'duration', (value) => addClass(node, mapReactive(value, (nextValue) => `duration-${nextValue}`)));
-  addModifierMethod(node, 'ease', (value = 'out') => addClass(node, mapReactive(value, (nextValue) => (String(nextValue).startsWith('ease-') ? String(nextValue) : `ease-${nextValue}`))));
+  addModifierMethod(node, 'border', (value = true) => addClass(node, mapBinding(value, (nextValue) => (nextValue === true ? 'border' : `border-${nextValue}`))));
+  addModifierMethod(node, 'borderColorClass', (value) => addClass(node, resolveSemanticClass('border', value, 'border')));
+  addModifierMethod(node, 'opacityClass', (value) => addClass(node, mapBinding(value, (nextValue) => `opacity-${nextValue}`)));
+  addModifierMethod(node, 'displayClass', (value) => addClass(node, mapBinding(value, (nextValue) => String(nextValue))));
+  addModifierMethod(node, 'font', (value) => addClass(node, mapBinding(value, (nextValue) => `font-${nextValue}`)));
+  addModifierMethod(node, 'textSize', (value) => addClass(node, mapBinding(value, (nextValue) => `text-${nextValue}`)));
+  addModifierMethod(node, 'leading', (value) => addClass(node, mapBinding(value, (nextValue) => `leading-${nextValue}`)));
+  addModifierMethod(node, 'tracking', (value) => addClass(node, mapBinding(value, (nextValue) => `tracking-${nextValue}`)));
+  addModifierMethod(node, 'justify', (value) => addClass(node, mapBinding(value, (nextValue) => resolveJustifyClass(nextValue))));
+  addModifierMethod(node, 'align', (value) => addClass(node, mapBinding(value, (nextValue) => resolveAlignClass(nextValue))));
+  addModifierMethod(node, 'items', (value) => addClass(node, mapBinding(value, (nextValue) => `items-${nextValue}`)));
+  addModifierMethod(node, 'self', (value) => addClass(node, mapBinding(value, (nextValue) => `self-${nextValue}`)));
+  addModifierMethod(node, 'grow', (value = true) => addClass(node, mapBinding(value, (nextValue) => (nextValue === true ? 'grow' : `grow-${nextValue}`))));
+  addModifierMethod(node, 'shrink', (value = true) => addClass(node, mapBinding(value, (nextValue) => (nextValue === true ? 'shrink' : `shrink-${nextValue}`))));
+  addModifierMethod(node, 'transitionClass', (value = 'colors') => addClass(node, mapBinding(value, (nextValue) => `transition-${nextValue === 'colors' ? 'colors' : nextValue}`)));
+  addModifierMethod(node, 'duration', (value) => addClass(node, mapBinding(value, (nextValue) => `duration-${nextValue}`)));
+  addModifierMethod(node, 'ease', (value = 'out') => addClass(node, mapBinding(value, (nextValue) => (String(nextValue).startsWith('ease-') ? String(nextValue) : `ease-${nextValue}`))));
   addModifierMethod(node, 'animate', (value = 'pulse') => addClass(node, resolveAnimateClass(value)));
   addModifierMethod(node, 'absolute', () => addClass(node, 'absolute'));
   addModifierMethod(node, 'relative', () => addClass(node, 'relative'));
   addModifierMethod(node, 'fixed', () => addClass(node, 'fixed'));
   addModifierMethod(node, 'sticky', () => addClass(node, 'sticky top-0'));
   addModifierMethod(node, 'centered', () => addClass(node, 'items-center justify-center text-center'));
-  addModifierMethod(node, 'hide', () => addClass(node, 'hidden'));
-  addModifierMethod(node, 'show', () => addClass(node, 'block'));
+  addModifierMethod(node, 'hidden', () => addClass(node, 'hidden'));
+  addModifierMethod(node, 'visible', () => addClass(node, 'block'));
   addModifierMethod(node, 'showWhen', (value = true) => setNodeProp(node, 'showWhen', value));
   addModifierMethod(node, 'hideWhen', (value = true) => setNodeProp(node, 'hideWhen', value));
   addModifierMethod(node, 'focusWhen', (value = true) => setNodeProp(node, 'focusWhen', value));
@@ -868,7 +845,7 @@ export function mergeProps(...sources) {
 
         if (key === 'class' || key === 'className') {
           classNames.push(value);
-          if (isReactiveBinding(value)) {
+          if (isBinding(value)) {
             hasReactiveClassName = true;
           }
           return;
@@ -1100,7 +1077,7 @@ function applyResolvedProp(element, key, nextValue, context) {
       return;
     }
 
-    if (key === 'dataLink') {
+    if (key === 'routerLink') {
       element.removeAttribute('data-link');
       return;
     }
@@ -1151,7 +1128,7 @@ function applyResolvedProp(element, key, nextValue, context) {
     return;
   }
 
-  if (key === 'dataLink') {
+  if (key === 'routerLink') {
     if (nextValue) {
       element.setAttribute('data-link', '');
     }
@@ -1225,13 +1202,13 @@ function applyResolvedProp(element, key, nextValue, context) {
 
 function applyReactiveProp(element, key, value, context) {
   const legacyMessage = `Feather: pass reactive values to ${key} as functions, for example ${key}(() => value.get()). Direct reactive values still work for compatibility but are deprecated.`;
-  const reactiveGetter = (key.startsWith('on') || key === 'ref')
+  const bindingGetter = (key.startsWith('on') || key === 'ref')
     ? null
-    : createReactiveGetter(value, legacyMessage);
+    : createBindingGetter(value, legacyMessage);
 
-  if (reactiveGetter) {
+  if (bindingGetter) {
     const stop = effect(() => {
-      applyResolvedProp(element, key, reactiveGetter(), context);
+      applyResolvedProp(element, key, bindingGetter(), context);
     });
 
     context?.cleanup(stop);
@@ -1268,7 +1245,7 @@ function createElementNode(node, context) {
     applyReactiveProp(element, key, value, childContext);
   });
 
-  if (isReactiveBinding(node.meta?.state)) {
+  if (isBinding(node.meta?.state)) {
     let previousRuntimeProps = resolvedNode.nodeProps;
     const stop = effect(() => {
       const runtimeNode = resolveRuntimeNode(node);
@@ -1720,7 +1697,7 @@ function resolveLinkTo(node, value) {
   return cloneNode(node, {
     props: {
       href: value,
-      dataLink: true,
+      routerLink: true,
     },
   });
 }
@@ -1925,9 +1902,9 @@ function createLandmarkElement(tagName, defaultClassName = '', modifiers = {}) {
   return createPrimitive(tagName, {
     resolveClassName: (_state, node) => !node.meta?.styled ? '' : defaultClassName,
     modifiers: {
-      label: resolveAriaLabel,
-      labelledBy: resolveAriaLabelledBy,
-      describedBy: resolveAriaDescribedBy,
+      ariaLabel: resolveAriaLabel,
+      ariaLabelledBy: resolveAriaLabelledBy,
+      ariaDescribedBy: resolveAriaDescribedBy,
       ...modifiers,
     },
   });
@@ -1982,7 +1959,7 @@ export const ListItem = createPrimitive('li', {
   },
 });
 export const Surface = createAlias('div', 'feather-surface');
-export const Field = createAlias('div', 'feather-field');
+export const FieldNode = createAlias('div', 'feather-field');
 export const Label = createAlias('label', 'feather-label');
 export const Icon = createAlias('svg');
 export const Path = createAlias('path');
@@ -2139,7 +2116,7 @@ export function ForEach(items, renderItem) {
     };
   }
 
-  if (containsReactive(items)) {
+  if (isBinding(items)) {
     warnBinding('Feather: pass reactive ForEach sources as functions, for example ForEach(() => items.get(), renderItem). Direct reactive sources still work for compatibility but are deprecated.');
     return () => {
       const resolvedItems = read(items);
@@ -2158,7 +2135,7 @@ export function Show(condition, truthyValue, falsyValue = null) {
     return () => (read(condition()) ? truthyValue : falsyValue);
   }
 
-  if (containsReactive(condition)) {
+  if (isBinding(condition)) {
     warnBinding('Feather: pass reactive Show conditions as functions, for example Show(() => open.get(), shown, hidden). Direct reactive conditions still work for compatibility but are deprecated.');
     return () => (read(condition) ? truthyValue : falsyValue);
   }

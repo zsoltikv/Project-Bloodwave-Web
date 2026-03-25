@@ -202,7 +202,7 @@ function FooterLink() {
       'Back to ',
       Link('Sign In')
         .href('/login')
-        .dataLink()
+        .routerLink()
         .className('bw-forgot'),
     ),
   ).className('bw-footer-link');
@@ -387,18 +387,20 @@ const ResetPassword = page({
                   Box().className('bw-btn-text').text(() => ctx.submit.label.get()),
                 )
                   .className('bw-btn')
-                  .bindClass('success', () => ctx.submit.success.get())
+                  .className({ success: () => ctx.submit.success.get() })
                   .disabledWhen(() => ctx.meta.tokenMissing.get())
                   .id('rpBtn'),
               ),
             )
               .form(ctx.form)
               .id('rpForm')
-              .bindStyle('display', () => ctx.transition.style.display.get())
-              .bindStyle('opacity', () => ctx.transition.style.opacity.get())
-              .bindStyle('pointerEvents', () => ctx.transition.style.pointerEvents.get())
-              .bindStyle('transform', () => ctx.transition.style.transform.get())
-              .bindStyle('transition', () => ctx.transition.style.transition.get()),
+              .style({
+                display: () => ctx.transition.style.display.get(),
+                opacity: () => ctx.transition.style.opacity.get(),
+                pointerEvents: () => ctx.transition.style.pointerEvents.get(),
+                transform: () => ctx.transition.style.transform.get(),
+                transition: () => ctx.transition.style.transition.get(),
+              }),
             Box(
               Box(
                 Icon()
@@ -416,7 +418,7 @@ const ResetPassword = page({
               Box().className('bw-success-sep'),
             )
               .className('bw-success-panel')
-              .bindClass('visible', () => ctx.transition.successVisible.get())
+              .className({ visible: () => ctx.transition.successVisible.get() })
               .id('rpSuccess'),
             Divider(),
             FooterLink(),

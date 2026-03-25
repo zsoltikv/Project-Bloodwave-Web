@@ -148,7 +148,7 @@ function RememberMeField(field) {
     ).className('bw-remember'),
     Link('Forgot Password')
       .href('/forgot-password')
-      .dataLink()
+      .routerLink()
       .className('bw-forgot'),
   ).className('bw-extras');
 }
@@ -167,7 +167,7 @@ function FooterLink() {
       'New member? ',
       Link('Join Now')
         .href('/register')
-        .dataLink()
+        .routerLink()
         .className('bw-forgot'),
     ),
   ).className('bw-footer-link');
@@ -311,7 +311,7 @@ const Login = page({
                 Box().className('bw-btn-text').text(() => ctx.submit.label.get()),
               )
                 .className('bw-btn')
-                .bindClass('success', () => ctx.submit.success.get())
+                .className({ success: () => ctx.submit.success.get() })
                 .id('lxBtn'),
               Divider(),
               FooterLink(),

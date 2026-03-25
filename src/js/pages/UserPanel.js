@@ -126,12 +126,12 @@ function createUserPanelView(user) {
       Box(
         Link('Bloodwave')
           .href('/')
-          .dataLink()
+          .routerLink()
           .className('up-logo'),
         Box(
           Link('Back to Dashboard')
             .href('/main')
-            .dataLink()
+            .routerLink()
             .className('up-nav-link')
             .id('upBackToDashboard'),
           Button(
@@ -147,10 +147,10 @@ function createUserPanelView(user) {
       ).className('up-nav-inner'),
       Box(
         Box(
-          Link('Matches').href('/main').dataLink().className('up-mobile-link'),
-          Link('Stats').href('/stats').dataLink().className('up-mobile-link'),
-          Link('Leaderboard').href('/leaderboard').dataLink().className('up-mobile-link'),
-          Link('Achievements').href('/achievements').dataLink().className('up-mobile-link'),
+          Link('Matches').href('/main').routerLink().className('up-mobile-link'),
+          Link('Stats').href('/stats').routerLink().className('up-mobile-link'),
+          Link('Leaderboard').href('/leaderboard').routerLink().className('up-mobile-link'),
+          Link('Achievements').href('/achievements').routerLink().className('up-mobile-link'),
           Box().className('up-mobile-divider'),
           Box(
             Span('BW').className('up-mobile-avatar'),
@@ -159,7 +159,7 @@ function createUserPanelView(user) {
             .className('up-mobile-profile')
             .style({ pointerEvents: 'none', cursor: 'default' }),
           Box().className('up-mobile-divider'),
-          Link('Profile').href('/user-panel').dataLink().className('up-mobile-link'),
+          Link('Profile').href('/user-panel').routerLink().className('up-mobile-link'),
           Button('Logout')
             .id('up-mobile-logout')
             .className('up-mobile-logout'),

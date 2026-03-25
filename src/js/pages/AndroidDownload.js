@@ -71,8 +71,10 @@ function DownloadStatus(state) {
   return Paragraph()
     .className('bw-apk-note')
     .text(() => state.text.get())
-    .bindClass('ok', () => state.ok.get())
-    .bindClass('warn', () => state.warn.get())
+    .className({
+      ok: () => state.ok.get(),
+      warn: () => state.warn.get(),
+    })
     .id('bw-apk-status');
 }
 
@@ -145,7 +147,7 @@ const AndroidDownload = page({
                   .href(ctx.apk.filePath)
                   .attr('download', ctx.apk.fileName)
                   .className('bw-btn bw-apk-btn')
-                  .bindClass('bw-apk-disabled', () => ctx.apk.disabled.get()),
+                  .className({ 'bw-apk-disabled': () => ctx.apk.disabled.get() }),
                 DownloadStatus({
                   text: ctx.apk.statusText,
                   ok: ctx.apk.statusOk,
@@ -181,7 +183,7 @@ const AndroidDownload = page({
                 Box(ctx.cta.backLabel).className('bw-btn-text'),
               )
                 .href(ctx.cta.backHref)
-                .dataLink()
+                .routerLink()
                 .className('bw-btn bw-apk-back-btn'),
             ).className('bw-apk-footer-link'),
           ).className('bw-apk-content'),

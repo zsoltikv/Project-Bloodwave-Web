@@ -135,18 +135,18 @@ export function DashboardNavbar({
 
   return Nav(
     Box(
-      Link('Bloodwave').href(resolvedLogoHref).dataLink().className(classNames.logo),
+      Link('Bloodwave').href(resolvedLogoHref).routerLink().className(classNames.logo),
       viewMode
         ? null
         : Box(
           NAV_ITEMS.map((item) => Link(Span(item.label))
             .href(item.href)
-            .dataLink()
+            .routerLink()
             .className(activeClass(classNames.link, active, item.key))),
         ).className(classNames.links),
       Box(
         viewMode
-          ? Link(backLabel).href(backHref).dataLink().className(classNames.navLink).id(elementIds.backLink)
+          ? Link(backLabel).href(backHref).routerLink().className(classNames.navLink).id(elementIds.backLink)
           : null,
         viewMode
           ? null
@@ -157,8 +157,8 @@ export function DashboardNavbar({
                 Box(() => resolvedUsername()).className(classNames.ddUsername).id(elementIds.desktopUsername),
                 Box('Member').className(classNames.ddRole),
               ).className(classNames.ddHeader),
-              Link(icon(NAV_ICONS.profile), 'Profile').href('/user-panel').dataLink().className(classNames.ddItem).attr('role', 'menuitem'),
-              Link(icon(NAV_ICONS.cloud), 'Installation').href('/android-download').dataLink().className(classNames.ddItem).attr('role', 'menuitem'),
+              Link(icon(NAV_ICONS.profile), 'Profile').href('/user-panel').routerLink().className(classNames.ddItem).attr('role', 'menuitem'),
+              Link(icon(NAV_ICONS.cloud), 'Installation').href('/android-download').routerLink().className(classNames.ddItem).attr('role', 'menuitem'),
               Box().className(classNames.ddDivider),
               Button(icon(NAV_ICONS.logout), 'Logout').className(`${classNames.ddItem} logout`).id(elementIds.desktopLogout).attr('role', 'menuitem'),
             ).className(classNames.avatarDropdown).id(elementIds.avatarDropdown).attr('role', 'menu'),
@@ -176,15 +176,15 @@ export function DashboardNavbar({
       ? null
       : Box(
         Box(
-          NAV_ITEMS.map((item) => Link(item.label).href(item.href).dataLink().className(classNames.mobileLink)),
+          NAV_ITEMS.map((item) => Link(item.label).href(item.href).routerLink().className(classNames.mobileLink)),
           Box().className(classNames.mobileDivider),
           Box(
             Span(icon(NAV_ICONS.user, 'currentColor', 'none')).className(classNames.mobileAvatar),
             Span(() => resolvedUsername()).id(elementIds.mobileUsername),
           ).className(classNames.mobileProfile).style({ pointerEvents: 'none', cursor: 'default' }),
           Box().className(classNames.mobileDivider),
-          Link('Profile').href('/user-panel').dataLink().className(classNames.mobileLink),
-          Link('Installation').href('/android-download').dataLink().className(classNames.mobileLink),
+          Link('Profile').href('/user-panel').routerLink().className(classNames.mobileLink),
+          Link('Installation').href('/android-download').routerLink().className(classNames.mobileLink),
           Button(icon(NAV_ICONS.logout), 'Logout').className(classNames.mobileLogout).id(elementIds.mobileLogout),
         ).className(classNames.mobileMenuInner),
       ).className(classNames.mobileMenu).id(elementIds.mobileMenu),

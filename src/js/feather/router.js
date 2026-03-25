@@ -49,6 +49,17 @@ export function createRouter({
     document.body.scrollTop = 0;
   }
 
+  function normalizeNavigationPath(path) {
+    if (!path) return '';
+
+    try {
+      const url = new URL(path, window.location.origin);
+      return `${url.pathname}${url.search}${url.hash}`;
+    } catch {
+      return String(path);
+    }
+  }
+
   function resolvePath(pathname) {
     let nextPath = pathname;
 
@@ -122,15 +133,18 @@ export function createRouter({
       return activeRoute;
     },
     navigate(path, { replace = false } = {}) {
-      if (!path || path === window.location.pathname) {
+      const nextPath = normalizeNavigationPath(path);
+      const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+      if (!nextPath || nextPath === currentPath) {
         renderCurrentRoute();
         return;
       }
 
       if (replace) {
-        window.history.replaceState(null, '', path);
+        window.history.replaceState(null, '', nextPath);
       } else {
-        window.history.pushState(null, '', path);
+        window.history.pushState(null, '', nextPath);
       }
 
       renderCurrentRoute();

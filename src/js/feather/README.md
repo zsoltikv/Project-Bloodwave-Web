@@ -345,13 +345,13 @@ Common modifier groups:
 - props and attributes
   `.prop()`, `.props()`, `.attr()`, `.attrs()`, `.data()`, `.aria()`
 - classes and styles
-  `.className()`, `.class()`, `.tw()`, `.style()`, `.bindStyle()`, `.bindClass()`
+  `.className()`, `.class()`, `.tw()`, `.style()`
 - events
   `.on()`, `.onClick()`, `.onInput()`, `.onChange()`, `.onSubmit()`, `.onEnter()`, `.onEscape()`
 - value and field binding
-  `.value()`, `.checked()`, `.field()`, `.model()`, `.form()`
+  `.value()`, `.checked()`, `.field()`, `.model()`, `.form()`, `.routerLink()`
 - visibility and state helpers
-  `.showWhen()`, `.hideWhen()`, `.focusWhen()`, `.disabled()`, `.disabledWhen()`
+  `.showWhen()`, `.hideWhen()`, `.focusWhen()`, `.disabled()`, `.disabledWhen()`, `.visible()`, `.hidden()`
 - composition helpers
   `.with()`, `.when()`, `.if()`, `.as()`
 
@@ -465,7 +465,7 @@ Router API:
 - `navigate(path, { replace })`
 - `start()`
 
-`Link().to('/path')` automatically sets `href` and `data-link`, which the router intercepts for client-side navigation.
+`Link().to('/path')` automatically sets `href` and the internal `data-link` attribute, and `.routerLink()` exposes that same router behavior explicitly.
 
 ## Theme Utilities
 

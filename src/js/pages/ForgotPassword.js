@@ -136,7 +136,7 @@ function FooterLink() {
       'Remembered it? ',
       Link('Sign In')
         .href('/login')
-        .dataLink()
+        .routerLink()
         .className('bw-forgot'),
     ),
   ).className('bw-footer-link');
@@ -255,17 +255,19 @@ const ForgotPassword = page({
                   Box().className('bw-btn-text').text(() => ctx.submit.label.get()),
                 )
                   .className('bw-btn')
-                  .bindClass('success', () => ctx.submit.success.get())
+                  .className({ success: () => ctx.submit.success.get() })
                   .id('fpBtn'),
               ),
             )
               .form(ctx.form)
               .id('fpForm')
-              .bindStyle('display', () => ctx.transition.style.display.get())
-              .bindStyle('opacity', () => ctx.transition.style.opacity.get())
-              .bindStyle('pointerEvents', () => ctx.transition.style.pointerEvents.get())
-              .bindStyle('transform', () => ctx.transition.style.transform.get())
-              .bindStyle('transition', () => ctx.transition.style.transition.get()),
+              .style({
+                display: () => ctx.transition.style.display.get(),
+                opacity: () => ctx.transition.style.opacity.get(),
+                pointerEvents: () => ctx.transition.style.pointerEvents.get(),
+                transform: () => ctx.transition.style.transform.get(),
+                transition: () => ctx.transition.style.transition.get(),
+              }),
             Box(
               Box(
                 Icon()
@@ -283,7 +285,7 @@ const ForgotPassword = page({
               Box().className('bw-success-sep'),
             )
               .className('bw-success-panel')
-              .bindClass('visible', () => ctx.transition.successVisible.get())
+              .className({ visible: () => ctx.transition.successVisible.get() })
               .id('fpSuccess'),
             Divider(),
             FooterLink(),

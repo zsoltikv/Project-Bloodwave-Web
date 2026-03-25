@@ -274,7 +274,7 @@ export function Field(...args) {
 
   return Box(...children)
     .props(rest)
-    .modifier((node) => (!unstyled ? node.className('feather-field') : node));
+    .with((node) => (!unstyled ? node.className('feather-field') : node));
 }
 
 export function FieldLabel(...args) {
@@ -283,7 +283,7 @@ export function FieldLabel(...args) {
 
   return Label(...children)
     .props(rest)
-    .modifier((node) => (!unstyled ? node.className('feather-field-label') : node));
+    .with((node) => (!unstyled ? node.className('feather-field-label') : node));
 }
 
 export function FieldControl(...args) {
@@ -292,7 +292,7 @@ export function FieldControl(...args) {
 
   return Box(...children)
     .props(rest)
-    .modifier((node) => (!unstyled ? node.className('feather-field-control') : node));
+    .with((node) => (!unstyled ? node.className('feather-field-control') : node));
 }
 
 export function FieldError(field, fallback = null) {
