@@ -271,7 +271,7 @@ export default function Main(container) {
       return `
         <button
           type="button"
-          class="mn-match-item${isActive ? ' active' : ''}"
+          class="mn-match-item"
           data-match-id="${match.id}"
           role="option"
           aria-selected="${String(isActive)}"
@@ -289,35 +289,22 @@ export default function Main(container) {
     renderMatchPanel(matches.find((m) => m.id === selectedMatchId));
   }
 
-  function syncActiveMatchItem(previousSelectedId = null) {
+  function syncActiveMatchItem() {
     if (!matchesList) return;
 
     const items = matchesList.querySelectorAll('.mn-match-item');
     items.forEach((item) => {
       const isActive = item.dataset.matchId === selectedMatchId;
-      item.classList.toggle('active', isActive);
       item.setAttribute('aria-selected', String(isActive));
     });
-
-    const activeItem = matchesList.querySelector(`.mn-match-item[data-match-id="${selectedMatchId}"]`);
-    if (activeItem && previousSelectedId !== selectedMatchId) {
-      activeItem.classList.remove('is-activating');
-      // Force reflow so animation always retriggers on selection change.
-      void activeItem.offsetWidth;
-      activeItem.classList.add('is-activating');
-      activeItem.addEventListener('animationend', () => {
-        activeItem.classList.remove('is-activating');
-      }, { once: true });
-    }
   }
 
   matchesList?.addEventListener('click', (e) => {
     const target = e.target.closest('.mn-match-item');
     if (!target) return;
 
-    const prevSelectedId = selectedMatchId;
     selectedMatchId = target.dataset.matchId;
-    syncActiveMatchItem(prevSelectedId);
+    syncActiveMatchItem();
     renderMatchPanel(matches.find((m) => m.id === selectedMatchId));
   });
 
