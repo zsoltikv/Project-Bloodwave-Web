@@ -12,10 +12,12 @@ let reactiveCreationPhase = null;
 function warnReactiveUsage(message) {
   const config = getInternalFeatherConfig();
 
+  // Strict mode enforces rules with errors.
   if (config.strictBindings) {
     throw new Error(message);
   }
 
+  // Dev mode enables warnings and guidance.
   if (!config.dev) {
     return;
   }
@@ -33,7 +35,7 @@ function warnReactiveReadDuringRender() {
     return;
   }
 
-  warnReactiveUsage('Feather: reactive values must be passed as functions (() => value). Reading them during render creates static output.');
+  warnReactiveUsage('Feather: Reactive values are only reactive when passed as functions (() => value). Move this read into a function binding.');
 }
 
 function scheduleFlush() {
@@ -137,7 +139,7 @@ function assertReactiveCreationAllowed(kind) {
 
   throw new Error(
     `Feather: ${kind}() cannot be created during ${reactiveCreationPhase}. `
-    + 'Create reactive state in setup() or outside render instead.',
+    + 'Create reactive state in setup() or module scope instead.',
   );
 }
 

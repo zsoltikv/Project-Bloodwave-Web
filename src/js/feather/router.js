@@ -31,7 +31,7 @@ export function createRouter({
   const resolvedRoot = resolveRouterRoot(root);
 
   if (!resolvedRoot) {
-    throw new Error(`Feather: router root "${String(root)}" was not found.`);
+    throw new Error(`Feather: Could not find router root "${String(root)}". Pass a DOM element or a valid selector.`);
   }
 
   let activeView = null;

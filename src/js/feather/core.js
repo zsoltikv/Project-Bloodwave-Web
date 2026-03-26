@@ -7,10 +7,10 @@ const FEATHER_RUNTIME_STYLE_ID = 'feather-runtime-styles';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const MAX_BINDING_DEPTH = 1;
 const bindingWarnings = new Set();
-const NESTED_BINDING_WARNING = 'Feather: nested binding structures are not supported. Use flat bindings or functions instead.';
-const ARRAY_BINDING_WARNING = 'Feather: arrays of bindings are discouraged. Use flat bindings or a function binding instead.';
-const MIXED_BINDING_WARNING = 'Feather: mixed binding types are not supported. Prefer one binding style per value.';
-const DIRECT_REACTIVE_CHILD_WARNING = 'Feather: reactive children must be passed as functions, for example Box(() => count.get()). Direct reactive children still work for compatibility but are deprecated.';
+const NESTED_BINDING_WARNING = 'Feather: Nested bindings are not supported. Use a flat object or wrap values in a function (() => value).';
+const ARRAY_BINDING_WARNING = 'Feather: Arrays of bindings are discouraged. Keep the binding flat or wrap the value in a function (() => value).';
+const MIXED_BINDING_WARNING = 'Feather: Do not mix getter bindings and reactive values in the same binding. Pick one binding style and keep it consistent.';
+const DIRECT_REACTIVE_CHILD_WARNING = 'Feather: Pass reactive children as functions. Use Box(() => count.get()) instead of passing the reactive value directly.';
 const SVG_TAGS = new Set([
   'svg',
   'path',
@@ -144,10 +144,12 @@ function composeHandlers(...handlers) {
 function warnBinding(message) {
   const config = getInternalFeatherConfig();
 
+  // Strict mode enforces rules with errors.
   if (config.strictBindings) {
     throw new Error(message);
   }
 
+  // Dev mode enables warnings and guidance.
   if (!config.dev) {
     return;
   }
@@ -285,10 +287,6 @@ function isBinding(value) {
   return getBindingInfo(value, { warn: false }).hasBinding;
 }
 
-function shouldBlockNestedBinding(value) {
-  return getBindingInfo(value, { warn: false }).hasBinding;
-}
-
 function unwrapBinding(value, depth = 0) {
   if (typeof value === 'function' && value.length === 0) {
     return unwrapBinding(value(), depth);
@@ -300,7 +298,7 @@ function unwrapBinding(value, depth = 0) {
 
   if (Array.isArray(value)) {
     if (depth >= MAX_BINDING_DEPTH) {
-      if (shouldBlockNestedBinding(value)) {
+      if (isBinding(value)) {
         warnBinding(NESTED_BINDING_WARNING);
       }
       return value;
@@ -311,7 +309,7 @@ function unwrapBinding(value, depth = 0) {
 
   if (isPlainObject(value)) {
     if (depth >= MAX_BINDING_DEPTH) {
-      if (shouldBlockNestedBinding(value)) {
+      if (isBinding(value)) {
         warnBinding(NESTED_BINDING_WARNING);
       }
       return value;
@@ -1343,7 +1341,7 @@ function applyResolvedProp(element, key, nextValue, context) {
 }
 
 function createReactivePropBinding(key, value) {
-  const legacyMessage = `Feather: pass reactive values to ${key} as functions, for example ${key}(() => value.get()). Direct reactive values still work for compatibility but are deprecated.`;
+  const legacyMessage = `Feather: Pass reactive values to ${key} as functions. Use ${key}(() => value.get()) instead of passing the reactive value directly.`;
   const bindingGetter = (key.startsWith('on') || key === 'ref')
     ? null
     : createBindingGetter(value, legacyMessage);
@@ -1614,7 +1612,7 @@ export function mount(output, target = '#app', options = {}) {
   const container = resolveMountTarget(target);
 
   if (!container) {
-    throw new Error(`Feather: mount target "${String(target)}" was not found.`);
+    throw new Error(`Feather: Could not find mount target "${String(target)}". Pass a DOM element or a valid selector.`);
   }
 
   return render(output, container, options);
@@ -1648,7 +1646,7 @@ export function page(definition) {
 
 export function setupGroup(name, value) {
   if (!name || typeof name !== 'string') {
-    throw new Error('Feather: setupGroup(name, value) requires a string name.');
+    throw new Error('Feather: setupGroup(name, value) requires a string name for the group key.');
   }
 
   return {
@@ -1665,12 +1663,12 @@ export function setupState(...entries) {
       const resolvedEntry = typeof entry === 'function' ? entry() : entry;
 
       if (!isPlainObject(resolvedEntry)) {
-        throw new Error('Feather: setupState(...) only accepts plain objects or factories that return plain objects.');
+        throw new Error('Feather: setupState(...) only accepts plain objects or factories that return plain objects. Return a plain object from setupState inputs.');
       }
 
       Object.entries(resolvedEntry).forEach(([key, value]) => {
         if (Object.prototype.hasOwnProperty.call(nextState, key)) {
-          throw new Error(`Feather: duplicate setup key "${key}" in setupState(...).`);
+          throw new Error(`Feather: setupState(...) received a duplicate key "${key}". Rename the group or merge the values before returning them.`);
         }
 
         nextState[key] = value;
@@ -2341,7 +2339,7 @@ export const Link = createPrimitive('a', {
 export function ForEach(items, renderItem) {
   const itemsGetter = createBindingGetter(
     items,
-    'Feather: pass reactive ForEach sources as functions, for example ForEach(() => items.get(), renderItem). Direct reactive sources still work for compatibility but are deprecated.',
+    'Feather: Pass reactive ForEach sources as functions. Use ForEach(() => items.get(), renderItem).',
   );
 
   if (itemsGetter) {
@@ -2360,7 +2358,7 @@ export function ForEach(items, renderItem) {
 export function Show(condition, truthyValue, falsyValue = null) {
   const conditionGetter = createBindingGetter(
     condition,
-    'Feather: pass reactive Show conditions as functions, for example Show(() => open.get(), shown, hidden). Direct reactive conditions still work for compatibility but are deprecated.',
+    'Feather: Pass reactive Show conditions as functions. Use Show(() => open.get(), shown, hidden).',
   );
 
   if (conditionGetter) {

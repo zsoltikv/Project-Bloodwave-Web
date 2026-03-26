@@ -1,12 +1,13 @@
+// Core view API
 export {
   $,
   $all,
   Alert,
   Article,
   Aside,
-  Button,
   Box,
   Break,
+  Button,
   Checkbox,
   Code,
   Container,
@@ -18,8 +19,9 @@ export {
   Form,
   Fragment,
   Group,
-  HStack,
   Header,
+  HStack,
+  Icon,
   Img,
   Input,
   Label,
@@ -27,8 +29,11 @@ export {
   List,
   ListItem,
   Main,
+  mount,
   Nav,
   OrderedList,
+  Paragraph,
+  Path,
   Section,
   Show,
   Small,
@@ -40,17 +45,18 @@ export {
   Text,
   Title,
   VStack,
+  view,
   ZStack,
+} from './core.js';
+
+// Low-level escape hatches
+export {
   createDomNode,
   createPrimitive,
   html,
   mergeProps,
-  mount,
   mountView,
   page,
-  Paragraph,
-  Path,
-  Icon,
   render,
   resolveComponentArgs,
   setPrimitiveState,
@@ -58,11 +64,15 @@ export {
   setupState,
   splitProps,
   unstyled,
-  view,
 } from './core.js';
+
+// Routing
 export { createRouter } from './router.js';
+
+// Forms
 export {
   CheckboxField,
+  createForm,
   Field,
   FieldControl,
   FieldError,
@@ -72,8 +82,9 @@ export {
   InputField,
   SubmitButton,
   TextField,
-  createForm,
 } from './forms.js';
+
+// Reactive state
 export {
   batch,
   computed,
@@ -84,6 +95,8 @@ export {
   store,
   untrack,
 } from './state.js';
+
+// Constants
 export {
   Align,
   Animation,
@@ -104,6 +117,8 @@ export {
   Variant,
   Width,
 } from './constants.js';
+
+// Theme helpers
 export {
   cx,
   defineTheme,
@@ -113,6 +128,8 @@ export {
   setTheme,
   token,
 } from './theme.js';
+
+// Runtime config
 export {
   configureFeather,
   getFeatherConfig,

@@ -1,5 +1,7 @@
 const FEATHER_CONFIG = {
-  strictBindings: false,
+  // Strict mode turns binding guidance into errors.
+  strictBindings: true,
+  // Dev mode enables warnings and guidance.
   dev: true,
 };
 
