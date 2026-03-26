@@ -335,10 +335,20 @@ export default function Leaderboard(container) {
           </div>
         `;
 
-        // Add click event to navigate to player's matches
-        card.addEventListener('click', () => {
-          window.router?.navigate(`/main?userId=${encodeURIComponent(entry.userId)}`);
-        });
+        // Add click event to navigate to player's matches (skip for current user)
+        if (!entry.isCurrentUser) {
+          card.classList.add('lb-card--clickable');
+          card.addEventListener('click', () => {
+            window.router?.navigate(`/main?userId=${encodeURIComponent(entry.userId)}`);
+          });
+        } else {
+          // Ensure own card does not appear clickable and is ignored by click
+          card.setAttribute('aria-disabled', 'true');
+          card.style.cursor = 'default';
+
+          // Ensure native pointer cursor is disabled on your own card
+          // (CSS rule will enforce `cursor: default !important` for aria-disabled)
+        }
 
         grid.appendChild(card);
         userIdToUsernameEl.set(entry.userId, card.querySelector('.lb-card-username'));

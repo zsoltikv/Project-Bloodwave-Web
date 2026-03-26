@@ -913,3 +913,10 @@
           min-height: 160px;
         }
       }
+
+
+/* Disable native pointer cursor on your own card while keeping custom cursor visible */
+.lb-card[aria-disabled="true"],
+.lb-card[aria-disabled="true"] * {
+  cursor: none !important;
+}
