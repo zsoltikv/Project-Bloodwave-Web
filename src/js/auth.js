@@ -1,4 +1,4 @@
-export const API_BASE = 'http://5.38.138.40:5000';
+export const API_BASE = 'https://api.bloodwave.site';
 
 // How many seconds before expiry we proactively refresh (60 s buffer)
 const REFRESH_BUFFER_SEC = 60;
