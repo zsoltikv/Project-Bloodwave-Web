@@ -1468,6 +1468,56 @@ export function mountView(output, container, context) {
   }
 }
 
+function resolveQueryRoot(root = document) {
+  if (typeof document === 'undefined') {
+    return root || null;
+  }
+
+  if (!root) {
+    return document;
+  }
+
+  if (typeof root === 'string') {
+    return document.querySelector(root);
+  }
+
+  return root;
+}
+
+function resolveMountTarget(target = '#app') {
+  if (typeof document === 'undefined') {
+    return target || null;
+  }
+
+  if (!target) {
+    return null;
+  }
+
+  if (typeof target === 'string') {
+    return document.querySelector(target);
+  }
+
+  return target;
+}
+
+export function $(selector, root = document) {
+  const resolvedRoot = resolveQueryRoot(root);
+  if (!resolvedRoot?.querySelector) {
+    return null;
+  }
+
+  return resolvedRoot.querySelector(selector);
+}
+
+export function $all(selector, root = document) {
+  const resolvedRoot = resolveQueryRoot(root);
+  if (!resolvedRoot?.querySelectorAll) {
+    return [];
+  }
+
+  return Array.from(resolvedRoot.querySelectorAll(selector));
+}
+
 export function render(output, container, options = {}) {
   const context = options.context || createRenderContext({
     container,
@@ -1506,6 +1556,16 @@ export function render(output, container, options = {}) {
       context.destroy();
     },
   };
+}
+
+export function mount(output, target = '#app', options = {}) {
+  const container = resolveMountTarget(target);
+
+  if (!container) {
+    throw new Error(`Feather: mount target "${String(target)}" was not found.`);
+  }
+
+  return render(output, container, options);
 }
 
 export function html(strings, ...values) {

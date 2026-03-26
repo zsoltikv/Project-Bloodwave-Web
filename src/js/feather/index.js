@@ -1,4 +1,6 @@
 export {
+  $,
+  $all,
   Alert,
   Article,
   Aside,
@@ -43,6 +45,7 @@ export {
   createPrimitive,
   html,
   mergeProps,
+  mount,
   mountView,
   page,
   Paragraph,

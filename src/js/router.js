@@ -1,5 +1,15 @@
 import { isLoggedIn } from './auth.js';
-import { createRouter } from './feather/index.js';
+import {
+  Box,
+  createDomNode,
+  createRouter,
+  Footer,
+  Link,
+  Nav,
+  Paragraph,
+  Section,
+  Span,
+} from './feather/index.js';
 import { ensureGlobalStarfield, setGlobalStarfieldEnabled } from './global-starfield.js';
 
 const PROTECTED_PATHS = ['/main', '/stats', '/leaderboard', '/achievements', '/user-panel'];
@@ -9,40 +19,48 @@ const STARFIELD_PATHS = ['/', '/login', '/register', '/forgot-password', '/reset
 const GITHUB_PROJECT_URL = 'https://github.com/zsoltikv/Project-Bloodwave-Web';
 
 function createGlobalFooter(loggedIn) {
-  const footer = document.createElement('footer');
-  footer.className = 'bw-site-footer';
-
   const currentYear = new Date().getFullYear();
   const primaryAction = loggedIn
-    ? '<a href="/main" data-link class="bw-footer-link">Dashboard</a>'
-    : '<a href="/login" data-link class="bw-footer-link">Login</a>';
+    ? Link('Dashboard').to('/main')
+    : Link('Login').to('/login');
 
-  footer.innerHTML = `
-    <div class="bw-footer-crest" aria-hidden="true">
-      <span class="bw-footer-crest-line"></span>
-      <span class="bw-footer-crest-mark">✦</span>
-      <span class="bw-footer-crest-line"></span>
-    </div>
-
-    <div class="bw-footer-inner">
-      <section class="bw-footer-brand" aria-label="Brand">
-        <span class="bw-footer-title">Project Bloodwave</span>
-        <p class="bw-footer-copy">Forged for players who track every run.</p>
-      </section>
-
-      <nav class="bw-footer-nav" aria-label="Footer links">
-        <a href="${GITHUB_PROJECT_URL}" target="_blank" rel="noopener noreferrer" class="bw-footer-link">GitHub Project</a>
-        <a href="/tos" data-link class="bw-footer-link">ToS & Cookie Policy</a>
-        ${primaryAction}
-      </nav>
-    </div>
-
-    <div class="bw-footer-bottom">
-      <div class="bw-footer-meta">© ${currentYear} Bloodwave. All rights reserved.</div>
-    </div>
-  `;
-
-  return footer;
+  return createDomNode(
+    Footer(
+      Box(
+        Span().className('bw-footer-crest-line'),
+        Span('\u2726').className('bw-footer-crest-mark'),
+        Span().className('bw-footer-crest-line'),
+      )
+        .className('bw-footer-crest')
+        .ariaHidden(),
+      Box(
+        Section(
+          Span('Project Bloodwave').className('bw-footer-title'),
+          Paragraph('Forged for players who track every run.').className('bw-footer-copy'),
+        )
+          .className('bw-footer-brand')
+          .ariaLabel('Brand'),
+        Nav(
+          Link('GitHub Project')
+            .href(GITHUB_PROJECT_URL)
+            .attr('target', '_blank')
+            .attr('rel', 'noopener noreferrer')
+            .className('bw-footer-link'),
+          Link('ToS & Cookie Policy')
+            .to('/tos')
+            .className('bw-footer-link'),
+          primaryAction.className('bw-footer-link'),
+        )
+          .className('bw-footer-nav')
+          .ariaLabel('Footer links'),
+      ).className('bw-footer-inner'),
+      Box(
+        Box(`\u00A9 ${currentYear} Bloodwave. All rights reserved.`)
+          .className('bw-footer-meta'),
+      ).className('bw-footer-bottom'),
+    ).className('bw-site-footer'),
+    null,
+  );
 }
 
 function resolveAppRoute(path) {
@@ -60,12 +78,10 @@ function resolveAppRoute(path) {
 }
 
 export default function createAppRouter(routes) {
-  const root = document.getElementById('app');
-
   ensureGlobalStarfield();
 
   return createRouter({
-    root,
+    root: '#app',
     routes,
     notFoundPath: '/login',
     beforeResolve({ path }) {

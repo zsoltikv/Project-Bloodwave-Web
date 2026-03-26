@@ -13,6 +13,14 @@ function normalizeComponent(component) {
   return component;
 }
 
+function resolveRouterRoot(root) {
+  if (typeof root === 'string') {
+    return document.querySelector(root);
+  }
+
+  return root;
+}
+
 export function createRouter({
   root,
   routes,
@@ -20,6 +28,12 @@ export function createRouter({
   afterRender,
   notFoundPath = '/login',
 }) {
+  const resolvedRoot = resolveRouterRoot(root);
+
+  if (!resolvedRoot) {
+    throw new Error(`Feather: router root "${String(root)}" was not found.`);
+  }
+
   let activeView = null;
   let activeContext = null;
   let activeRoute = null;
@@ -82,11 +96,11 @@ export function createRouter({
     if (!route) return;
 
     cleanupActiveRoute();
-    root.innerHTML = '';
+    resolvedRoot.innerHTML = '';
 
     const outlet = document.createElement('div');
     outlet.className = 'feather-route-view';
-    root.appendChild(outlet);
+    resolvedRoot.appendChild(outlet);
 
     const component = normalizeComponent(route.component);
     const context = createRenderContext({
@@ -116,7 +130,7 @@ export function createRouter({
             path,
             route,
             router,
-            root,
+            root: resolvedRoot,
             outlet,
             context: renderContext,
           });
