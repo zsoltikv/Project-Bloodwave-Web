@@ -6,7 +6,7 @@ It does not use a virtual DOM, JSX, a compiler, or a template language. The fram
 
 - create long-lived state in `setup()`
 - describe UI with plain function calls
-- bind reactive values through functions in DOM-facing children and props
+- pass bindings through functions in DOM-facing children and props
 - use small local reactive regions instead of broad page rerenders
 - keep styling and application structure close to normal HTML and CSS
 
@@ -79,7 +79,7 @@ const count = signal(0);
 
 render(
   () => VStack(
-    Title('Count: ', count),
+    Title('Count: ', () => count.get()),
     Button('Increment').onClick(() => {
       count.update((value) => value + 1);
     }),
@@ -270,9 +270,11 @@ Supported child shapes:
 - strings and numbers
 - arrays of children
 - nested Feather nodes
-- reactive values
+- binding getters such as `() => count.get()`
 - inline getter children
 - DOM nodes when needed
+
+Direct reactive handles are still accepted in some places for compatibility, but function-based bindings are the intended pattern.
 
 ### Base Helpers
 
@@ -297,6 +299,7 @@ When `condition` or `items` are reactive, Feather updates only the local region 
 
 - `Box`
 - `Container`
+- `FieldBox`
 - `Group`
 - `Section`
 - `Surface`
@@ -345,7 +348,7 @@ Common modifier groups:
 - props and attributes
   `.prop()`, `.props()`, `.attr()`, `.attrs()`, `.data()`, `.aria()`
 - classes and styles
-  `.className()`, `.class()`, `.tw()`, `.style()`
+  `.className()`, `.class()`, `.tw()`, `.style()`, `.toggleClass()`
 - events
   `.on()`, `.onClick()`, `.onInput()`, `.onChange()`, `.onSubmit()`, `.onEnter()`, `.onEscape()`
 - value and field binding
@@ -355,6 +358,12 @@ Common modifier groups:
 - composition helpers
   `.with()`, `.when()`, `.if()`, `.as()`
 
+Style and class helpers are intentionally separate:
+
+- plain CSS-style names such as `.width()`, `.height()`, `.display()`, `.opacity()`, `.borderColor()`, and `.transition()` write inline styles
+- utility-class helpers use explicit class names such as `.widthClass()`, `.heightClass()`, `.displayClass()`, `.opacityClass()`, `.borderColorClass()`, and `.transitionClass()`
+- ARIA helpers use the `aria` prefix consistently, including `.ariaLabel()`, `.ariaLabelledBy()`, `.ariaDescribedBy()`, and `.ariaHidden()`
+
 Example:
 
 ```js
@@ -362,7 +371,10 @@ Input()
   .field(form.field('email'))
   .type('email')
   .placeholder('you@example.com')
-  .className('input')
+  .className({
+    input: true,
+    invalid: () => form.field('email').invalid.get(),
+  })
   .when(form.field('email').invalid, (node) => node.ariaInvalid(true));
 ```
 
@@ -419,6 +431,8 @@ Returned form API includes:
 - `state(key, initialValue)`
 - `memo(key, createValue)`
 
+The field object `bind(props)` helper is separate from node modifiers. For node authoring, use `.field(field)` for form binding and `.prop(key, value)` for generic prop assignment.
+
 ### Form components
 
 - `FormScope`
@@ -465,7 +479,7 @@ Router API:
 - `navigate(path, { replace })`
 - `start()`
 
-`Link().to('/path')` automatically sets `href` and the internal `data-link` attribute, and `.routerLink()` exposes that same router behavior explicitly.
+`Link().to('/path')` automatically sets `href` and the internal `data-link` attribute, and `.routerLink()` exposes that same router behavior explicitly. `router.navigate(...)` compares the full relative URL, so changing query strings like `/main?userId=42` to `/main` counts as real navigation.
 
 ## Theme Utilities
 

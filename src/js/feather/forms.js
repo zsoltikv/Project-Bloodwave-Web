@@ -162,6 +162,8 @@ export function createForm({
       },
     };
 
+    // Field accessors stay reactive so form.field(...).value integrates cleanly
+    // with the same function-based binding model as the rest of Feather.
     nextField.value = computed(() => values.get()[name]);
     nextField.error = computed(() => errors.get()[name] || '');
     nextField.touched = computed(() => Boolean(touched.get()[name]));

@@ -1,10 +1,28 @@
 const FEATHER_REACTIVE = Symbol('feather.reactive');
 const observerQueue = new Set();
+const reactiveUsageWarnings = new Set();
 
 let activeObserver = null;
 let batchDepth = 0;
 let isFlushing = false;
 let reactiveCreationPhase = null;
+
+function warnReactiveUsage(message) {
+  if (reactiveUsageWarnings.has(message)) {
+    return;
+  }
+
+  reactiveUsageWarnings.add(message);
+  console.warn(message);
+}
+
+function warnReactiveReadDuringRender() {
+  if (!reactiveCreationPhase || activeObserver) {
+    return;
+  }
+
+  warnReactiveUsage('Feather: reactive values should be passed as functions (() => value) to create reactive bindings.');
+}
 
 function scheduleFlush() {
   if (isFlushing || batchDepth > 0) return;
@@ -157,6 +175,7 @@ export function signal(initialValue) {
   let value = initialValue;
 
   const readValue = () => {
+    warnReactiveReadDuringRender();
     trackDependency(source);
     return value;
   };
@@ -216,6 +235,7 @@ export function computed(getter) {
   }, { lazy: true });
 
   const readValue = () => {
+    warnReactiveReadDuringRender();
     trackDependency(source);
 
     if (!initialized) {

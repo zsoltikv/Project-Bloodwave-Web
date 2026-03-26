@@ -4,7 +4,11 @@ import { cx, token } from './theme.js';
 const FRAGMENT = Symbol('feather.fragment');
 const FEATHER_RUNTIME_STYLE_ID = 'feather-runtime-styles';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+const MAX_BINDING_DEPTH = 3;
 const bindingWarnings = new Set();
+const NESTED_BINDING_WARNING = 'Feather: Nested binding structures are discouraged. Use flat bindings or functions instead.';
+const ARRAY_BINDING_WARNING = 'Feather: Arrays of bindings are discouraged. Use flat bindings or functions instead.';
+const MIXED_BINDING_WARNING = 'Feather: Mixed binding types are discouraged. Prefer one binding style per value.';
 const SVG_TAGS = new Set([
   'svg',
   'path',
@@ -144,54 +148,120 @@ function warnBinding(message) {
   console.warn(message);
 }
 
-function isBindingGetter(value) {
-  if (typeof value === 'function' && value.length === 0) {
-    return true;
-  }
-
-  if (Array.isArray(value)) {
-    return value.some(isBindingGetter);
-  }
-
-  if (isPlainObject(value)) {
-    return Object.values(value).some(isBindingGetter);
-  }
-
-  return false;
+function createBindingInfo() {
+  return {
+    hasBinding: false,
+    hasGetter: false,
+    hasReactive: false,
+    hasNested: false,
+    hasBindingArray: false,
+  };
 }
 
-function isBinding(value) {
-  if (isBindingGetter(value) || isReactive(value)) {
-    return true;
-  }
-
-  if (Array.isArray(value)) {
-    return value.some(isBinding);
-  }
-
-  if (value && typeof value === 'object') {
-    return Object.values(value).some(isBinding);
-  }
-
-  return false;
-}
-
-function unwrapBinding(value) {
+function inspectBinding(value, info, depth = 0) {
   if (typeof value === 'function' && value.length === 0) {
-    return unwrapBinding(value());
+    info.hasBinding = true;
+    info.hasGetter = true;
+    return;
   }
 
   if (isReactive(value)) {
-    return unwrapBinding(value.get());
+    info.hasBinding = true;
+    info.hasReactive = true;
+    return;
   }
 
   if (Array.isArray(value)) {
-    return value.map(unwrapBinding);
+    info.hasBindingArray = true;
+
+    if (depth > 0) {
+      info.hasNested = true;
+    }
+
+    if (depth >= MAX_BINDING_DEPTH) {
+      return;
+    }
+
+    value.forEach((entry) => inspectBinding(entry, info, depth + 1));
+    return;
   }
 
   if (isPlainObject(value)) {
+    if (depth > 0) {
+      info.hasNested = true;
+    }
+
+    if (depth >= MAX_BINDING_DEPTH) {
+      return;
+    }
+
+    Object.values(value).forEach((entry) => inspectBinding(entry, info, depth + 1));
+  }
+}
+
+function getBindingInfo(value, { warn = true } = {}) {
+  const info = createBindingInfo();
+  inspectBinding(value, info);
+
+  if (warn && info.hasBinding) {
+    if (info.hasNested) {
+      warnBinding(NESTED_BINDING_WARNING);
+    }
+
+    if (info.hasBindingArray) {
+      warnBinding(ARRAY_BINDING_WARNING);
+    }
+
+    if (info.hasGetter && info.hasReactive) {
+      warnBinding(MIXED_BINDING_WARNING);
+    }
+  }
+
+  return info;
+}
+
+// A binding is any value that resolves through Feather's binding pipeline.
+// Functions are the primary reactive form; shallow objects are supported for prop maps.
+function isBindingGetter(value) {
+  return getBindingInfo(value, { warn: false }).hasGetter;
+}
+
+function isBinding(value) {
+  return getBindingInfo(value, { warn: false }).hasBinding;
+}
+
+function unwrapBinding(value, depth = 0) {
+  if (typeof value === 'function' && value.length === 0) {
+    return unwrapBinding(value(), depth);
+  }
+
+  if (isReactive(value)) {
+    return unwrapBinding(value.get(), depth);
+  }
+
+  if (Array.isArray(value)) {
+    if (depth > 0) {
+      warnBinding(NESTED_BINDING_WARNING);
+    }
+
+    if (depth >= MAX_BINDING_DEPTH) {
+      return value;
+    }
+
+    return value.map((entry) => unwrapBinding(entry, depth + 1));
+  }
+
+  if (isPlainObject(value)) {
+    if (depth > 0) {
+      warnBinding(NESTED_BINDING_WARNING);
+    }
+
+    if (depth >= MAX_BINDING_DEPTH) {
+      return value;
+    }
+
     return Object.fromEntries(
-      Object.entries(value).map(([key, entryValue]) => [key, unwrapBinding(entryValue)]),
+      Object.entries(value).map(([key, entryValue]) => [key, unwrapBinding(entryValue, depth + 1)]),
     );
   }
 
@@ -203,11 +273,13 @@ function createBindingGetter(value, legacyMessage = null) {
     return () => unwrapBinding(value());
   }
 
-  if (isBindingGetter(value)) {
+  const bindingInfo = getBindingInfo(value);
+
+  if (bindingInfo.hasGetter) {
     return () => unwrapBinding(value);
   }
 
-  if (isBinding(value)) {
+  if (bindingInfo.hasBinding) {
     if (legacyMessage) {
       warnBinding(legacyMessage);
     }
@@ -225,6 +297,14 @@ function mapBinding(value, mapper, legacyMessage = null) {
   }
 
   return mapper(unwrapBinding(value));
+}
+
+function mapJoinedBinding(parts, mapper) {
+  if (parts.some((entry) => isBinding(entry))) {
+    return () => mapper(parts.map((entry) => unwrapBinding(entry)));
+  }
+
+  return mapper(parts.map((entry) => unwrapBinding(entry)));
 }
 
 function resolveModelBindings(props = {}) {
@@ -531,9 +611,7 @@ function resolveBoxModelStyles(property, args) {
   }
 
   if (args.some(isBinding)) {
-    return {
-      [property]: () => args.map((value) => unwrapBinding(value)).join(' '),
-    };
+    return { [property]: mapJoinedBinding(args, (values) => values.join(' ')) };
   }
 
   return { [property]: args.map((value) => unwrapBinding(value)).join(' ') };
@@ -558,7 +636,10 @@ function resolveShadowValue(args) {
       } = value;
 
       if ([inset, x, y, blur, spread, color].some(isBinding)) {
-        return () => `${unwrapBinding(inset) ? 'inset ' : ''}${unwrapBinding(x)} ${unwrapBinding(y)} ${unwrapBinding(blur)} ${unwrapBinding(spread)} ${unwrapBinding(color)}`.trim();
+        return mapJoinedBinding(
+          [inset, x, y, blur, spread, color],
+          ([nextInset, nextX, nextY, nextBlur, nextSpread, nextColor]) => `${nextInset ? 'inset ' : ''}${nextX} ${nextY} ${nextBlur} ${nextSpread} ${nextColor}`.trim(),
+        );
       }
 
       return `${unwrapBinding(inset) ? 'inset ' : ''}${unwrapBinding(x)} ${unwrapBinding(y)} ${unwrapBinding(blur)} ${unwrapBinding(spread)} ${unwrapBinding(color)}`.trim();
@@ -568,7 +649,7 @@ function resolveShadowValue(args) {
   }
 
   if (args.some(isBinding)) {
-    return () => args.map((value) => unwrapBinding(value)).join(' ');
+    return mapJoinedBinding(args, (values) => values.join(' '));
   }
 
   return args.map((value) => unwrapBinding(value)).join(' ');
@@ -659,11 +740,11 @@ function withModifiers(node) {
 
     return node;
   });
-  addModifierMethod(node, 'when', (condition, applyWhenTrue) => (read(condition)
+  addModifierMethod(node, 'when', (condition, applyWhenTrue) => (unwrapBinding(condition)
     ? (typeof applyWhenTrue === 'function' ? applyWhenTrue(node) : node)
     : node));
   addModifierMethod(node, 'if', (condition, truthyValue, falsyValue = null) => {
-    if (read(condition)) {
+    if (unwrapBinding(condition)) {
       return typeof truthyValue === 'function' ? truthyValue(node) : truthyValue || node;
     }
 
@@ -671,7 +752,7 @@ function withModifiers(node) {
   });
   addModifierMethod(node, 'as', (value) => withModifiers({
     ...cloneNode(node),
-    nodeType: read(value) || node.nodeType,
+    nodeType: unwrapBinding(value) || node.nodeType,
   }));
   addModifierMethod(node, 'aria', (key, value = true) => addAttributes(node, {
     [`aria-${String(key).replace(/^aria-/, '')}`]: value,
@@ -826,6 +907,14 @@ function withModifiers(node) {
   addModifierMethod(node, 'hideWhen', (value = true) => setNodeProp(node, 'hideWhen', value));
   addModifierMethod(node, 'focusWhen', (value = true) => setNodeProp(node, 'focusWhen', value));
 
+  Object.keys(node.meta?.modifiers || {}).forEach((name) => {
+    if (name in node) {
+      return;
+    }
+
+    addModifierMethod(node, name, (value) => applyPrimitiveModifier(node, name, value));
+  });
+
   return node;
 }
 
@@ -872,7 +961,7 @@ export function mergeProps(...sources) {
 
   if (classNames.length > 0) {
     if (hasReactiveClassName) {
-      nextProps.className = classNames;
+      nextProps.className = mapJoinedBinding(classNames, (values) => cx(values));
     } else {
       const mergedClassName = cx(classNames);
       if (mergedClassName) {
@@ -1200,22 +1289,52 @@ function applyResolvedProp(element, key, nextValue, context) {
   element.setAttribute(key, String(nextValue));
 }
 
-function applyReactiveProp(element, key, value, context) {
+function createReactivePropBinding(key, value) {
   const legacyMessage = `Feather: pass reactive values to ${key} as functions, for example ${key}(() => value.get()). Direct reactive values still work for compatibility but are deprecated.`;
   const bindingGetter = (key.startsWith('on') || key === 'ref')
     ? null
     : createBindingGetter(value, legacyMessage);
 
-  if (bindingGetter) {
-    const stop = effect(() => {
-      applyResolvedProp(element, key, bindingGetter(), context);
-    });
+  if (!bindingGetter) {
+    return null;
+  }
 
-    context?.cleanup(stop);
+  return {
+    key,
+    get: bindingGetter,
+  };
+}
+
+function applyReactivePropBinding(element, binding, context) {
+  applyResolvedProp(element, binding.key, binding.get(), context);
+}
+
+function applyElementProps(element, props, context) {
+  // Bindings on the same node share one effect so prop-heavy elements scale better
+  // without changing the granularity of the actual prop updates.
+  const reactiveBindings = [];
+
+  Object.entries(props).forEach(([key, value]) => {
+    const binding = createReactivePropBinding(key, value);
+    if (binding) {
+      reactiveBindings.push(binding);
+      return;
+    }
+
+    applyResolvedProp(element, key, value, context);
+  });
+
+  if (reactiveBindings.length === 0) {
     return;
   }
 
-  applyResolvedProp(element, key, value, context);
+  const stop = effect(() => {
+    reactiveBindings.forEach((binding) => {
+      applyReactivePropBinding(element, binding, context);
+    });
+  });
+
+  context?.cleanup(stop);
 }
 
 function createElementNode(node, context) {
@@ -1241,9 +1360,7 @@ function createElementNode(node, context) {
   const childContext = usesSvgNamespace && !inSvgTree
     ? { ...context, svgNamespace: true }
     : context;
-  Object.entries(resolvedNode.nodeProps).forEach(([key, value]) => {
-    applyReactiveProp(element, key, value, childContext);
-  });
+  applyElementProps(element, resolvedNode.nodeProps, childContext);
 
   if (isBinding(node.meta?.state)) {
     let previousRuntimeProps = resolvedNode.nodeProps;
@@ -1278,6 +1395,8 @@ function createElementNode(node, context) {
 }
 
 function resolveRuntimeNode(node) {
+  // Runtime state also flows through the binding pipeline so modifiers, props,
+  // and control-flow helpers share the same mental model.
   const runtimeState = unwrapBinding(node.meta?.state || {});
   const preparedProps = typeof node.meta?.prepareProps === 'function'
     ? node.meta.prepareProps(node.nodeProps, node.children)
@@ -2108,18 +2227,14 @@ export const Link = createPrimitive('a', {
 });
 
 export function ForEach(items, renderItem) {
-  if (typeof items === 'function') {
-    return () => {
-      const resolvedItems = read(items());
-      if (!Array.isArray(resolvedItems)) return [];
-      return resolvedItems.map((item, index) => renderItem(item, index));
-    };
-  }
+  const itemsGetter = createBindingGetter(
+    items,
+    'Feather: pass reactive ForEach sources as functions, for example ForEach(() => items.get(), renderItem). Direct reactive sources still work for compatibility but are deprecated.',
+  );
 
-  if (isBinding(items)) {
-    warnBinding('Feather: pass reactive ForEach sources as functions, for example ForEach(() => items.get(), renderItem). Direct reactive sources still work for compatibility but are deprecated.');
+  if (itemsGetter) {
     return () => {
-      const resolvedItems = read(items);
+      const resolvedItems = read(itemsGetter());
       if (!Array.isArray(resolvedItems)) return [];
       return resolvedItems.map((item, index) => renderItem(item, index));
     };
@@ -2131,13 +2246,13 @@ export function ForEach(items, renderItem) {
 }
 
 export function Show(condition, truthyValue, falsyValue = null) {
-  if (typeof condition === 'function') {
-    return () => (read(condition()) ? truthyValue : falsyValue);
-  }
+  const conditionGetter = createBindingGetter(
+    condition,
+    'Feather: pass reactive Show conditions as functions, for example Show(() => open.get(), shown, hidden). Direct reactive conditions still work for compatibility but are deprecated.',
+  );
 
-  if (isBinding(condition)) {
-    warnBinding('Feather: pass reactive Show conditions as functions, for example Show(() => open.get(), shown, hidden). Direct reactive conditions still work for compatibility but are deprecated.');
-    return () => (read(condition) ? truthyValue : falsyValue);
+  if (conditionGetter) {
+    return () => (read(conditionGetter()) ? truthyValue : falsyValue);
   }
 
   return read(condition) ? truthyValue : falsyValue;

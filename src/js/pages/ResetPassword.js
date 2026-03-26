@@ -394,13 +394,7 @@ const ResetPassword = page({
             )
               .form(ctx.form)
               .id('rpForm')
-              .style({
-                display: () => ctx.transition.style.display.get(),
-                opacity: () => ctx.transition.style.opacity.get(),
-                pointerEvents: () => ctx.transition.style.pointerEvents.get(),
-                transform: () => ctx.transition.style.transform.get(),
-                transition: () => ctx.transition.style.transition.get(),
-              }),
+              .style(ctx.transition.style),
             Box(
               Box(
                 Icon()
