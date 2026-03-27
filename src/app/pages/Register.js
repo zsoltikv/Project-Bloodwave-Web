@@ -2,6 +2,7 @@ import '../../styles/pages/Register.css';
 import { register } from '../services/auth.js';
 import { ensureGlobalStarfield } from '../effects/global-starfield.js';
 import { usernameIsProfane } from '../utils/profanity.js';
+import { attachCapsLockHints } from '../utils/caps-lock.js';
 
 export default function Register(container) {
   container.innerHTML = `
@@ -57,6 +58,7 @@ export default function Register(container) {
                 </button>
                 <div class="bw-input-line" id="pwStrengthLine"></div>
               </div>
+              <span class="bw-caps-lock-hint" id="rxPasswordCapsHint" aria-live="polite" aria-hidden="true">Caps Lock is on</span>
               <span class="bw-error" id="rxPasswordError"></span>
             </div>
 
@@ -72,6 +74,7 @@ export default function Register(container) {
                 </button>
                 <div class="bw-input-line"></div>
               </div>
+              <span class="bw-caps-lock-hint" id="rxConfirmCapsHint" aria-live="polite" aria-hidden="true">Caps Lock is on</span>
               <span class="bw-error" id="rxConfirmError"></span>
             </div>
 
@@ -121,6 +124,8 @@ export default function Register(container) {
   const pwError      = document.getElementById('rxPasswordError');
   const confirmError = document.getElementById('rxConfirmError');
   const tosError     = document.getElementById('rxTosError');
+  const pwCapsHint   = document.getElementById('rxPasswordCapsHint');
+  const confirmCapsHint = document.getElementById('rxConfirmCapsHint');
 
   // --- Validation helpers ---
   function clearErrors() {
@@ -278,6 +283,11 @@ export default function Register(container) {
     confirmInput.type = hidden ? 'text' : 'password';
     document.getElementById('rxConfirmEyeIcon').innerHTML = hidden ? eyeClosed : eyeOpen;
   });
+
+  attachCapsLockHints([
+    { input: pwInput, hintEl: pwCapsHint },
+    { input: confirmInput, hintEl: confirmCapsHint },
+  ]);
 }
 
 /* ============================================================

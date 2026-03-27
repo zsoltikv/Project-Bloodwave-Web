@@ -3,6 +3,7 @@ import { API_BASE, getUser, logout, authFetch } from '../services/auth.js';
 import { confirmLogout, confirmDeleteAccount, showDeleteAccountError } from '../effects/logout-confirm.js';
 import { ensureGlobalStarfield } from '../effects/global-starfield.js';
 import { usernameIsProfane } from '../utils/profanity.js';
+import { attachCapsLockHints } from '../utils/caps-lock.js';
 
 export default function UserPanel(container) {
   const cachedUser = getUser();
@@ -210,14 +211,17 @@ export default function UserPanel(container) {
           <div class="up-form-field">
             <label class="up-form-label">Current Password</label>
             <input type="password" id="upPasswordCurrent" class="up-form-input" placeholder="············" autocomplete="off" />
+            <span class="up-caps-lock-hint" id="upPasswordCurrentCapsHint" aria-live="polite" aria-hidden="true">Caps Lock is on</span>
           </div>
           <div class="up-form-field">
             <label class="up-form-label">New Password</label>
             <input type="password" id="upPasswordNew" class="up-form-input" placeholder="············" autocomplete="off" />
+            <span class="up-caps-lock-hint" id="upPasswordNewCapsHint" aria-live="polite" aria-hidden="true">Caps Lock is on</span>
           </div>
           <div class="up-form-field">
             <label class="up-form-label">Confirm Password</label>
             <input type="password" id="upPasswordConfirm" class="up-form-input" placeholder="············" autocomplete="off" />
+            <span class="up-caps-lock-hint" id="upPasswordConfirmCapsHint" aria-live="polite" aria-hidden="true">Caps Lock is on</span>
           </div>
           <div class="up-form-actions">
             <button type="submit" class="up-settings-btn">Change</button>
@@ -659,6 +663,21 @@ export default function UserPanel(container) {
   document.getElementById('upDeleteAccount')?.addEventListener('click', async () => {
     await doDeleteAccount(document.getElementById('upDeleteAccount'));
   });
+
+  attachCapsLockHints([
+    {
+      input: document.getElementById('upPasswordCurrent'),
+      hintEl: document.getElementById('upPasswordCurrentCapsHint'),
+    },
+    {
+      input: document.getElementById('upPasswordNew'),
+      hintEl: document.getElementById('upPasswordNewCapsHint'),
+    },
+    {
+      input: document.getElementById('upPasswordConfirm'),
+      hintEl: document.getElementById('upPasswordConfirmCapsHint'),
+    },
+  ]);
 
   document.getElementById('upBackToDashboard')?.addEventListener('click', (e) => {
     e.preventDefault();

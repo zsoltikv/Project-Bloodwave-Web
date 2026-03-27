@@ -254,6 +254,25 @@ body {
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.18);
 }
 
+.bw-confirm-caps-lock-hint {
+  min-height: 14px;
+  margin: 8px 0 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.82);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  pointer-events: none;
+}
+
+.bw-confirm-caps-lock-hint.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .bw-confirm-error {
   min-height: 16px;
   margin: 8px 0 0;

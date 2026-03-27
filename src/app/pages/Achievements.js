@@ -70,6 +70,9 @@ const ACHIEVEMENT_IMAGE_KEY_BY_ID = {
 };
 
 export default function Achievements(container) {
+  let achievementView = 'unlocked-first';
+  let cachedAchievements = [];
+  let cachedUnlockedMap = new Map();
   container.innerHTML = `
     <div class="lb-root">
       <div class="lb-glow"></div>
@@ -161,6 +164,18 @@ export default function Achievements(container) {
             </div>
             <h1 class="lb-title">Achievements</h1>
             <p class="lb-subtitle">Track your unlocked milestones</p>
+            <div class="ach-toolbar">
+              <label class="ach-control ach-sort" for="ac-view-select">
+                <span class="ach-control-label">Browse By</span>
+                <select class="ach-control-select ach-sort-select" id="ac-view-select" aria-label="Browse achievements">
+                  <option value="all">All Achievements</option>
+                  <option value="unlocked-only">Unlocked Only</option>
+                  <option value="locked-only">Locked Only</option>
+                  <option value="unlocked-first">Unlocked First</option>
+                  <option value="recent-unlocked">Recently Unlocked</option>
+                </select>
+              </label>
+            </div>
           </div>
 
           <section class="ach-summary" id="ac-summary"></section>
@@ -174,6 +189,7 @@ export default function Achievements(container) {
 
   const user = getUser();
   const fallbackDisplayName = user?.username ?? user?.email ?? 'Member';
+  const viewSelect = container.querySelector('#ac-view-select');
 
   const ddUsernameEl = container.querySelector('#ac-dd-username');
   const mobileUsernameEl = container.querySelector('#ac-mobile-username');
@@ -231,6 +247,11 @@ export default function Achievements(container) {
 
   container.querySelector('#ac-dd-logout')?.addEventListener('click', doLogout);
   container.querySelector('#ac-mobile-logout')?.addEventListener('click', doLogout);
+
+  viewSelect?.addEventListener('change', (event) => {
+    achievementView = event.target.value || 'unlocked-first';
+    renderAchievements(cachedAchievements, cachedUnlockedMap);
+  });
 
   async function refreshNavbarUsername() {
     try {
@@ -368,12 +389,22 @@ export default function Achievements(container) {
       return;
     }
 
-    const sorted = [...achievements].sort((a, b) => Number(a.id) - Number(b.id));
-    const unlockedCount = sorted.reduce((count, achievement) => {
+    const unlockedCount = achievements.reduce((count, achievement) => {
       return count + (unlockedMap.has(Number(achievement.id)) ? 1 : 0);
     }, 0);
+    const sorted = applyAchievementView(achievements, unlockedMap, achievementView);
 
-    renderSummary(sorted.length, unlockedCount);
+    renderSummary(achievements.length, unlockedCount);
+
+    if (!sorted.length) {
+      const emptyMessage = achievementView === 'unlocked-only'
+        ? 'No unlocked achievements yet.'
+        : achievementView === 'locked-only'
+          ? 'No locked achievements remaining.'
+          : 'No achievements available.';
+      gridEl.innerHTML = `<div class="ach-loading">${escapeHtml(emptyMessage)}</div>`;
+      return;
+    }
 
     gridEl.innerHTML = sorted.map((achievement) => {
       const achievementId = Number(achievement.id);
@@ -435,9 +466,74 @@ export default function Achievements(container) {
         });
       }
 
-      renderAchievements(allAchievements, unlockedMap);
+      cachedAchievements = Array.isArray(allAchievements) ? allAchievements : [];
+      cachedUnlockedMap = unlockedMap;
+      renderAchievements(cachedAchievements, cachedUnlockedMap);
     } catch (error) {
       renderError(error?.message || 'Failed to load achievements.');
+    }
+  }
+
+  function sortAchievements(achievements, unlockedMap, sortKey) {
+    const normalized = Array.isArray(achievements) ? [...achievements] : [];
+
+    const getUnlockedTime = (achievement) => {
+      const raw = unlockedMap.get(Number(achievement?.id));
+      if (!raw) return 0;
+      const parsed = new Date(/(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw) ? raw : `${raw}Z`);
+      return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
+    };
+
+    switch (sortKey) {
+      case 'unlocked-first':
+        return normalized.sort((a, b) => {
+          const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
+          const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
+          if (rightUnlocked !== leftUnlocked) return rightUnlocked - leftUnlocked;
+          return Number(a.id) - Number(b.id);
+        });
+      case 'recent-unlocked':
+        return normalized.sort((a, b) => {
+          const leftUnlockedTime = getUnlockedTime(a);
+          const rightUnlockedTime = getUnlockedTime(b);
+          if (rightUnlockedTime !== leftUnlockedTime) return rightUnlockedTime - leftUnlockedTime;
+          const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
+          const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
+          if (rightUnlocked !== leftUnlocked) return rightUnlocked - leftUnlocked;
+          return Number(a.id) - Number(b.id);
+        });
+      default:
+        return normalized.sort((a, b) => {
+          const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
+          const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
+          if (rightUnlocked !== leftUnlocked) return rightUnlocked - leftUnlocked;
+          return Number(a.id) - Number(b.id);
+        });
+    }
+  }
+
+  function applyAchievementView(achievements, unlockedMap, viewKey) {
+    const normalized = Array.isArray(achievements) ? [...achievements] : [];
+
+    switch (viewKey) {
+      case 'unlocked-only':
+        return sortAchievements(
+          normalized.filter((achievement) => unlockedMap.has(Number(achievement?.id))),
+          unlockedMap,
+          'unlocked-first',
+        );
+      case 'locked-only':
+        return sortAchievements(
+          normalized.filter((achievement) => !unlockedMap.has(Number(achievement?.id))),
+          unlockedMap,
+          'unlocked-first',
+        );
+      case 'recent-unlocked':
+        return sortAchievements(normalized, unlockedMap, 'recent-unlocked');
+      case 'all':
+      case 'unlocked-first':
+      default:
+        return sortAchievements(normalized, unlockedMap, 'unlocked-first');
     }
   }
 

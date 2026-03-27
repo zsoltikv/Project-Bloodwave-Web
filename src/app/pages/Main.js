@@ -46,6 +46,8 @@ const ITEM_IMAGE_BY_ID = {
 };
 
 export default function Main(container) {
+  let matches = [];
+  let matchesSort = 'playedAt-desc';
   container.innerHTML = `
     
 
@@ -159,6 +161,19 @@ export default function Main(container) {
               <span class="mn-viewing-kicker">Viewing</span>
               <span class="mn-viewing-name" id="mn-viewing-name">-</span>
             </p>
+            <div class="mn-toolbar">
+              <label class="mn-sort" for="mn-sort-select">
+                <span class="mn-sort-label">Order By</span>
+                <select class="mn-sort-select" id="mn-sort-select" aria-label="Sort matches">
+                  <option value="playedAt-desc">Newest First</option>
+                  <option value="playedAt-asc">Oldest First</option>
+                  <option value="duration-desc">Longest Run</option>
+                  <option value="duration-asc">Shortest Run</option>
+                  <option value="level-desc">Highest Level</option>
+                  <option value="kills-desc">Most Kills</option>
+                </select>
+              </label>
+            </div>
           </div>
 
           <div class="mn-matches-layout">
@@ -207,10 +222,10 @@ export default function Main(container) {
   }
 
   // ── Matches list + details ───────────────────────────────────────────────
-  let matches = [];
   const matchesList = container.querySelector('#mn-matches-list');
   const matchPanel  = container.querySelector('#mn-match-panel');
   const playerStatsSection = container.querySelector('#mn-player-stats');
+  const sortSelect = container.querySelector('#mn-sort-select');
   const viewedPlayerId = getViewedPlayerIdFromQuery();
   let selectedMatchId = null;
 
@@ -258,13 +273,19 @@ export default function Main(container) {
   function renderMatches() {
     if (!matchesList) return;
 
-    if (!matches.length) {
+    const sortedMatches = sortMatches(matches, matchesSort);
+
+    if (!sortedMatches.length) {
       matchesList.innerHTML = '<div class="mn-match-empty">No played matches yet.</div>';
       renderMatchPanel(null);
       return;
     }
 
-    matchesList.innerHTML = matches.map((match, index) => {
+    if (!sortedMatches.some((match) => match.id === selectedMatchId)) {
+      selectedMatchId = sortedMatches[0]?.id ?? null;
+    }
+
+    matchesList.innerHTML = sortedMatches.map((match, index) => {
       const isActive = match.id === selectedMatchId;
       const swipeDelayMs = Math.min(index * 55, 440);
       const swipeShiftPx = Math.min(20 + index * 3, 42);
@@ -286,7 +307,7 @@ export default function Main(container) {
       `;
     }).join('');
 
-    renderMatchPanel(matches.find((m) => m.id === selectedMatchId));
+    renderMatchPanel(sortedMatches.find((m) => m.id === selectedMatchId));
   }
 
   function syncActiveMatchItem() {
@@ -305,7 +326,12 @@ export default function Main(container) {
 
     selectedMatchId = target.dataset.matchId;
     syncActiveMatchItem();
-    renderMatchPanel(matches.find((m) => m.id === selectedMatchId));
+    renderMatchPanel(sortMatches(matches, matchesSort).find((m) => m.id === selectedMatchId));
+  });
+
+  sortSelect?.addEventListener('change', (event) => {
+    matchesSort = event.target.value || 'playedAt-desc';
+    renderMatches();
   });
 
   if (matchesList) {
@@ -679,6 +705,38 @@ function mapApiMatches(apiMatches) {
       };
     })
     .sort((left, right) => parseBackendDate(right.playedAt).getTime() - parseBackendDate(left.playedAt).getTime());
+}
+
+function sortMatches(matches, sortKey) {
+  const rows = Array.isArray(matches) ? [...matches] : [];
+
+  switch (sortKey) {
+    case 'playedAt-asc':
+      return rows.sort((a, b) => parseBackendDate(a.playedAt).getTime() - parseBackendDate(b.playedAt).getTime());
+    case 'duration-desc':
+      return rows.sort((a, b) => {
+        if (b.durationSeconds !== a.durationSeconds) return b.durationSeconds - a.durationSeconds;
+        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+      });
+    case 'duration-asc':
+      return rows.sort((a, b) => {
+        if (a.durationSeconds !== b.durationSeconds) return a.durationSeconds - b.durationSeconds;
+        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+      });
+    case 'level-desc':
+      return rows.sort((a, b) => {
+        if (b.levelReached !== a.levelReached) return b.levelReached - a.levelReached;
+        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+      });
+    case 'kills-desc':
+      return rows.sort((a, b) => {
+        if (b.enemiesKilled !== a.enemiesKilled) return b.enemiesKilled - a.enemiesKilled;
+        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+      });
+    case 'playedAt-desc':
+    default:
+      return rows.sort((a, b) => parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime());
+  }
 }
 
 function mapMatchEntities(entities, type) {

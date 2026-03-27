@@ -1,6 +1,7 @@
 import '../../styles/pages/ResetPassword.css';
 import { API_BASE } from '../services/auth.js';
 import { ensureGlobalStarfield } from '../effects/global-starfield.js';
+import { attachCapsLockHints } from '../utils/caps-lock.js';
 
 export default function ResetPassword(container) {
   container.innerHTML = `
@@ -48,6 +49,7 @@ export default function ResetPassword(container) {
                   </button>
                   <div class="bw-input-line"></div>
                 </div>
+                <span class="bw-caps-lock-hint" id="rpPasswordCapsHint" aria-live="polite" aria-hidden="true">Caps Lock is on</span>
                 <span class="bw-error" id="rpPasswordError"></span>
               </div>
 
@@ -71,6 +73,7 @@ export default function ResetPassword(container) {
                   </button>
                   <div class="bw-input-line"></div>
                 </div>
+                <span class="bw-caps-lock-hint" id="rpConfirmCapsHint" aria-live="polite" aria-hidden="true">Caps Lock is on</span>
                 <span class="bw-error" id="rpConfirmError"></span>
               </div>
 
@@ -118,6 +121,8 @@ export default function ResetPassword(container) {
   const confirmError = document.getElementById('rpConfirmError');
   const generalError = document.getElementById('rpGeneralError');
   const successPanel = document.getElementById('rpSuccess');
+  const passwordCapsHint = document.getElementById('rpPasswordCapsHint');
+  const confirmCapsHint = document.getElementById('rpConfirmCapsHint');
 
   function getParamFromUrl(name) {
     const searchParams = new URLSearchParams(window.location.search);
@@ -232,4 +237,9 @@ export default function ResetPassword(container) {
     confirmInput.type = hidden ? 'text' : 'password';
     document.getElementById('rpConfirmEyeIcon').innerHTML = hidden ? eyeClosed : eyeOpen;
   });
+
+  attachCapsLockHints([
+    { input: passwordInput, hintEl: passwordCapsHint },
+    { input: confirmInput, hintEl: confirmCapsHint },
+  ]);
 }

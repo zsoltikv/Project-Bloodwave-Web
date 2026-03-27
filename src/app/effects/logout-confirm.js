@@ -1,3 +1,5 @@
+import { attachCapsLockHint } from '../utils/caps-lock.js';
+
 export function confirmLogout() {
   return new Promise((resolve) => {
     const overlay = document.createElement('div');
@@ -120,6 +122,7 @@ export function confirmDeleteAccount(expectedUsername) {
           autocomplete="current-password"
           placeholder="Enter password"
         />
+        <p class="bw-confirm-caps-lock-hint" id="bw-confirm-delete-caps-lock" aria-live="polite" aria-hidden="true">Caps Lock is on</p>
         <p class="bw-confirm-error" id="bw-confirm-delete-error" aria-live="polite"></p>
 
         <div class="bw-confirm-actions">
@@ -134,6 +137,7 @@ export function confirmDeleteAccount(expectedUsername) {
     const card = overlay.querySelector('.bw-confirm-card');
     const usernameInput = overlay.querySelector('#bw-confirm-delete-username');
     const passwordInput = overlay.querySelector('#bw-confirm-delete-password');
+    const capsLockHint = overlay.querySelector('#bw-confirm-delete-caps-lock');
     const errorEl = overlay.querySelector('#bw-confirm-delete-error');
     let isClosing = false;
 
@@ -212,6 +216,7 @@ export function confirmDeleteAccount(expectedUsername) {
 
     document.addEventListener('keydown', onKeyDown);
     document.body.appendChild(overlay);
+    attachCapsLockHint(passwordInput, capsLockHint);
     updateConfirmState();
     usernameInput?.focus();
   });

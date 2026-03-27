@@ -788,6 +788,23 @@
         box-shadow: 0 0 14px rgba(212,175,55,0.15), inset 0 0 8px rgba(212,175,55,0.05);
       }
 
+      .up-caps-lock-hint {
+        min-height: 14px;
+        font-size: 10px;
+        letter-spacing: 1.3px;
+        color: rgba(212,175,55,0.78);
+        text-transform: uppercase;
+        opacity: 0;
+        transform: translateY(-2px);
+        transition: opacity 0.22s ease, transform 0.22s ease;
+        pointer-events: none;
+      }
+
+      .up-caps-lock-hint.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
       .up-form-error {
         display: none;
         position: relative;

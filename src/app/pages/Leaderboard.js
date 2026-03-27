@@ -4,6 +4,8 @@ import { confirmLogout } from '../effects/logout-confirm.js';
 import { ensureGlobalStarfield } from '../effects/global-starfield.js';
 
 export default function Leaderboard(container) {
+  let leaderboardRows = [];
+  let leaderboardSort = 'rank';
   container.innerHTML = `
     
 
@@ -114,6 +116,18 @@ export default function Leaderboard(container) {
             </div>
             <h1 class="lb-title">Global Leaderboard</h1>
             <p class="lb-subtitle">Worldwide&nbsp;&nbsp;rankings</p>
+            <div class="lb-toolbar">
+              <label class="lb-sort" for="lb-sort-select">
+                <span class="lb-sort-label">Order By</span>
+                <select class="lb-sort-select" id="lb-sort-select" aria-label="Sort leaderboard">
+                  <option value="rank">Rank</option>
+                  <option value="level-desc">Highest Level</option>
+                  <option value="time-asc">Fastest Time</option>
+                  <option value="time-desc">Longest Time</option>
+                  <option value="name-asc">Username A-Z</option>
+                </select>
+              </label>
+            </div>
           </div>
 
           <!-- Leaderboard Grid -->
@@ -200,6 +214,7 @@ export default function Leaderboard(container) {
 
   // ========== NAVBAR SETUP ==========
   const user = getUser();
+  const sortSelect = document.getElementById('lb-sort-select');
   document.getElementById('lb-dd-username').textContent = user?.username || '—';
   document.getElementById('lb-mobile-username').textContent = user?.username || '—';
   refreshNavbarUsername();
@@ -275,6 +290,11 @@ export default function Leaderboard(container) {
   document.getElementById('lb-dd-logout')?.addEventListener('click', doLogout);
   document.getElementById('lb-mobile-logout')?.addEventListener('click', doLogout);
 
+  sortSelect?.addEventListener('change', (event) => {
+    leaderboardSort = event.target.value || 'rank';
+    renderLeaderboard();
+  });
+
   // ========== FETCH LEADERBOARD DATA ==========
   async function loadLeaderboard() {
     try {
@@ -286,108 +306,77 @@ export default function Leaderboard(container) {
       });
       if (!response.ok) throw new Error('Failed to fetch leaderboard');
       const matches = await response.json();
-
-      const grid = document.getElementById('lb-grid');
-      grid.innerHTML = '';
-
-      const leaderboardRows = buildLeaderboardRows(matches, currentUserContext);
-
-      if (!leaderboardRows.length) {
-        grid.innerHTML = '<div class="lb-empty">No players yet</div>';
-        return;
-      }
-
-      // Maps for post-fetch username hydration and YOU fallback matching.
-      const userIdToUsernameEl = new Map();
-      const userIdToCardEl = new Map();
-      const userIdToYouBadgeEl = new Map();
-
-      leaderboardRows.forEach((entry, index) => {
-        const card = document.createElement('div');
-        card.className = 'lb-card';
-        if (index < 3) card.classList.add(`lb-rank-${index + 1}`);
-        if (entry.isCurrentUser) card.classList.add('lb-card-you');
-
-        const medal = index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
-
-        card.innerHTML = `
-          <div class="lb-card-corner lb-card-corner--tl"></div>
-          <div class="lb-card-corner lb-card-corner--tr"></div>
-          <div class="lb-card-corner lb-card-corner--bl"></div>
-          <div class="lb-card-corner lb-card-corner--br"></div>
-          <div class="lb-card-body">
-            <div class="lb-card-rank">${medal}</div>
-            <div class="lb-card-username-wrap">
-              <div class="lb-card-username" data-user-id="${entry.userId}">Loading…</div>
-              <span class="lb-you-badge ${entry.isCurrentUser ? '' : 'is-hidden'}">YOU</span>
-            </div>
-            <div class="lb-card-sep"></div>
-            <div class="lb-card-stats">
-              <div class="lb-stat">
-                <span class="lb-stat-label">Level</span>
-                <span class="lb-stat-value js-lb-count" data-type="int" data-target="${entry.level || 0}">${entry.level || 0}</span>
-              </div>
-              <div class="lb-stat">
-                <span class="lb-stat-label">Run Time</span>
-                <span class="lb-stat-value js-lb-count" data-type="time-hm" data-target="${Math.max(0, Math.round(entry.runTimeMs || 0))}">${formatTime(entry.runTimeMs || 0)}</span>
-              </div>
-            </div>
-          </div>
-        `;
-
-        // Add click event to navigate to player's matches (skip for current user)
-        if (!entry.isCurrentUser) {
-          card.classList.add('lb-card--clickable');
-          card.addEventListener('click', () => {
-            window.router?.navigate(`/main?userId=${encodeURIComponent(entry.userId)}`);
-          });
-        } else {
-          // Ensure own card does not appear clickable and is ignored by click
-          card.setAttribute('aria-disabled', 'true');
-          card.style.cursor = 'default';
-
-          // Ensure native pointer cursor is disabled on your own card
-          // (CSS rule will enforce `cursor: default !important` for aria-disabled)
-        }
-
-        grid.appendChild(card);
-        userIdToUsernameEl.set(entry.userId, card.querySelector('.lb-card-username'));
-        userIdToCardEl.set(entry.userId, card);
-        userIdToYouBadgeEl.set(entry.userId, card.querySelector('.lb-you-badge'));
-      });
-
-      // Fetch usernames for all unique userIds
-      const userIdList = Array.from(userIdToUsernameEl.keys());
-      await Promise.all(userIdList.map(async (userId) => {
-        try {
-          const res = await authFetch(`${API_BASE}/api/User/name?id=${encodeURIComponent(userId)}`, {
-            method: 'GET',
-            headers: { Accept: 'application/json' },
-          });
-          if (!res.ok) throw new Error('User not found');
-          const data = await res.json();
-          const username = data?.username || `User #${userId}`;
-          const el = userIdToUsernameEl.get(userId);
-          if (el) el.textContent = username;
-
-          // Fallback: if ID-based match failed (or was unavailable), match by username.
-          if (!leaderboardRows.find((row) => row.userId === userId)?.isCurrentUser && isSameUsername(username, currentUserContext?.username)) {
-            const cardEl = userIdToCardEl.get(userId);
-            const badgeEl = userIdToYouBadgeEl.get(userId);
-            if (cardEl) cardEl.classList.add('lb-card-you');
-            if (badgeEl) badgeEl.classList.remove('is-hidden');
-          }
-        } catch {
-          const el = userIdToUsernameEl.get(userId);
-          if (el) el.textContent = `User #${userId}`;
-        }
-      }));
-
-      animateLbStats(grid);
+      const baseRows = buildLeaderboardRows(matches, currentUserContext);
+      leaderboardRows = await hydrateLeaderboardRows(baseRows, currentUserContext);
+      renderLeaderboard();
     } catch (error) {
       console.error('Leaderboard error:', error);
       document.getElementById('lb-grid').innerHTML = '<div class="lb-empty">Failed to load leaderboard</div>';
     }
+  }
+
+  function renderLeaderboard() {
+    const grid = document.getElementById('lb-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    if (!leaderboardRows.length) {
+      grid.innerHTML = '<div class="lb-empty">No players yet</div>';
+      return;
+    }
+
+    const sortedRows = sortLeaderboardRows(leaderboardRows, leaderboardSort);
+
+    sortedRows.forEach((entry, index) => {
+      const card = document.createElement('div');
+      card.className = 'lb-card';
+      if (leaderboardSort === 'rank' && index < 3) card.classList.add(`lb-rank-${index + 1}`);
+      if (entry.isCurrentUser) card.classList.add('lb-card-you');
+
+      const medal = leaderboardSort === 'rank'
+        ? (index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`)
+        : `${index + 1}.`;
+
+      card.innerHTML = `
+        <div class="lb-card-corner lb-card-corner--tl"></div>
+        <div class="lb-card-corner lb-card-corner--tr"></div>
+        <div class="lb-card-corner lb-card-corner--bl"></div>
+        <div class="lb-card-corner lb-card-corner--br"></div>
+        <div class="lb-card-body">
+          <div class="lb-card-rank">${medal}</div>
+          <div class="lb-card-username-wrap">
+            <div class="lb-card-username" data-user-id="${entry.userId}">${escapeHtml(entry.username)}</div>
+            <span class="lb-you-badge ${entry.isCurrentUser ? '' : 'is-hidden'}">YOU</span>
+          </div>
+          <div class="lb-card-sep"></div>
+          <div class="lb-card-stats">
+            <div class="lb-stat">
+              <span class="lb-stat-label">Level</span>
+              <span class="lb-stat-value js-lb-count" data-type="int" data-target="${entry.level || 0}">${entry.level || 0}</span>
+            </div>
+            <div class="lb-stat">
+              <span class="lb-stat-label">Run Time</span>
+              <span class="lb-stat-value js-lb-count" data-type="time-hm" data-target="${Math.max(0, Math.round(entry.runTimeMs || 0))}">${formatTime(entry.runTimeMs || 0)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (!entry.isCurrentUser) {
+        card.classList.add('lb-card--clickable');
+        card.addEventListener('click', () => {
+          window.router?.navigate(`/main?userId=${encodeURIComponent(entry.userId)}`);
+        });
+      } else {
+        card.setAttribute('aria-disabled', 'true');
+        card.style.cursor = 'default';
+      }
+
+      grid.appendChild(card);
+    });
+
+    animateLbStats(grid);
   }
 
   function normalizeRunTimeMs(rawTime) {
@@ -495,6 +484,67 @@ export default function Leaderboard(container) {
     return Array.from(bestByUserId.values()).sort(compareByRank);
   }
 
+  async function hydrateLeaderboardRows(rows, currentUserContext) {
+    if (!Array.isArray(rows) || !rows.length) return [];
+
+    return Promise.all(rows.map(async (row) => {
+      try {
+        const res = await authFetch(`${API_BASE}/api/User/name?id=${encodeURIComponent(row.userId)}`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error('User not found');
+
+        const data = await res.json();
+        const username = data?.username || row.username || `User #${row.userId}`;
+        return {
+          ...row,
+          username,
+          isCurrentUser: row.isCurrentUser || isSameUsername(username, currentUserContext?.username),
+        };
+      } catch {
+        return {
+          ...row,
+          username: row.username || `User #${row.userId}`,
+        };
+      }
+    }));
+  }
+
+  function sortLeaderboardRows(rows, sortKey) {
+    const normalizedRows = Array.isArray(rows) ? [...rows] : [];
+
+    switch (sortKey) {
+      case 'level-desc':
+        return normalizedRows.sort((a, b) => {
+          if (b.level !== a.level) return b.level - a.level;
+          if (b.runTimeMs !== a.runTimeMs) return b.runTimeMs - a.runTimeMs;
+          return a.username.localeCompare(b.username);
+        });
+      case 'time-asc':
+        return normalizedRows.sort((a, b) => {
+          if (a.runTimeMs !== b.runTimeMs) return a.runTimeMs - b.runTimeMs;
+          if (b.level !== a.level) return b.level - a.level;
+          return a.username.localeCompare(b.username);
+        });
+      case 'time-desc':
+        return normalizedRows.sort((a, b) => {
+          if (b.runTimeMs !== a.runTimeMs) return b.runTimeMs - a.runTimeMs;
+          if (b.level !== a.level) return b.level - a.level;
+          return a.username.localeCompare(b.username);
+        });
+      case 'name-asc':
+        return normalizedRows.sort((a, b) => {
+          const byName = a.username.localeCompare(b.username);
+          if (byName !== 0) return byName;
+          return compareByRank(a, b);
+        });
+      case 'rank':
+      default:
+        return normalizedRows.sort(compareByRank);
+    }
+  }
+
   function formatTime(timeMs) {
     const totalSeconds = Math.max(0, Math.round(Number(timeMs || 0) / 1000));
     const hours = Math.floor(totalSeconds / 3600);
@@ -504,6 +554,15 @@ export default function Leaderboard(container) {
     if (hours > 0) return `${hours}h ${minutes}m`;
     if (minutes > 0) return `${minutes}m ${seconds}s`;
     return `${seconds}s`;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function animateLbStats(container) {
