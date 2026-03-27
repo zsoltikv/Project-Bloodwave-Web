@@ -97,7 +97,7 @@ export default function Main(container) {
                   </svg>
                   Installation
                 </a>
-                <a href="/backend-status" data-link class="lb-dd-item" role="menuitem">
+                <a href="/backend-status" data-link class="mn-dd-item" role="menuitem">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5 8.25 9l3 3 4.5-6 4.5 7.5" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 19.5h16.5" />
@@ -143,6 +143,7 @@ export default function Main(container) {
             <div class="mn-mobile-divider"></div>
             <a href="/user-panel" data-link class="mn-mobile-link">Profile</a>
             <a href="/android-download" data-link class="mn-mobile-link">Installation</a>
+            <a href="/backend-status" data-link class="mn-mobile-link">API Status</a>
             <button class="mn-mobile-logout" id="mn-mobile-logout">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
