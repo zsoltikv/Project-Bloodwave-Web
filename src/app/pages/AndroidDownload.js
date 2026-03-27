@@ -4,6 +4,8 @@ import { ensureGlobalStarfield } from '../effects/global-starfield.js';
 
 const APK_FILE_NAME = 'Project-Bloodwave-Android.apk';
 const APK_PUBLIC_PATH = `https://github.com/zsoltikv/Project-Bloodwave/releases/download/APK/Project-Bloodwave.apk`;
+const PORTAL_APK_FILE_NAME = 'bloodwave-portal.apk';
+const PORTAL_APK_PUBLIC_PATH = 'https://github.com/zsoltikv/Project-Bloodwave-Web/releases/download/APK/bloodwave-portal.apk';
 
 export default function AndroidDownload(container) {
   const loggedIn = isLoggedIn();
@@ -40,22 +42,48 @@ export default function AndroidDownload(container) {
                 </p>
                 <div class="bw-apk-badges" aria-label="Package details">
                   <span class="bw-apk-badge">Android 6.0+</span>
+                  <span class="bw-apk-badge">Stable Wi-Fi or Mobile Data</span>
                   <span class="bw-apk-badge">Unknown Apps Enabled</span>
                   <span class="bw-apk-badge">Free Storage Available</span>
                 </div>
+
+                <div class="bw-apk-preflight">
+                  <h3 class="bw-apk-subheading">Pre-Install Checklist</h3>
+                  <ul class="bw-apk-checklist">
+                    <li>Use the official download cards on this page only.</li>
+                    <li>Keep at least 500 MB free storage for download and extraction.</li>
+                    <li>Disable battery saver during installation to prevent interruption.</li>
+                    <li>Close heavy background apps before opening the installer.</li>
+                    <li>If you update from an older build, sync your account first.</li>
+                  </ul>
+                </div>
               </section>
 
-              <aside class="bw-apk-download-card" aria-label="Download panel">
-                <p class="bw-apk-kicker">Latest Build</p>
-                <p class="bw-apk-file">${APK_FILE_NAME}</p>
+              <div class="bw-apk-download-stack" aria-label="Download panel">
+                <aside class="bw-apk-download-card">
+                  <p class="bw-apk-kicker">Latest Build</p>
+                  <p class="bw-apk-file">${APK_FILE_NAME}</p>
 
-                <a class="bw-btn bw-apk-btn" href="${APK_PUBLIC_PATH}" download="${APK_FILE_NAME}">
-                  <div class="bw-btn-shimmer"></div>
-                  <span class="bw-btn-text">Download APK</span>
-                </a>
+                  <a class="bw-btn bw-apk-btn" href="${APK_PUBLIC_PATH}" download="${APK_FILE_NAME}" data-apk-check-url="https://api.github.com/repos/zsoltikv/Project-Bloodwave/releases/latest" data-apk-status-id="bw-apk-status-main">
+                    <div class="bw-btn-shimmer"></div>
+                    <span class="bw-btn-text">Download APK</span>
+                  </a>
 
-                <p class="bw-apk-note" id="bw-apk-status">Checking APK availability...</p>
-              </aside>
+                  <p class="bw-apk-note" id="bw-apk-status-main">Checking APK availability...</p>
+                </aside>
+
+                <aside class="bw-apk-download-card">
+                  <p class="bw-apk-kicker">Portal Build</p>
+                  <p class="bw-apk-file">${PORTAL_APK_FILE_NAME}</p>
+
+                  <a class="bw-btn bw-apk-btn" href="${PORTAL_APK_PUBLIC_PATH}" download="${PORTAL_APK_FILE_NAME}" data-apk-check-url="https://api.github.com/repos/zsoltikv/Project-Bloodwave-Web/releases/latest" data-apk-status-id="bw-apk-status-portal">
+                    <div class="bw-btn-shimmer"></div>
+                    <span class="bw-btn-text">Download Portal APK</span>
+                  </a>
+
+                  <p class="bw-apk-note" id="bw-apk-status-portal">Checking APK availability...</p>
+                </aside>
+              </div>
             </div>
 
             <div class="bw-apk-grid">
@@ -111,17 +139,27 @@ export default function AndroidDownload(container) {
 }
 
 async function updateApkAvailability(container) {
-  const statusEl = container.querySelector('#bw-apk-status');
-  const downloadBtn = container.querySelector('.bw-apk-btn');
-  if (!statusEl || !downloadBtn) return;
+  const downloadButtons = container.querySelectorAll('.bw-apk-btn[data-apk-check-url]');
+  if (!downloadButtons.length) return;
+
+  await Promise.all(Array.from(downloadButtons).map((downloadBtn) => {
+    const checkUrl = downloadBtn.dataset.apkCheckUrl;
+    const statusId = downloadBtn.dataset.apkStatusId;
+    const statusEl = statusId ? container.querySelector(`#${statusId}`) : null;
+    return checkReleaseAvailability(downloadBtn, statusEl, checkUrl);
+  }));
+}
+
+async function checkReleaseAvailability(downloadBtn, statusEl, checkUrl) {
+  if (!downloadBtn || !statusEl || !checkUrl) return;
 
   try {
-    const response = await fetch('https://api.github.com/repos/zsoltikv/Project-Bloodwave/releases/latest', {
+    const response = await fetch(checkUrl, {
       method: 'GET',
       cache: 'no-store',
       headers: { 'Accept': 'application/vnd.github.v3+json' }
     });
-    
+
     if (response.ok) {
       statusEl.textContent = 'APK is available on GitHub releases and ready to download.';
       statusEl.classList.add('ok');
@@ -129,14 +167,15 @@ async function updateApkAvailability(container) {
       return;
     }
 
-    statusEl.textContent = 'APK is currently unavailable. Please try again later.';
-    statusEl.classList.add('warn');
-    downloadBtn.classList.add('bw-apk-disabled');
-    downloadBtn.addEventListener('click', (e) => e.preventDefault(), { once: false });
+    markApkUnavailable(downloadBtn, statusEl);
   } catch {
-    statusEl.textContent = 'APK is currently unavailable. Please try again later.';
-    statusEl.classList.add('warn');
-    downloadBtn.classList.add('bw-apk-disabled');
-    downloadBtn.addEventListener('click', (e) => e.preventDefault(), { once: false });
+    markApkUnavailable(downloadBtn, statusEl);
   }
+}
+
+function markApkUnavailable(downloadBtn, statusEl) {
+  statusEl.textContent = 'APK is currently unavailable. Please try again later.';
+  statusEl.classList.add('warn');
+  downloadBtn.classList.add('bw-apk-disabled');
+  downloadBtn.addEventListener('click', (e) => e.preventDefault(), { once: false });
 }

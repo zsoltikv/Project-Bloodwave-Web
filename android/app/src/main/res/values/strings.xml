@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Project-Bloodwave-Web</string>
-    <string name="title_activity_main">Project-Bloodwave-Web</string>
+    <string name="app_name">Bloodwave Portal</string>
+    <string name="title_activity_main">Bloodwave Portal</string>
     <string name="package_name">project.bloodwave.site</string>
     <string name="custom_url_scheme">project.bloodwave.site</string>
 </resources>

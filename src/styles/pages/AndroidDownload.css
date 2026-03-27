@@ -1,7 +1,7 @@
 @import '../base/auth-common.css';
 
 #app[data-route="/android-download"] {
-  --bw-content-width: min(900px, 92vw);
+  --bw-content-width: min(1100px, 94vw);
   --bw-content-inset: 16px;
 }
 
@@ -10,15 +10,21 @@
 }
 
 .bw-apk-root {
-  align-items: flex-start;
-  padding-top: clamp(18px, 4vh, 40px);
-  padding-bottom: clamp(18px, 4vh, 40px);
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vh, 28px) 16px;
   overflow-y: auto;
 }
 
 .bw-apk-card {
-  width: min(980px, 100%);
-  max-width: 980px;
+  width: min(1120px, 100%);
+  max-width: 1120px;
+}
+
+#app[data-route="/android-download"] .bw-root .bw-card.bw-apk-card {
+  width: min(1120px, 100%);
+  max-width: 1120px;
 }
 
 .bw-apk-card-inner {
@@ -64,6 +70,17 @@
   overflow: hidden;
 }
 
+.bw-apk-download-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Slight vertical offset for the second (Portal) download card */
+.bw-apk-download-stack .bw-apk-download-card:nth-of-type(2) {
+  margin-top: 13px;
+}
+
 .bw-apk-download-card::before {
   content: '';
   position: absolute;
@@ -91,12 +108,57 @@
   color: rgba(255, 255, 255, 0.72);
 }
 
+.bw-apk-subheading {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(12px, 1.6vw, 14px);
+  font-weight: 500;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.9);
+  margin-bottom: 8px;
+}
+
 .bw-apk-badges {
   margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 10px;
 }
+
+.bw-apk-preflight {
+  margin-top: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  background: rgba(13, 7, 7, 0.68);
+  padding: 12px;
+}
+
+.bw-apk-checklist {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.bw-apk-checklist li {
+  position: relative;
+  padding-left: 18px;
+  font-size: clamp(12px, 2vw, 14px);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.bw-apk-checklist li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.85);
+  transform: rotate(45deg);
+}
+
 
 .bw-apk-badge {
   display: flex;
@@ -278,6 +340,7 @@
     height: 24px;
     font-size: 11px;
   }
+
 }
 
 @media (max-width: 920px) {
