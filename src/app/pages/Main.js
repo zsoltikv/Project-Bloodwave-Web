@@ -1,26 +1,26 @@
-import '../../styles/pages/Main.css';
-import '../../styles/pages/Stats.css';
-import { API_BASE, getUser, logout, authFetch } from '../services/auth.js';
-import { confirmLogout } from '../effects/logout-confirm.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
-import swordImg from '../../assets/weapons/sword.png';
-import pistolImg from '../../assets/weapons/pistol.png';
-import shotgunImg from '../../assets/weapons/shotgun.png';
-import orbitingSwordImg from '../../assets/weapons/orbiting_sword.png';
-import orbitingIceCrystalImg from '../../assets/weapons/orbiting_ice_crystal.png';
-import bloodScytheImg from '../../assets/weapons/blood_scythe.png';
-import bloodforgedSigilImg from '../../assets/items/bloodforged_sigil.png';
-import cascadeOrbImg from '../../assets/items/cascade_orb.png';
-import glassEdgeImg from '../../assets/items/glass_edge.png';
-import hasteRuneImg from '../../assets/items/haste_rune.png';
-import heartOfAscendanceImg from '../../assets/items/heart_of_ascendance.png';
-import hourglassPendantImg from '../../assets/items/hourglass_pendant.png';
-import longreachEmblemImg from '../../assets/items/longreach_emblem.png';
-import marksmanCoreImg from '../../assets/items/marksman_core.png';
-import oathbladeImg from '../../assets/items/oathblade.png';
-import orbOfHealthImg from '../../assets/items/orb_of_health.png';
-import swiftshotCharmImg from '../../assets/items/swiftshot_charm.png';
-import volleyStoneImg from '../../assets/items/volley_stone.png';
+import "../../styles/pages/Main.css";
+import "../../styles/pages/Stats.css";
+import { API_BASE, getUser, logout, authFetch } from "../services/auth.js";
+import { confirmLogout } from "../effects/logout-confirm.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+import swordImg from "../../assets/weapons/sword.png";
+import pistolImg from "../../assets/weapons/pistol.png";
+import shotgunImg from "../../assets/weapons/shotgun.png";
+import orbitingSwordImg from "../../assets/weapons/orbiting_sword.png";
+import orbitingIceCrystalImg from "../../assets/weapons/orbiting_ice_crystal.png";
+import bloodScytheImg from "../../assets/weapons/blood_scythe.png";
+import bloodforgedSigilImg from "../../assets/items/bloodforged_sigil.png";
+import cascadeOrbImg from "../../assets/items/cascade_orb.png";
+import glassEdgeImg from "../../assets/items/glass_edge.png";
+import hasteRuneImg from "../../assets/items/haste_rune.png";
+import heartOfAscendanceImg from "../../assets/items/heart_of_ascendance.png";
+import hourglassPendantImg from "../../assets/items/hourglass_pendant.png";
+import longreachEmblemImg from "../../assets/items/longreach_emblem.png";
+import marksmanCoreImg from "../../assets/items/marksman_core.png";
+import oathbladeImg from "../../assets/items/oathblade.png";
+import orbOfHealthImg from "../../assets/items/orb_of_health.png";
+import swiftshotCharmImg from "../../assets/items/swiftshot_charm.png";
+import volleyStoneImg from "../../assets/items/volley_stone.png";
 
 const WEAPON_IMAGE_BY_ID = {
   1: swordImg,
@@ -47,7 +47,7 @@ const ITEM_IMAGE_BY_ID = {
 
 export default function Main(container) {
   let matches = [];
-  let matchesSort = 'playedAt-desc';
+  let matchesSort = "playedAt-desc";
   container.innerHTML = `
     
 
@@ -201,11 +201,11 @@ export default function Main(container) {
 
   // ── Populate username ────────────────────────────────────────────────────
   const user = getUser();
-  const displayName = user?.username ?? user?.email ?? 'Member';
+  const displayName = user?.username ?? user?.email ?? "Member";
 
-  const ddUsername     = container.querySelector('#mn-dd-username');
-  const mobileUsername = container.querySelector('#mn-mobile-username');
-  if (ddUsername)     ddUsername.textContent     = displayName;
+  const ddUsername = container.querySelector("#mn-dd-username");
+  const mobileUsername = container.querySelector("#mn-mobile-username");
+  if (ddUsername) ddUsername.textContent = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
   refreshNavbarUsername();
   updateNavbarLinksForPlayer(container);
@@ -213,14 +213,15 @@ export default function Main(container) {
   async function refreshNavbarUsername() {
     try {
       const res = await authFetch(`${API_BASE}/api/User/me`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
+        method: "GET",
+        headers: { Accept: "application/json" },
       });
 
       if (!res.ok) return;
 
       const userData = await res.json();
-      const liveDisplayName = userData?.username ?? userData?.email ?? displayName;
+      const liveDisplayName =
+        userData?.username ?? userData?.email ?? displayName;
 
       if (ddUsername) ddUsername.textContent = liveDisplayName;
       if (mobileUsername) mobileUsername.textContent = liveDisplayName;
@@ -230,10 +231,10 @@ export default function Main(container) {
   }
 
   // ── Matches list + details ───────────────────────────────────────────────
-  const matchesList = container.querySelector('#mn-matches-list');
-  const matchPanel  = container.querySelector('#mn-match-panel');
-  const playerStatsSection = container.querySelector('#mn-player-stats');
-  const sortSelect = container.querySelector('#mn-sort-select');
+  const matchesList = container.querySelector("#mn-matches-list");
+  const matchPanel = container.querySelector("#mn-match-panel");
+  const playerStatsSection = container.querySelector("#mn-player-stats");
+  const sortSelect = container.querySelector("#mn-sort-select");
   const viewedPlayerId = getViewedPlayerIdFromQuery();
   let selectedMatchId = null;
 
@@ -253,28 +254,32 @@ export default function Main(container) {
     }
 
     const stats = [
-      { label: 'Duration', value: formatDuration(match.durationSeconds) },
-      { label: 'Level Reached', value: formatCount(match.levelReached) },
-      { label: 'Max Health', value: formatCount(match.maxHealth) },
-      { label: 'Damage Dealt', value: formatCount(match.damageDealt) },
-      { label: 'Damage Taken', value: formatCount(match.damageTaken) },
-      { label: 'Enemies Killed', value: formatCount(match.enemiesKilled) },
-      { label: 'Coins Collected', value: formatCount(match.coinsCollected) },
-      { label: 'Finished At', value: formatPlayedAt(match.playedAt) },
+      { label: "Duration", value: formatDuration(match.durationSeconds) },
+      { label: "Level Reached", value: formatCount(match.levelReached) },
+      { label: "Max Health", value: formatCount(match.maxHealth) },
+      { label: "Damage Dealt", value: formatCount(match.damageDealt) },
+      { label: "Damage Taken", value: formatCount(match.damageTaken) },
+      { label: "Enemies Killed", value: formatCount(match.enemiesKilled) },
+      { label: "Coins Collected", value: formatCount(match.coinsCollected) },
+      { label: "Finished At", value: formatPlayedAt(match.playedAt) },
     ];
 
     matchPanel.innerHTML = `
       <h2 class="mn-panel-title">Run Summary</h2>
       <div class="mn-panel-grid">
-        ${stats.map((stat) => `
+        ${stats
+          .map(
+            (stat) => `
           <div class="mn-panel-stat">
             <div class="mn-panel-label">${stat.label}</div>
             <div class="mn-panel-value">${stat.value}</div>
           </div>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
-      ${renderEntityTable('Weapons', match.weapons, 'weapon')}
-      ${renderEntityTable('Items', match.items, 'item')}
+      ${renderEntityTable("Weapons", match.weapons, "weapon")}
+      ${renderEntityTable("Items", match.items, "item")}
     `;
   }
 
@@ -284,7 +289,8 @@ export default function Main(container) {
     const sortedMatches = sortMatches(matches, matchesSort);
 
     if (!sortedMatches.length) {
-      matchesList.innerHTML = '<div class="mn-match-empty">No played matches yet.</div>';
+      matchesList.innerHTML =
+        '<div class="mn-match-empty">No played matches yet.</div>';
       renderMatchPanel(null);
       return;
     }
@@ -293,11 +299,12 @@ export default function Main(container) {
       selectedMatchId = sortedMatches[0]?.id ?? null;
     }
 
-    matchesList.innerHTML = sortedMatches.map((match, index) => {
-      const isActive = match.id === selectedMatchId;
-      const swipeDelayMs = Math.min(index * 55, 440);
-      const swipeShiftPx = Math.min(20 + index * 3, 42);
-      return `
+    matchesList.innerHTML = sortedMatches
+      .map((match, index) => {
+        const isActive = match.id === selectedMatchId;
+        const swipeDelayMs = Math.min(index * 55, 440);
+        const swipeShiftPx = Math.min(20 + index * 3, 42);
+        return `
         <button
           type="button"
           class="mn-match-item"
@@ -313,7 +320,8 @@ export default function Main(container) {
           <div class="mn-match-time">${formatPlayedAt(match.playedAt)}</div>
         </button>
       `;
-    }).join('');
+      })
+      .join("");
 
     renderMatchPanel(sortedMatches.find((m) => m.id === selectedMatchId));
   }
@@ -321,29 +329,32 @@ export default function Main(container) {
   function syncActiveMatchItem() {
     if (!matchesList) return;
 
-    const items = matchesList.querySelectorAll('.mn-match-item');
+    const items = matchesList.querySelectorAll(".mn-match-item");
     items.forEach((item) => {
       const isActive = item.dataset.matchId === selectedMatchId;
-      item.setAttribute('aria-selected', String(isActive));
+      item.setAttribute("aria-selected", String(isActive));
     });
   }
 
-  matchesList?.addEventListener('click', (e) => {
-    const target = e.target.closest('.mn-match-item');
+  matchesList?.addEventListener("click", (e) => {
+    const target = e.target.closest(".mn-match-item");
     if (!target) return;
 
     selectedMatchId = target.dataset.matchId;
     syncActiveMatchItem();
-    renderMatchPanel(sortMatches(matches, matchesSort).find((m) => m.id === selectedMatchId));
+    renderMatchPanel(
+      sortMatches(matches, matchesSort).find((m) => m.id === selectedMatchId),
+    );
   });
 
-  sortSelect?.addEventListener('change', (event) => {
-    matchesSort = event.target.value || 'playedAt-desc';
+  sortSelect?.addEventListener("change", (event) => {
+    matchesSort = event.target.value || "playedAt-desc";
     renderMatches();
   });
 
   if (matchesList) {
-    matchesList.innerHTML = '<div class="mn-match-empty">Loading played matches...</div>';
+    matchesList.innerHTML =
+      '<div class="mn-match-empty">Loading played matches...</div>';
   }
   renderMatchPanel(null);
   loadMatches();
@@ -359,15 +370,18 @@ export default function Main(container) {
     }
 
     try {
-      const response = await authFetch(`${API_BASE}/api/Match/player?playerId=${encodeURIComponent(playerId)}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
+      const response = await authFetch(
+        `${API_BASE}/api/Match/player?playerId=${encodeURIComponent(playerId)}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch matches');
+        throw new Error("Failed to fetch matches");
       }
 
       const apiMatches = await parseResponsePayload(response);
@@ -388,58 +402,60 @@ export default function Main(container) {
   }
 
   // ── Hamburger toggle ──────────────────────────────────────────────────────
-  const hamburger   = container.querySelector('#mn-hamburger');
-  const mobileMenu  = container.querySelector('#mn-mobile-menu');
+  const hamburger = container.querySelector("#mn-hamburger");
+  const mobileMenu = container.querySelector("#mn-mobile-menu");
   let menuOpen = false;
 
-  hamburger?.addEventListener('click', () => {
+  hamburger?.addEventListener("click", () => {
     menuOpen = !menuOpen;
-    hamburger.classList.toggle('open', menuOpen);
-    hamburger.setAttribute('aria-expanded', String(menuOpen));
-    mobileMenu.style.maxHeight = menuOpen ? mobileMenu.scrollHeight + 'px' : '0';
+    hamburger.classList.toggle("open", menuOpen);
+    hamburger.setAttribute("aria-expanded", String(menuOpen));
+    mobileMenu.style.maxHeight = menuOpen
+      ? mobileMenu.scrollHeight + "px"
+      : "0";
   });
 
   // Close on mobile link click
-  mobileMenu?.querySelectorAll('.mn-mobile-link').forEach(link => {
-    link.addEventListener('click', () => {
+  mobileMenu?.querySelectorAll(".mn-mobile-link").forEach((link) => {
+    link.addEventListener("click", () => {
       menuOpen = false;
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', 'false');
-      mobileMenu.style.maxHeight = '0';
+      hamburger.classList.remove("open");
+      hamburger.setAttribute("aria-expanded", "false");
+      mobileMenu.style.maxHeight = "0";
     });
   });
 
   // ── Desktop avatar dropdown ───────────────────────────────────────────────
-  const avatarBtn  = container.querySelector('#mn-avatar-btn');
-  const avatarDrop = container.querySelector('#mn-avatar-dropdown');
+  const avatarBtn = container.querySelector("#mn-avatar-btn");
+  const avatarDrop = container.querySelector("#mn-avatar-dropdown");
   let dropOpen = false;
 
   function openDrop() {
     dropOpen = true;
-    avatarDrop.classList.add('open');
-    avatarBtn.setAttribute('aria-expanded', 'true');
+    avatarDrop.classList.add("open");
+    avatarBtn.setAttribute("aria-expanded", "true");
   }
   function closeDrop() {
     dropOpen = false;
-    avatarDrop.classList.remove('open');
-    avatarBtn.setAttribute('aria-expanded', 'false');
+    avatarDrop.classList.remove("open");
+    avatarBtn.setAttribute("aria-expanded", "false");
   }
 
-  avatarBtn?.addEventListener('click', (e) => {
+  avatarBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
     dropOpen ? closeDrop() : openDrop();
   });
 
   // Close when clicking outside
-  document.addEventListener('click', (e) => {
+  document.addEventListener("click", (e) => {
     if (dropOpen && !avatarDrop.contains(e.target) && e.target !== avatarBtn) {
       closeDrop();
     }
   });
 
   // Close on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && dropOpen) closeDrop();
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && dropOpen) closeDrop();
   });
 
   // ── Logout ───────────────────────────────────────────────────────────────
@@ -451,23 +467,25 @@ export default function Main(container) {
     // logout() already navigates to /login
   };
 
-  container.querySelector('#mn-dd-logout')?.addEventListener('click', doLogout);
-  container.querySelector('#mn-mobile-logout')?.addEventListener('click', doLogout);
+  container.querySelector("#mn-dd-logout")?.addEventListener("click", doLogout);
+  container
+    .querySelector("#mn-mobile-logout")
+    ?.addEventListener("click", doLogout);
 }
 
 /* ======================================================================
    CANVAS — Starry background from Profile
    ====================================================================== */
 function initMnCanvas() {
-  const canvas = document.getElementById('mn-canvas');
+  const canvas = document.getElementById("mn-canvas");
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   let W, H;
   let stars = [];
 
   function measure() {
-    W = canvas.width  = window.innerWidth;
+    W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
   }
 
@@ -488,10 +506,10 @@ function initMnCanvas() {
   function anim() {
     // Full clear each frame so stars remain points without motion trails.
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = 'rgb(8,6,6)';
+    ctx.fillStyle = "rgb(8,6,6)";
     ctx.fillRect(0, 0, W, H);
 
-    stars.forEach(s => {
+    stars.forEach((s) => {
       s.x += s.vx;
       s.y += s.vy;
       if (s.x < 0) s.x = W;
@@ -503,7 +521,7 @@ function initMnCanvas() {
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
       glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
       glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
-      glow.addColorStop(1, 'rgba(212,175,55,0)');
+      glow.addColorStop(1, "rgba(212,175,55,0)");
 
       ctx.fillStyle = glow;
       ctx.beginPath();
@@ -523,29 +541,30 @@ function initMnCanvas() {
   initStars();
   anim();
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     measure();
     initStars();
   });
 }
 
-
 function spawnMnParticles() {
-  const root = document.querySelector('.mn-root');
+  const root = document.querySelector(".mn-root");
   if (!root) return;
 
   for (let i = 0; i < 18; i++) {
-    const p        = document.createElement('div');
-    p.className    = 'bw-particle';
-    const size     = Math.random() * 2.2 + 0.4;
-    const delay    = Math.random() * 20;
+    const p = document.createElement("div");
+    p.className = "bw-particle";
+    const size = Math.random() * 2.2 + 0.4;
+    const delay = Math.random() * 20;
     const duration = 18 + Math.random() * 22;
-    const drift    = (Math.random() - 0.5) * 90;
-    const isRed    = Math.random() < 0.28;
-    const isGold   = !isRed && Math.random() < 0.15;
-    const col      = isRed  ? 'rgba(192,57,43,0.55)'
-                   : isGold ? 'rgba(212,175,55,0.4)'
-                   :          'rgba(255,230,210,0.28)';
+    const drift = (Math.random() - 0.5) * 90;
+    const isRed = Math.random() < 0.28;
+    const isGold = !isRed && Math.random() < 0.15;
+    const col = isRed
+      ? "rgba(192,57,43,0.55)"
+      : isGold
+        ? "rgba(212,175,55,0.4)"
+        : "rgba(255,230,210,0.28)";
 
     p.style.cssText = `
       width:${size}px; height:${size}px;
@@ -566,29 +585,29 @@ function formatDuration(totalSeconds) {
   const seconds = totalSeconds % 60;
 
   if (hours > 0) {
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   }
 
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
 function formatPlayedAt(isoDateString) {
-  const raw = typeof isoDateString === 'string' ? isoDateString.trim() : '';
+  const raw = typeof isoDateString === "string" ? isoDateString.trim() : "";
   const hasTimezone = /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw);
   const normalized = raw && !hasTimezone ? `${raw}Z` : raw;
   const parsedDate = new Date(normalized);
 
   if (Number.isNaN(parsedDate.getTime())) {
-    return '-';
+    return "-";
   }
 
-  return new Intl.DateTimeFormat('hu-HU', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Europe/Budapest',
+  return new Intl.DateTimeFormat("hu-HU", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Budapest",
   }).format(parsedDate);
 }
 
@@ -607,7 +626,7 @@ async function parseResponsePayload(response) {
 function resolvePlayerId(user) {
   // Check if a userId query parameter is provided
   const queryParams = new URLSearchParams(window.location.search);
-  const userIdParam = queryParams.get('userId');
+  const userIdParam = queryParams.get("userId");
   if (userIdParam) {
     const value = Number(userIdParam);
     if (Number.isInteger(value) && value > 0) {
@@ -629,7 +648,7 @@ function resolvePlayerId(user) {
 
 function getViewedPlayerIdFromQuery() {
   const queryParams = new URLSearchParams(window.location.search);
-  const userIdParam = queryParams.get('userId');
+  const userIdParam = queryParams.get("userId");
   if (!userIdParam) return null;
 
   const value = Number(userIdParam);
@@ -639,26 +658,26 @@ function getViewedPlayerIdFromQuery() {
 
 function updateNavbarLinksForPlayer(container) {
   const queryParams = new URLSearchParams(window.location.search);
-  const userIdParam = queryParams.get('userId');
+  const userIdParam = queryParams.get("userId");
 
   if (!userIdParam) return;
 
   // Back-only navbar in viewed-player mode.
-  const navLinks = container.querySelector('.mn-links');
-  const backLink = container.querySelector('#mnBackToDashboard');
-  const avatarWrap = container.querySelector('.mn-avatar-wrap');
-  const hamburger = container.querySelector('#mn-hamburger');
-  const mobileMenu = container.querySelector('#mn-mobile-menu');
-  const root = container.querySelector('.mn-root');
+  const navLinks = container.querySelector(".mn-links");
+  const backLink = container.querySelector("#mnBackToDashboard");
+  const avatarWrap = container.querySelector(".mn-avatar-wrap");
+  const hamburger = container.querySelector("#mn-hamburger");
+  const mobileMenu = container.querySelector("#mn-mobile-menu");
+  const root = container.querySelector(".mn-root");
 
-  if (root) root.classList.add('mn-view-mode');
-  if (navLinks) navLinks.style.display = 'none';
-  if (avatarWrap) avatarWrap.style.display = 'none';
-  if (hamburger) hamburger.style.display = 'none';
-  if (mobileMenu) mobileMenu.style.display = 'none';
+  if (root) root.classList.add("mn-view-mode");
+  if (navLinks) navLinks.style.display = "none";
+  if (avatarWrap) avatarWrap.style.display = "none";
+  if (hamburger) hamburger.style.display = "none";
+  if (mobileMenu) mobileMenu.style.display = "none";
   if (backLink) {
-    backLink.style.display = 'inline-block';
-    backLink.setAttribute('href', '/main');
+    backLink.style.display = "inline-block";
+    backLink.setAttribute("href", "/main");
   }
 
   // Fetch and display viewed player's username
@@ -667,27 +686,30 @@ function updateNavbarLinksForPlayer(container) {
 
 async function loadViewedPlayerUsername(userId, container) {
   try {
-    const res = await authFetch(`${API_BASE}/api/User/name?id=${encodeURIComponent(userId)}`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-    });
-    if (!res.ok) throw new Error('User not found');
-    
+    const res = await authFetch(
+      `${API_BASE}/api/User/name?id=${encodeURIComponent(userId)}`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      },
+    );
+    if (!res.ok) throw new Error("User not found");
+
     const data = await res.json();
     const username = data?.username || `User #${userId}`;
-    
-    const viewingEl = container.querySelector('#mn-viewing-user');
-    const viewingNameEl = container.querySelector('#mn-viewing-name');
+
+    const viewingEl = container.querySelector("#mn-viewing-user");
+    const viewingNameEl = container.querySelector("#mn-viewing-name");
     if (viewingEl && viewingNameEl) {
       viewingNameEl.textContent = username;
-      viewingEl.style.display = 'inline-flex';
+      viewingEl.style.display = "inline-flex";
     }
   } catch {
-    const viewingEl = container.querySelector('#mn-viewing-user');
-    const viewingNameEl = container.querySelector('#mn-viewing-name');
+    const viewingEl = container.querySelector("#mn-viewing-user");
+    const viewingNameEl = container.querySelector("#mn-viewing-name");
     if (viewingEl && viewingNameEl) {
       viewingNameEl.textContent = `User #${userId}`;
-      viewingEl.style.display = 'inline-flex';
+      viewingEl.style.display = "inline-flex";
     }
   }
 }
@@ -708,42 +730,70 @@ function mapApiMatches(apiMatches) {
         enemiesKilled: toNonNegativeInt(match?.enemiesKilled),
         coinsCollected: toNonNegativeInt(match?.coinsCollected),
         playedAt,
-        weapons: mapMatchEntities(match?.matchWeapons, 'weapon'),
-        items: mapMatchEntities(match?.matchItems, 'item'),
+        weapons: mapMatchEntities(match?.matchWeapons, "weapon"),
+        items: mapMatchEntities(match?.matchItems, "item"),
       };
     })
-    .sort((left, right) => parseBackendDate(right.playedAt).getTime() - parseBackendDate(left.playedAt).getTime());
+    .sort(
+      (left, right) =>
+        parseBackendDate(right.playedAt).getTime() -
+        parseBackendDate(left.playedAt).getTime(),
+    );
 }
 
 function sortMatches(matches, sortKey) {
   const rows = Array.isArray(matches) ? [...matches] : [];
 
   switch (sortKey) {
-    case 'playedAt-asc':
-      return rows.sort((a, b) => parseBackendDate(a.playedAt).getTime() - parseBackendDate(b.playedAt).getTime());
-    case 'duration-desc':
+    case "playedAt-asc":
+      return rows.sort(
+        (a, b) =>
+          parseBackendDate(a.playedAt).getTime() -
+          parseBackendDate(b.playedAt).getTime(),
+      );
+    case "duration-desc":
       return rows.sort((a, b) => {
-        if (b.durationSeconds !== a.durationSeconds) return b.durationSeconds - a.durationSeconds;
-        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+        if (b.durationSeconds !== a.durationSeconds)
+          return b.durationSeconds - a.durationSeconds;
+        return (
+          parseBackendDate(b.playedAt).getTime() -
+          parseBackendDate(a.playedAt).getTime()
+        );
       });
-    case 'duration-asc':
+    case "duration-asc":
       return rows.sort((a, b) => {
-        if (a.durationSeconds !== b.durationSeconds) return a.durationSeconds - b.durationSeconds;
-        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+        if (a.durationSeconds !== b.durationSeconds)
+          return a.durationSeconds - b.durationSeconds;
+        return (
+          parseBackendDate(b.playedAt).getTime() -
+          parseBackendDate(a.playedAt).getTime()
+        );
       });
-    case 'level-desc':
+    case "level-desc":
       return rows.sort((a, b) => {
-        if (b.levelReached !== a.levelReached) return b.levelReached - a.levelReached;
-        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+        if (b.levelReached !== a.levelReached)
+          return b.levelReached - a.levelReached;
+        return (
+          parseBackendDate(b.playedAt).getTime() -
+          parseBackendDate(a.playedAt).getTime()
+        );
       });
-    case 'kills-desc':
+    case "kills-desc":
       return rows.sort((a, b) => {
-        if (b.enemiesKilled !== a.enemiesKilled) return b.enemiesKilled - a.enemiesKilled;
-        return parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime();
+        if (b.enemiesKilled !== a.enemiesKilled)
+          return b.enemiesKilled - a.enemiesKilled;
+        return (
+          parseBackendDate(b.playedAt).getTime() -
+          parseBackendDate(a.playedAt).getTime()
+        );
       });
-    case 'playedAt-desc':
+    case "playedAt-desc":
     default:
-      return rows.sort((a, b) => parseBackendDate(b.playedAt).getTime() - parseBackendDate(a.playedAt).getTime());
+      return rows.sort(
+        (a, b) =>
+          parseBackendDate(b.playedAt).getTime() -
+          parseBackendDate(a.playedAt).getTime(),
+      );
   }
 }
 
@@ -751,20 +801,31 @@ function mapMatchEntities(entities, type) {
   if (!Array.isArray(entities)) return [];
 
   return entities.map((entry, index) => {
-    const entityId = toNonNegativeInt(type === 'weapon' ? entry?.weaponId : entry?.itemId);
-    const fallbackName = type === 'weapon' ? `Weapon #${entityId || index + 1}` : `Item #${entityId || index + 1}`;
+    const entityId = toNonNegativeInt(
+      type === "weapon" ? entry?.weaponId : entry?.itemId,
+    );
+    const fallbackName =
+      type === "weapon"
+        ? `Weapon #${entityId || index + 1}`
+        : `Item #${entityId || index + 1}`;
 
     return {
       id: toNonNegativeInt(entry?.id),
       entityId,
-      name: normalizeEntityName(type === 'weapon' ? entry?.weaponName : entry?.itemName, fallbackName),
-      image: type === 'weapon' ? WEAPON_IMAGE_BY_ID[entityId] : ITEM_IMAGE_BY_ID[entityId],
+      name: normalizeEntityName(
+        type === "weapon" ? entry?.weaponName : entry?.itemName,
+        fallbackName,
+      ),
+      image:
+        type === "weapon"
+          ? WEAPON_IMAGE_BY_ID[entityId]
+          : ITEM_IMAGE_BY_ID[entityId],
     };
   });
 }
 
 function normalizeEntityName(value, fallback) {
-  const raw = typeof value === 'string' ? value.trim() : '';
+  const raw = typeof value === "string" ? value.trim() : "";
   return raw || fallback;
 }
 
@@ -789,7 +850,9 @@ function renderEntityTable(title, entities, type) {
                   </tr>
                 </thead>
                 <tbody>
-                  ${rows.map((entry) => `
+                  ${rows
+                    .map(
+                      (entry) => `
                     <tr>
                       <td>
                         <div class="mn-summary-entity">
@@ -798,12 +861,14 @@ function renderEntityTable(title, entities, type) {
                       </td>
                       <td>${escapeHtml(entry.name)}</td>
                     </tr>
-                  `).join('')}
+                  `,
+                    )
+                    .join("")}
                 </tbody>
               </table>
             </div>
           `
-          : `<div class="mn-summary-empty">No ${type === 'weapon' ? 'weapons' : 'items'} recorded for this run.</div>`
+          : `<div class="mn-summary-empty">No ${type === "weapon" ? "weapons" : "items"} recorded for this run.</div>`
       }
     </section>
   `;
@@ -814,62 +879,171 @@ function renderPlayerStats(container, stats) {
 
   const sections = [
     {
-      title: 'Core Totals',
-      subtitle: 'Overall lifetime volume',
+      title: "Core Totals",
+      subtitle: "Overall lifetime volume",
       cards: [
-        { stat: 'matches', type: 'int', name: 'Matches Played', unit: 'total games' },
-        { stat: 'time-lived', type: 'time-hm', name: 'Time Lived', unit: 'total survival time' },
-        { stat: 'damage', type: 'int', name: 'Damage Dealt', unit: 'total damage' },
-        { stat: 'damage-taken', type: 'int', name: 'Damage Taken', unit: 'total damage received' },
-        { stat: 'kills', type: 'int', name: 'Enemies Killed', unit: 'eliminations' },
-        { stat: 'coins', type: 'int', name: 'Coins Collected', unit: 'total coins' },
+        {
+          stat: "matches",
+          type: "int",
+          name: "Matches Played",
+          unit: "total games",
+        },
+        {
+          stat: "time-lived",
+          type: "time-hm",
+          name: "Time Lived",
+          unit: "total survival time",
+        },
+        {
+          stat: "damage",
+          type: "int",
+          name: "Damage Dealt",
+          unit: "total damage",
+        },
+        {
+          stat: "damage-taken",
+          type: "int",
+          name: "Damage Taken",
+          unit: "total damage received",
+        },
+        {
+          stat: "kills",
+          type: "int",
+          name: "Enemies Killed",
+          unit: "eliminations",
+        },
+        {
+          stat: "coins",
+          type: "int",
+          name: "Coins Collected",
+          unit: "total coins",
+        },
       ],
     },
     {
-      title: 'Per Match Efficiency',
-      subtitle: 'Average output and pace',
+      title: "Per Match Efficiency",
+      subtitle: "Average output and pace",
       cards: [
-        { stat: 'avg-survival-match', type: 'time-hms', name: 'Avg Survival / Match', unit: 'time per game' },
-        { stat: 'avg-damage-match', type: 'int', name: 'Avg Damage / Match', unit: 'damage per game' },
-        { stat: 'avg-damage-minute', type: 'int', name: 'Avg Damage / Minute', unit: 'damage per minute' },
-        { stat: 'avg-kills-match', type: 'int', name: 'Avg Kills / Match', unit: 'kills per game' },
-        { stat: 'avg-kills-minute', type: 'int', name: 'Avg Kills / Minute', unit: 'kills per minute' },
-        { stat: 'avg-coins-match', type: 'int', name: 'Avg Coins / Match', unit: 'coins per game' },
+        {
+          stat: "avg-survival-match",
+          type: "time-hms",
+          name: "Avg Survival / Match",
+          unit: "time per game",
+        },
+        {
+          stat: "avg-damage-match",
+          type: "int",
+          name: "Avg Damage / Match",
+          unit: "damage per game",
+        },
+        {
+          stat: "avg-damage-minute",
+          type: "int",
+          name: "Avg Damage / Minute",
+          unit: "damage per minute",
+        },
+        {
+          stat: "avg-kills-match",
+          type: "int",
+          name: "Avg Kills / Match",
+          unit: "kills per game",
+        },
+        {
+          stat: "avg-kills-minute",
+          type: "int",
+          name: "Avg Kills / Minute",
+          unit: "kills per minute",
+        },
+        {
+          stat: "avg-coins-match",
+          type: "int",
+          name: "Avg Coins / Match",
+          unit: "coins per game",
+        },
       ],
     },
     {
-      title: 'Peak Records',
-      subtitle: 'Best single-run highlights',
+      title: "Peak Records",
+      subtitle: "Best single-run highlights",
       cards: [
-        { stat: 'best-score', type: 'int', name: 'Best Match Score', unit: 'top weighted run score' },
-        { stat: 'highest-level', type: 'int', name: 'Highest Level Reached', unit: 'all-time best level' },
-        { stat: 'best-survival', type: 'time-hms', name: 'Best Match Survival', unit: 'longest single match' },
-        { stat: 'best-damage', type: 'int', name: 'Best Match Damage', unit: 'top single-match damage' },
-        { stat: 'best-kills', type: 'int', name: 'Best Match Kills', unit: 'top single-match kills' },
-        { stat: 'best-coins', type: 'int', name: 'Best Match Coins', unit: 'top single-match coins' },
+        {
+          stat: "best-score",
+          type: "int",
+          name: "Best Match Score",
+          unit: "top weighted run score",
+        },
+        {
+          stat: "highest-level",
+          type: "int",
+          name: "Highest Level Reached",
+          unit: "all-time best level",
+        },
+        {
+          stat: "best-survival",
+          type: "time-hms",
+          name: "Best Match Survival",
+          unit: "longest single match",
+        },
+        {
+          stat: "best-damage",
+          type: "int",
+          name: "Best Match Damage",
+          unit: "top single-match damage",
+        },
+        {
+          stat: "best-kills",
+          type: "int",
+          name: "Best Match Kills",
+          unit: "top single-match kills",
+        },
+        {
+          stat: "best-coins",
+          type: "int",
+          name: "Best Match Coins",
+          unit: "top single-match coins",
+        },
       ],
     },
     {
-      title: 'Run Shape And Stability',
-      subtitle: 'Session length distribution and consistency',
+      title: "Run Shape And Stability",
+      subtitle: "Session length distribution and consistency",
       cards: [
-        { stat: 'short-match-ratio', type: 'int', name: 'Short Match Ratio', unit: 'under 2 min (%)' },
-        { stat: 'long-match-ratio', type: 'int', name: 'Long Match Ratio', unit: 'over 10 min (%)' },
-        { stat: 'performance-volatility', type: 'int', name: 'Performance Volatility', unit: 'lower = more stable (%)' },
+        {
+          stat: "short-match-ratio",
+          type: "int",
+          name: "Short Match Ratio",
+          unit: "under 2 min (%)",
+        },
+        {
+          stat: "long-match-ratio",
+          type: "int",
+          name: "Long Match Ratio",
+          unit: "over 10 min (%)",
+        },
+        {
+          stat: "performance-volatility",
+          type: "int",
+          name: "Performance Volatility",
+          unit: "lower = more stable (%)",
+        },
       ],
     },
   ];
 
   container.innerHTML = `
     <div class="st-sections">
-      ${sections.map((section) => `
+      ${sections
+        .map(
+          (section) => `
         <section class="st-stat-section">
           <div class="st-section-head">
             <h2 class="st-section-title">${section.title}</h2>
             <p class="st-section-subtitle">${section.subtitle}</p>
           </div>
           <div class="st-grid st-grid--section">
-            ${section.cards.map((card) => `
+            ${section.cards
+              .map(
+                (card) => `
               <div class="st-card">
                 <div class="st-card-corner st-card-corner--tl"></div>
                 <div class="st-card-corner st-card-corner--tr"></div>
@@ -888,10 +1062,14 @@ function renderPlayerStats(container, stats) {
                   <div class="st-card-unit">${card.unit}</div>
                 </div>
               </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </div>
         </section>
-      `).join('')}
+      `,
+        )
+        .join("")}
     </div>
   `;
 
@@ -938,7 +1116,10 @@ function buildPlayerStats(matches) {
 
     bestMatchDamage = Math.max(bestMatchDamage, damageDealt);
     bestMatchKills = Math.max(bestMatchKills, enemiesKilled);
-    bestMatchSurvivalSeconds = Math.max(bestMatchSurvivalSeconds, durationSeconds);
+    bestMatchSurvivalSeconds = Math.max(
+      bestMatchSurvivalSeconds,
+      durationSeconds,
+    );
     highestLevelReached = Math.max(highestLevelReached, levelReached);
     bestMatchCoins = Math.max(bestMatchCoins, coinsCollected);
 
@@ -975,50 +1156,100 @@ function buildPlayerStats(matches) {
     highestLevelReached,
     bestMatchCoins,
     bestMatchScore,
-    averageDamagePerMatch: toNonNegativeInt(safeDivide(totalDamageDealt, matchesPlayed)),
-    averageKillsPerMatch: toNonNegativeInt(safeDivide(totalEnemiesKilled, matchesPlayed)),
-    averageCoinsPerMatch: toNonNegativeInt(safeDivide(totalCoinsCollected, matchesPlayed)),
-    averageDamagePerMinute: toNonNegativeInt(safeDivide(totalDamageDealt, totalDurationMinutes)),
-    averageKillsPerMinute: toNonNegativeInt(safeDivide(totalEnemiesKilled, totalDurationMinutes)),
-    averageSurvivalSecondsPerMatch: toNonNegativeInt(safeDivide(totalDurationSeconds, matchesPlayed)),
-    shortMatchRatioPercent: toNonNegativeInt(safeDivide(shortMatchesCount * 100, matchesPlayed)),
-    longMatchRatioPercent: toNonNegativeInt(safeDivide(longMatchesCount * 100, matchesPlayed)),
-    performanceVolatilityPercent: toNonNegativeInt(calculateCoefficientOfVariationPercent(performanceScores)),
+    averageDamagePerMatch: toNonNegativeInt(
+      safeDivide(totalDamageDealt, matchesPlayed),
+    ),
+    averageKillsPerMatch: toNonNegativeInt(
+      safeDivide(totalEnemiesKilled, matchesPlayed),
+    ),
+    averageCoinsPerMatch: toNonNegativeInt(
+      safeDivide(totalCoinsCollected, matchesPlayed),
+    ),
+    averageDamagePerMinute: toNonNegativeInt(
+      safeDivide(totalDamageDealt, totalDurationMinutes),
+    ),
+    averageKillsPerMinute: toNonNegativeInt(
+      safeDivide(totalEnemiesKilled, totalDurationMinutes),
+    ),
+    averageSurvivalSecondsPerMatch: toNonNegativeInt(
+      safeDivide(totalDurationSeconds, matchesPlayed),
+    ),
+    shortMatchRatioPercent: toNonNegativeInt(
+      safeDivide(shortMatchesCount * 100, matchesPlayed),
+    ),
+    longMatchRatioPercent: toNonNegativeInt(
+      safeDivide(longMatchesCount * 100, matchesPlayed),
+    ),
+    performanceVolatilityPercent: toNonNegativeInt(
+      calculateCoefficientOfVariationPercent(performanceScores),
+    ),
   };
 }
 
 function applyStatsToCards(container, stats) {
   const setStatTarget = (statKey, value) => {
-    const valueEl = container.querySelector(`.js-st-count[data-stat="${statKey}"]`);
+    const valueEl = container.querySelector(
+      `.js-st-count[data-stat="${statKey}"]`,
+    );
     if (!valueEl) return;
     valueEl.dataset.target = String(value);
   };
 
-  setStatTarget('damage', toNonNegativeInt(stats.damageDealt));
-  setStatTarget('damage-taken', toNonNegativeInt(stats.damageTaken));
-  setStatTarget('kills', toNonNegativeInt(stats.enemiesKilled));
-  setStatTarget('time-lived', toNonNegativeInt(stats.totalMinutesLived));
-  setStatTarget('matches', toNonNegativeInt(stats.matchesPlayed));
-  setStatTarget('coins', toNonNegativeInt(stats.coinsCollected));
-  setStatTarget('avg-damage-match', toNonNegativeInt(stats.averageDamagePerMatch));
-  setStatTarget('avg-kills-match', toNonNegativeInt(stats.averageKillsPerMatch));
-  setStatTarget('avg-coins-match', toNonNegativeInt(stats.averageCoinsPerMatch));
-  setStatTarget('avg-kills-minute', toNonNegativeInt(stats.averageKillsPerMinute));
-  setStatTarget('avg-damage-minute', toNonNegativeInt(stats.averageDamagePerMinute));
-  setStatTarget('avg-survival-match', toNonNegativeInt(stats.averageSurvivalSecondsPerMatch));
-  setStatTarget('best-damage', toNonNegativeInt(stats.bestMatchDamage));
-  setStatTarget('best-kills', toNonNegativeInt(stats.bestMatchKills));
-  setStatTarget('best-survival', toNonNegativeInt(stats.bestMatchSurvivalSeconds));
-  setStatTarget('highest-level', toNonNegativeInt(stats.highestLevelReached));
-  setStatTarget('best-coins', toNonNegativeInt(stats.bestMatchCoins));
-  setStatTarget('best-score', toNonNegativeInt(stats.bestMatchScore));
-  setStatTarget('short-match-ratio', toNonNegativeInt(stats.shortMatchRatioPercent));
-  setStatTarget('long-match-ratio', toNonNegativeInt(stats.longMatchRatioPercent));
-  setStatTarget('performance-volatility', toNonNegativeInt(stats.performanceVolatilityPercent));
+  setStatTarget("damage", toNonNegativeInt(stats.damageDealt));
+  setStatTarget("damage-taken", toNonNegativeInt(stats.damageTaken));
+  setStatTarget("kills", toNonNegativeInt(stats.enemiesKilled));
+  setStatTarget("time-lived", toNonNegativeInt(stats.totalMinutesLived));
+  setStatTarget("matches", toNonNegativeInt(stats.matchesPlayed));
+  setStatTarget("coins", toNonNegativeInt(stats.coinsCollected));
+  setStatTarget(
+    "avg-damage-match",
+    toNonNegativeInt(stats.averageDamagePerMatch),
+  );
+  setStatTarget(
+    "avg-kills-match",
+    toNonNegativeInt(stats.averageKillsPerMatch),
+  );
+  setStatTarget(
+    "avg-coins-match",
+    toNonNegativeInt(stats.averageCoinsPerMatch),
+  );
+  setStatTarget(
+    "avg-kills-minute",
+    toNonNegativeInt(stats.averageKillsPerMinute),
+  );
+  setStatTarget(
+    "avg-damage-minute",
+    toNonNegativeInt(stats.averageDamagePerMinute),
+  );
+  setStatTarget(
+    "avg-survival-match",
+    toNonNegativeInt(stats.averageSurvivalSecondsPerMatch),
+  );
+  setStatTarget("best-damage", toNonNegativeInt(stats.bestMatchDamage));
+  setStatTarget("best-kills", toNonNegativeInt(stats.bestMatchKills));
+  setStatTarget(
+    "best-survival",
+    toNonNegativeInt(stats.bestMatchSurvivalSeconds),
+  );
+  setStatTarget("highest-level", toNonNegativeInt(stats.highestLevelReached));
+  setStatTarget("best-coins", toNonNegativeInt(stats.bestMatchCoins));
+  setStatTarget("best-score", toNonNegativeInt(stats.bestMatchScore));
+  setStatTarget(
+    "short-match-ratio",
+    toNonNegativeInt(stats.shortMatchRatioPercent),
+  );
+  setStatTarget(
+    "long-match-ratio",
+    toNonNegativeInt(stats.longMatchRatioPercent),
+  );
+  setStatTarget(
+    "performance-volatility",
+    toNonNegativeInt(stats.performanceVolatilityPercent),
+  );
 }
 
 function formatCount(value) {
-  return toNonNegativeInt(value).toLocaleString('en-US');
+  return toNonNegativeInt(value).toLocaleString("en-US");
 }
 
 function calculateCoefficientOfVariationPercent(values) {
@@ -1030,25 +1261,27 @@ function calculateCoefficientOfVariationPercent(values) {
 
   if (normalized.length < 2) return 0;
 
-  const mean = normalized.reduce((sum, value) => sum + value, 0) / normalized.length;
+  const mean =
+    normalized.reduce((sum, value) => sum + value, 0) / normalized.length;
   if (mean <= 0) return 0;
 
-  const variance = normalized
-    .map((value) => Math.pow(value - mean, 2))
-    .reduce((sum, value) => sum + value, 0) / normalized.length;
+  const variance =
+    normalized
+      .map((value) => Math.pow(value - mean, 2))
+      .reduce((sum, value) => sum + value, 0) / normalized.length;
 
   const standardDeviation = Math.sqrt(variance);
   return safeDivide(standardDeviation * 100, mean);
 }
 
 function animateStStats(container) {
-  const valueEls = container.querySelectorAll('.js-st-count');
+  const valueEls = container.querySelectorAll(".js-st-count");
   if (!valueEls.length) return;
 
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
   function formatInt(value) {
-    return Math.round(value).toLocaleString('en-US');
+    return Math.round(value).toLocaleString("en-US");
   }
 
   function formatHoursMinutes(totalMinutesFloat) {
@@ -1067,22 +1300,22 @@ function animateStStats(container) {
   }
 
   valueEls.forEach((el, index) => {
-    const type = el.dataset.type || 'int';
+    const type = el.dataset.type || "int";
     const targetValue = Number(el.dataset.target);
     if (!Number.isFinite(targetValue)) return;
 
     const startDelay = 120 + index * 55;
-    const duration = type === 'int' ? 900 : 780;
+    const duration = type === "int" ? 900 : 780;
     const startValue = 0;
 
-    el.classList.add('is-counting');
+    el.classList.add("is-counting");
 
     const render = (value) => {
-      if (type === 'time-hm') {
+      if (type === "time-hm") {
         el.textContent = formatHoursMinutes(value);
         return;
       }
-      if (type === 'time-hms') {
+      if (type === "time-hms") {
         el.textContent = formatHoursMinutesSeconds(value);
         return;
       }
@@ -1106,7 +1339,7 @@ function animateStStats(container) {
         }
 
         render(targetValue);
-        el.classList.remove('is-counting');
+        el.classList.remove("is-counting");
       };
 
       requestAnimationFrame(step);
@@ -1128,11 +1361,11 @@ function safeDivide(numerator, denominator) {
 
 function escapeHtml(value) {
   return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function normalizeDurationSeconds(value) {
@@ -1158,7 +1391,7 @@ function toNonNegativeInt(value) {
 }
 
 function normalizePlayedAt(value) {
-  const raw = typeof value === 'string' ? value.trim() : '';
+  const raw = typeof value === "string" ? value.trim() : "";
   const parsed = raw ? parseBackendDate(raw) : null;
 
   if (parsed && !Number.isNaN(parsed.getTime())) {
@@ -1169,7 +1402,7 @@ function normalizePlayedAt(value) {
 }
 
 function parseBackendDate(value) {
-  const raw = typeof value === 'string' ? value.trim() : '';
+  const raw = typeof value === "string" ? value.trim() : "";
   const hasTimezone = /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw);
   const normalized = raw && !hasTimezone ? `${raw}Z` : raw;
   return new Date(normalized);

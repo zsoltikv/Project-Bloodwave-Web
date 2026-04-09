@@ -1,4 +1,4 @@
-@import '../base/auth-common.css';
+@import "../base/auth-common.css";
 
 /* ============================================
    REGISTER-SPECIFIC (password strength)
@@ -6,16 +6,22 @@
 
 #pwStrengthLine {
   height: 2px;
-  background-image: var(--pw-gradient,
-    linear-gradient(90deg, var(--crimson), var(--gold-light), var(--crimson)));
+  background-image: var(
+    --pw-gradient,
+    linear-gradient(90deg, var(--crimson), var(--gold-light), var(--crimson))
+  );
   animation: bw-pw-shimmer 2.2s linear infinite paused;
 }
 #pwStrengthLine.bw-pw-active {
   animation-play-state: running;
 }
 @keyframes bw-pw-shimmer {
-  0%   { background-position: 100% 0; }
-  100% { background-position: -100% 0; }
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
 }
 #pwStrengthLine.bw-pw-pulse {
   transform: scaleX(1) scaleY(2.5);
@@ -52,7 +58,7 @@
 #rxEmail.bw-input::-webkit-input-placeholder,
 #rxName.bw-input::-moz-placeholder,
 #rxEmail.bw-input::-moz-placeholder {
-  color: rgba(255,255,255,0.04) !important;
+  color: rgba(255, 255, 255, 0.04) !important;
 }
 
 .bw-field--tos {
@@ -77,7 +83,7 @@
 .bw-checkbox-label {
   font-size: clamp(9px, 2.2vw, 11px);
   letter-spacing: 1.2px;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255, 255, 255, 0.4);
   line-height: 1.6;
   font-weight: 300;
 }
@@ -85,15 +91,17 @@
 .bw-forgot {
   font-size: clamp(8px, 2vw, 10px);
   letter-spacing: 2.5px;
-  color: rgba(212,175,55,0.5);
+  color: rgba(212, 175, 55, 0.5);
   text-transform: uppercase;
   text-decoration: none;
   font-weight: 300;
-  transition: color 0.3s, letter-spacing 0.3s;
+  transition:
+    color 0.3s,
+    letter-spacing 0.3s;
   white-space: nowrap;
 }
 .bw-forgot:hover {
-  color: rgba(212,175,55,0.85);
+  color: rgba(212, 175, 55, 0.85);
   letter-spacing: 3px;
 }
 
@@ -106,7 +114,10 @@
   word-break: normal;
   text-decoration: none;
   transform-origin: left center;
-  transition: color 0.3s, letter-spacing 0.3s, transform 0.25s ease;
+  transition:
+    color 0.3s,
+    letter-spacing 0.3s,
+    transform 0.25s ease;
 }
 
 .bw-checkbox-label .bw-forgot:hover,
@@ -131,6 +142,6 @@
 }
 
 .bw-checkbox-label a:hover {
-  color: var(--bw-gold-light, #D4AF37);
+  color: var(--bw-gold-light, #d4af37);
   text-decoration: underline;
 }

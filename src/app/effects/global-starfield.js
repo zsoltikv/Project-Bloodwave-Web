@@ -64,7 +64,7 @@ function draw() {
 
   if (enabled) {
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = 'rgb(8,6,6)';
+    ctx.fillStyle = "rgb(8,6,6)";
     ctx.fillRect(0, 0, width, height);
 
     stars.forEach((s) => {
@@ -72,7 +72,7 @@ function draw() {
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
       glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
       glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
-      glow.addColorStop(1, 'rgba(212,175,55,0)');
+      glow.addColorStop(1, "rgba(212,175,55,0)");
 
       ctx.fillStyle = glow;
       ctx.beginPath();
@@ -90,21 +90,21 @@ function draw() {
 }
 
 function createCanvas() {
-  canvas = document.createElement('canvas');
-  canvas.id = 'bw-global-starfield';
-  canvas.className = 'bw-canvas';
-  canvas.setAttribute('aria-hidden', 'true');
-  canvas.style.position = 'fixed';
-  canvas.style.inset = '0';
-  canvas.style.zIndex = '0';
-  canvas.style.pointerEvents = 'none';
+  canvas = document.createElement("canvas");
+  canvas.id = "bw-global-starfield";
+  canvas.className = "bw-canvas";
+  canvas.setAttribute("aria-hidden", "true");
+  canvas.style.position = "fixed";
+  canvas.style.inset = "0";
+  canvas.style.zIndex = "0";
+  canvas.style.pointerEvents = "none";
   document.body.appendChild(canvas);
 
-  ctx = canvas.getContext('2d');
+  ctx = canvas.getContext("2d");
   measureCanvas();
   initStars();
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     if (resizeFrameId) {
       cancelAnimationFrame(resizeFrameId);
     }
@@ -129,6 +129,6 @@ export function ensureGlobalStarfield() {
 export function setGlobalStarfieldEnabled(nextEnabled) {
   enabled = Boolean(nextEnabled);
   if (canvas) {
-    canvas.style.opacity = enabled ? '1' : '0';
+    canvas.style.opacity = enabled ? "1" : "0";
   }
 }

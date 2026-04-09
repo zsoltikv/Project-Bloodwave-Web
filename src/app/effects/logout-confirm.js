@@ -1,9 +1,9 @@
-import { attachCapsLockHint } from '../utils/caps-lock.js';
+import { attachCapsLockHint } from "../utils/caps-lock.js";
 
 export function confirmLogout() {
   return new Promise((resolve) => {
-    const overlay = document.createElement('div');
-    overlay.className = 'bw-confirm-overlay';
+    const overlay = document.createElement("div");
+    overlay.className = "bw-confirm-overlay";
     overlay.innerHTML = `
       <div class="bw-confirm-card" role="dialog" aria-modal="true" aria-labelledby="bw-confirm-title" aria-describedby="bw-confirm-copy">
         <div class="bw-confirm-corner bw-confirm-corner--tl"></div>
@@ -29,11 +29,11 @@ export function confirmLogout() {
 
     const cancelBtn = overlay.querySelector('[data-action="cancel"]');
     const confirmBtn = overlay.querySelector('[data-action="confirm"]');
-    const card = overlay.querySelector('.bw-confirm-card');
+    const card = overlay.querySelector(".bw-confirm-card");
     let isClosing = false;
 
     const cleanup = () => {
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener("keydown", onKeyDown);
       overlay.remove();
     };
 
@@ -47,34 +47,34 @@ export function confirmLogout() {
       }
 
       isClosing = true;
-      overlay.classList.add('bw-confirm-overlay--closing');
+      overlay.classList.add("bw-confirm-overlay--closing");
 
       const done = () => {
         cleanup();
         resolve(result);
       };
 
-      card?.addEventListener('animationend', done, { once: true });
+      card?.addEventListener("animationend", done, { once: true });
       window.setTimeout(done, 260);
     };
 
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         event.preventDefault();
         finish(false, true);
       }
     };
 
-    cancelBtn?.addEventListener('click', () => finish(false, true));
-    confirmBtn?.addEventListener('click', () => finish(true));
+    cancelBtn?.addEventListener("click", () => finish(false, true));
+    confirmBtn?.addEventListener("click", () => finish(true));
 
-    overlay.addEventListener('click', (event) => {
+    overlay.addEventListener("click", (event) => {
       if (event.target === overlay) {
         finish(false, true);
       }
     });
 
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
     document.body.appendChild(overlay);
     cancelBtn?.focus();
   });
@@ -82,9 +82,9 @@ export function confirmLogout() {
 
 export function confirmDeleteAccount(expectedUsername) {
   return new Promise((resolve) => {
-    const safeUsername = String(expectedUsername ?? '').trim();
-    const overlay = document.createElement('div');
-    overlay.className = 'bw-confirm-overlay';
+    const safeUsername = String(expectedUsername ?? "").trim();
+    const overlay = document.createElement("div");
+    overlay.className = "bw-confirm-overlay";
     overlay.innerHTML = `
       <div class="bw-confirm-card" role="dialog" aria-modal="true" aria-labelledby="bw-confirm-delete-title" aria-describedby="bw-confirm-delete-copy">
         <div class="bw-confirm-corner bw-confirm-corner--tl"></div>
@@ -101,7 +101,7 @@ export function confirmDeleteAccount(expectedUsername) {
         <h2 class="bw-confirm-title" id="bw-confirm-delete-title">Delete Account</h2>
         <p class="bw-confirm-kicker">Permanent Action</p>
         <p class="bw-confirm-copy" id="bw-confirm-delete-copy">
-          Type your username <strong>${escapeHtml(safeUsername || 'unknown')}</strong> and your password to permanently delete your profile.
+          Type your username <strong>${escapeHtml(safeUsername || "unknown")}</strong> and your password to permanently delete your profile.
         </p>
 
         <label class="bw-confirm-field" for="bw-confirm-delete-username">Username confirmation</label>
@@ -134,26 +134,26 @@ export function confirmDeleteAccount(expectedUsername) {
 
     const cancelBtn = overlay.querySelector('[data-action="cancel"]');
     const confirmBtn = overlay.querySelector('[data-action="confirm"]');
-    const card = overlay.querySelector('.bw-confirm-card');
-    const usernameInput = overlay.querySelector('#bw-confirm-delete-username');
-    const passwordInput = overlay.querySelector('#bw-confirm-delete-password');
-    const capsLockHint = overlay.querySelector('#bw-confirm-delete-caps-lock');
-    const errorEl = overlay.querySelector('#bw-confirm-delete-error');
+    const card = overlay.querySelector(".bw-confirm-card");
+    const usernameInput = overlay.querySelector("#bw-confirm-delete-username");
+    const passwordInput = overlay.querySelector("#bw-confirm-delete-password");
+    const capsLockHint = overlay.querySelector("#bw-confirm-delete-caps-lock");
+    const errorEl = overlay.querySelector("#bw-confirm-delete-error");
     let isClosing = false;
 
     const isMatch = () => usernameInput?.value.trim() === safeUsername;
-    const hasPassword = () => (passwordInput?.value || '').trim().length > 0;
+    const hasPassword = () => (passwordInput?.value || "").trim().length > 0;
 
     const updateConfirmState = () => {
       if (!confirmBtn) return;
       confirmBtn.disabled = !safeUsername || !isMatch() || !hasPassword();
       if (errorEl && isMatch() && hasPassword()) {
-        errorEl.textContent = '';
+        errorEl.textContent = "";
       }
     };
 
     const cleanup = () => {
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener("keydown", onKeyDown);
       overlay.remove();
     };
 
@@ -167,54 +167,54 @@ export function confirmDeleteAccount(expectedUsername) {
       }
 
       isClosing = true;
-      overlay.classList.add('bw-confirm-overlay--closing');
+      overlay.classList.add("bw-confirm-overlay--closing");
 
       const done = () => {
         cleanup();
         resolve(result);
       };
 
-      card?.addEventListener('animationend', done, { once: true });
+      card?.addEventListener("animationend", done, { once: true });
       window.setTimeout(done, 260);
     };
 
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         event.preventDefault();
         finish(false, true);
       }
     };
 
-    cancelBtn?.addEventListener('click', () => finish(false, true));
-    confirmBtn?.addEventListener('click', () => {
+    cancelBtn?.addEventListener("click", () => finish(false, true));
+    confirmBtn?.addEventListener("click", () => {
       if (!isMatch()) {
         if (errorEl) {
-          errorEl.textContent = 'Username does not match.';
+          errorEl.textContent = "Username does not match.";
         }
         return;
       }
       if (!hasPassword()) {
         if (errorEl) {
-          errorEl.textContent = 'Password is required.';
+          errorEl.textContent = "Password is required.";
         }
         return;
       }
       finish({
         confirmed: true,
-        password: passwordInput?.value || '',
+        password: passwordInput?.value || "",
       });
     });
 
-    usernameInput?.addEventListener('input', updateConfirmState);
-    passwordInput?.addEventListener('input', updateConfirmState);
+    usernameInput?.addEventListener("input", updateConfirmState);
+    passwordInput?.addEventListener("input", updateConfirmState);
 
-    overlay.addEventListener('click', (event) => {
+    overlay.addEventListener("click", (event) => {
       if (event.target === overlay) {
         finish(false, true);
       }
     });
 
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
     document.body.appendChild(overlay);
     attachCapsLockHint(passwordInput, capsLockHint);
     updateConfirmState();
@@ -224,17 +224,17 @@ export function confirmDeleteAccount(expectedUsername) {
 
 function escapeHtml(text) {
   return String(text)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 export function showDeleteAccountError(errorMessage, description) {
   return new Promise((resolve) => {
-    const overlay = document.createElement('div');
-    overlay.className = 'bw-confirm-overlay';
+    const overlay = document.createElement("div");
+    overlay.className = "bw-confirm-overlay";
     overlay.innerHTML = `
       <div class="bw-confirm-card" role="dialog" aria-modal="true" aria-labelledby="bw-error-title" aria-describedby="bw-error-copy">
         <div class="bw-confirm-corner bw-confirm-corner--tl"></div>
@@ -250,8 +250,8 @@ export function showDeleteAccountError(errorMessage, description) {
 
         <h2 class="bw-confirm-title bw-error-title" id="bw-error-title">Deletion Failed</h2>
         <p class="bw-confirm-kicker">Error</p>
-        <p class="bw-confirm-copy" id="bw-error-copy">${escapeHtml(errorMessage || 'Could not delete account. Please try again.')}</p>
-        ${description ? `<p class="bw-confirm-copy bw-error-hint">${escapeHtml(description)}</p>` : ''}
+        <p class="bw-confirm-copy" id="bw-error-copy">${escapeHtml(errorMessage || "Could not delete account. Please try again.")}</p>
+        ${description ? `<p class="bw-confirm-copy bw-error-hint">${escapeHtml(description)}</p>` : ""}
 
         <div class="bw-confirm-actions">
           <button type="button" class="bw-confirm-btn bw-confirm-btn-cancel" data-action="ok">OK</button>
@@ -260,11 +260,11 @@ export function showDeleteAccountError(errorMessage, description) {
     `;
 
     const okBtn = overlay.querySelector('[data-action="ok"]');
-    const card = overlay.querySelector('.bw-confirm-card');
+    const card = overlay.querySelector(".bw-confirm-card");
     let isClosing = false;
 
     const cleanup = () => {
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener("keydown", onKeyDown);
       overlay.remove();
     };
 
@@ -278,33 +278,33 @@ export function showDeleteAccountError(errorMessage, description) {
       }
 
       isClosing = true;
-      overlay.classList.add('bw-confirm-overlay--closing');
+      overlay.classList.add("bw-confirm-overlay--closing");
 
       const done = () => {
         cleanup();
         resolve(undefined);
       };
 
-      card?.addEventListener('animationend', done, { once: true });
+      card?.addEventListener("animationend", done, { once: true });
       window.setTimeout(done, 260);
     };
 
     const onKeyDown = (event) => {
-      if (event.key === 'Escape' || event.key === 'Enter') {
+      if (event.key === "Escape" || event.key === "Enter") {
         event.preventDefault();
         finish(true);
       }
     };
 
-    okBtn?.addEventListener('click', () => finish(true));
+    okBtn?.addEventListener("click", () => finish(true));
 
-    overlay.addEventListener('click', (event) => {
+    overlay.addEventListener("click", (event) => {
       if (event.target === overlay) {
         finish(true);
       }
     });
 
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
     document.body.appendChild(overlay);
     okBtn?.focus();
   });

@@ -1,4 +1,4 @@
-@import '../base/auth-common.css';
+@import "../base/auth-common.css";
 
 #app[data-route="/backend-status"] {
   --bw-content-width: min(1100px, 94vw);
@@ -26,8 +26,16 @@
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(120% 100% at 8% 0%, rgba(212, 175, 55, 0.08), transparent 52%),
-    radial-gradient(100% 120% at 92% 100%, rgba(139, 0, 0, 0.14), transparent 58%),
+    radial-gradient(
+      120% 100% at 8% 0%,
+      rgba(212, 175, 55, 0.08),
+      transparent 52%
+    ),
+    radial-gradient(
+      100% 120% at 92% 100%,
+      rgba(139, 0, 0, 0.14),
+      transparent 58%
+    ),
     linear-gradient(165deg, rgba(20, 8, 8, 0.98), rgba(10, 4, 4, 0.98));
 }
 
@@ -40,14 +48,10 @@
   margin-bottom: 0;
 }
 
-.#placeholder {}
-
 #app[data-route="/backend-status"] .bw-bs-root .mn-server-head {
   justify-content: center;
   align-items: center;
 }
-
-.#placeholder2 {}
 
 #app[data-route="/backend-status"] .bw-bs-root .mn-server-copy-block {
   flex: 0 0 auto;
@@ -84,8 +88,6 @@
   width: 100%;
   text-align: center;
 }
-
-.#placeholder3 {}
 
 #app[data-route="/backend-status"] .bw-bs-status-actions {
   margin-top: 8px;

@@ -3,25 +3,25 @@ let hasTrackedCapsLockState = false;
 let lastCapsLockState = false;
 
 function updateTrackedCapsLockState(event) {
-  if (typeof event?.getModifierState !== 'function') return;
+  if (typeof event?.getModifierState !== "function") return;
 
   hasTrackedCapsLockState = true;
-  lastCapsLockState = event.getModifierState('CapsLock');
+  lastCapsLockState = event.getModifierState("CapsLock");
 }
 
 function ensureCapsLockTracking() {
   if (trackingEnabled) return;
 
   trackingEnabled = true;
-  document.addEventListener('keydown', updateTrackedCapsLockState, true);
-  document.addEventListener('keyup', updateTrackedCapsLockState, true);
+  document.addEventListener("keydown", updateTrackedCapsLockState, true);
+  document.addEventListener("keyup", updateTrackedCapsLockState, true);
 }
 
 function setHintVisibility(hintEl, visible) {
   if (!hintEl) return;
 
-  hintEl.classList.toggle('is-visible', visible);
-  hintEl.setAttribute('aria-hidden', String(!visible));
+  hintEl.classList.toggle("is-visible", visible);
+  hintEl.setAttribute("aria-hidden", String(!visible));
 }
 
 export function attachCapsLockHint(input, hintEl) {
@@ -34,7 +34,10 @@ export function attachCapsLockHint(input, hintEl) {
 
   const syncFromTrackedState = () => {
     const isFocused = document.activeElement === input;
-    setHintVisibility(hintEl, isFocused && hasTrackedCapsLockState && lastCapsLockState);
+    setHintVisibility(
+      hintEl,
+      isFocused && hasTrackedCapsLockState && lastCapsLockState,
+    );
   };
 
   const syncFromKeyboardEvent = (event) => {
@@ -46,16 +49,16 @@ export function attachCapsLockHint(input, hintEl) {
     setHintVisibility(hintEl, false);
   };
 
-  input.addEventListener('focus', syncFromTrackedState);
-  input.addEventListener('blur', hideHint);
-  input.addEventListener('keydown', syncFromKeyboardEvent);
-  input.addEventListener('keyup', syncFromKeyboardEvent);
+  input.addEventListener("focus", syncFromTrackedState);
+  input.addEventListener("blur", hideHint);
+  input.addEventListener("keydown", syncFromKeyboardEvent);
+  input.addEventListener("keyup", syncFromKeyboardEvent);
 
   return () => {
-    input.removeEventListener('focus', syncFromTrackedState);
-    input.removeEventListener('blur', hideHint);
-    input.removeEventListener('keydown', syncFromKeyboardEvent);
-    input.removeEventListener('keyup', syncFromKeyboardEvent);
+    input.removeEventListener("focus", syncFromTrackedState);
+    input.removeEventListener("blur", hideHint);
+    input.removeEventListener("keydown", syncFromKeyboardEvent);
+    input.removeEventListener("keyup", syncFromKeyboardEvent);
   };
 }
 

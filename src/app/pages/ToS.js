@@ -1,10 +1,10 @@
-import '../../styles/pages/ToS.css';
-import { isLoggedIn } from '../services/auth.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
+import "../../styles/pages/ToS.css";
+import { isLoggedIn } from "../services/auth.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
 export default function ToS(container) {
   const loggedIn = isLoggedIn();
-  const ctaHref = loggedIn ? '/main' : '/register';
-  const ctaLabel = loggedIn ? 'Back to Dashboard' : 'Back to Registration';
+  const ctaHref = loggedIn ? "/main" : "/register";
+  const ctaLabel = loggedIn ? "Back to Dashboard" : "Back to Registration";
 
   container.innerHTML = `
     <div class="bw-root">
@@ -141,16 +141,16 @@ export default function ToS(container) {
    CANVAS – minimal star field for ToS page
    ============================================================ */
 function initToSCanvas() {
-  const canvas = document.getElementById('tos-canvas');
+  const canvas = document.getElementById("tos-canvas");
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   let W, H;
   let stars = [];
   let animId;
 
   function measure() {
-    W = canvas.width  = window.innerWidth;
+    W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
   }
 
@@ -167,7 +167,7 @@ function initToSCanvas() {
         vx: (Math.random() - 0.5) * 0.15,
         vy: (Math.random() - 0.5) * 0.15,
         isRed: Math.random() < 0.08,
-        isGold: Math.random() < 0.05
+        isGold: Math.random() < 0.05,
       });
     }
   }
@@ -176,27 +176,27 @@ function initToSCanvas() {
     measure();
     initStars();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       measure();
       initStars();
     });
 
     function draw() {
-      if (!document.getElementById('tos-canvas')) {
+      if (!document.getElementById("tos-canvas")) {
         cancelAnimationFrame(animId);
         return;
       }
-      
+
       ctx.clearRect(0, 0, W, H);
 
       stars.forEach((s) => {
         s.flicker += s.flickerSpeed;
         const alpha = s.opacity * (0.6 + 0.4 * Math.sin(s.flicker));
-        
+
         ctx.globalAlpha = alpha;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = s.isRed ? '#CC1A1A' : s.isGold ? '#D4AF37' : '#FFE8D8';
+        ctx.fillStyle = s.isRed ? "#CC1A1A" : s.isGold ? "#D4AF37" : "#FFE8D8";
         ctx.fill();
         ctx.globalAlpha = 1;
 
@@ -217,21 +217,23 @@ function initToSCanvas() {
 }
 
 function spawnToSParticles() {
-  const root = document.querySelector('.bw-root');
+  const root = document.querySelector(".bw-root");
   if (!root) return;
 
   for (let i = 0; i < 12; i++) {
-    const p        = document.createElement('div');
-    p.className    = 'bw-particle';
-    const size     = Math.random() * 2 + 0.4;
-    const delay    = Math.random() * 15;
+    const p = document.createElement("div");
+    p.className = "bw-particle";
+    const size = Math.random() * 2 + 0.4;
+    const delay = Math.random() * 15;
     const duration = 15 + Math.random() * 20;
-    const drift    = (Math.random() - 0.5) * 80;
-    const isRed    = Math.random() < 0.25;
-    const isGold   = !isRed && Math.random() < 0.12;
-    const col      = isRed  ? 'rgba(192,57,43,0.5)'
-                   : isGold ? 'rgba(212,175,55,0.35)'
-                   :          'rgba(255,230,210,0.25)';
+    const drift = (Math.random() - 0.5) * 80;
+    const isRed = Math.random() < 0.25;
+    const isGold = !isRed && Math.random() < 0.12;
+    const col = isRed
+      ? "rgba(192,57,43,0.5)"
+      : isGold
+        ? "rgba(212,175,55,0.35)"
+        : "rgba(255,230,210,0.25)";
 
     p.style.cssText = `
       width:${size}px; height:${size}px;
@@ -245,4 +247,3 @@ function spawnToSParticles() {
     root.appendChild(p);
   }
 }
-

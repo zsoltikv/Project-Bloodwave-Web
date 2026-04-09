@@ -3,7 +3,7 @@ let _loaded = false;
 let _banned = new Set();
 
 function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 async function loadLists() {
@@ -11,18 +11,20 @@ async function loadLists() {
   _loaded = true;
 
   try {
-    const paths = ['/src/locales/hu.txt', '/src/locales/en.txt'];
-    const results = await Promise.all(paths.map(p => fetch(p).then(r => r.ok ? r.text() : '')));
-    results.forEach(txt => {
-      txt.split(/\r?\n/).forEach(line => {
+    const paths = ["/src/locales/hu.txt", "/src/locales/en.txt"];
+    const results = await Promise.all(
+      paths.map((p) => fetch(p).then((r) => (r.ok ? r.text() : ""))),
+    );
+    results.forEach((txt) => {
+      txt.split(/\r?\n/).forEach((line) => {
         const w = line.trim().toLowerCase();
         if (!w) return;
-        if (w.startsWith('#') || w.startsWith('//')) return;
+        if (w.startsWith("#") || w.startsWith("//")) return;
         _banned.add(w);
       });
     });
   } catch (err) {
-    console.warn('Failed to load profanity lists', err);
+    console.warn("Failed to load profanity lists", err);
   }
 }
 

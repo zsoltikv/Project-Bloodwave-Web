@@ -1,76 +1,81 @@
-import '../../styles/pages/Leaderboard.css';
-import '../../styles/pages/Achievements.css';
-import { API_BASE, getUser, logout, authFetch } from '../services/auth.js';
-import { confirmLogout } from '../effects/logout-confirm.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
+import "../../styles/pages/Leaderboard.css";
+import "../../styles/pages/Achievements.css";
+import { API_BASE, getUser, logout, authFetch } from "../services/auth.js";
+import { confirmLogout } from "../effects/logout-confirm.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
 
-const ACHIEVEMENT_IMAGE_MODULES = import.meta.glob('../../assets/achievements/*', {
-  eager: true,
-  import: 'default',
-});
+const ACHIEVEMENT_IMAGE_MODULES = import.meta.glob(
+  "../../assets/achievements/*",
+  {
+    eager: true,
+    import: "default",
+  },
+);
 
-const ACHIEVEMENT_IMAGE_BY_KEY = Object.entries(ACHIEVEMENT_IMAGE_MODULES).reduce((acc, [path, url]) => {
-  const fileName = path.split('/').pop() || '';
-  const key = fileName.replace(/\.[^.]+$/, '').toLowerCase();
+const ACHIEVEMENT_IMAGE_BY_KEY = Object.entries(
+  ACHIEVEMENT_IMAGE_MODULES,
+).reduce((acc, [path, url]) => {
+  const fileName = path.split("/").pop() || "";
+  const key = fileName.replace(/\.[^.]+$/, "").toLowerCase();
   acc.set(key, url);
   return acc;
 }, new Map());
 
 const ACHIEVEMENT_IMAGE_KEY_BY_ID = {
-  1: 'first_time_player',
-  2: 'movie_buff',
-  3: 'first_pause',
-  4: 'first_restart',
-  5: 'first_save',
-  6: 'first_steps',
-  7: 'first_blood',
-  8: 'slayer_10',
-  9: 'slayer_50',
-  10: 'mass_murderer',
-  11: 'multi_kill_10',
-  12: 'multi_kill_20',
-  13: 'no_hit_2min',
-  14: 'tank_500',
-  15: 'die_fast_15s',
-  16: 'no_pause_run',
-  17: 'afk_30s',
-  18: 'survivor_5min',
-  19: 'survivor_10min',
-  20: 'survivor_15min',
-  21: 'survivor_30min',
-  22: 'level_5',
-  23: 'level_10',
-  24: 'level_15',
-  25: 'level_20',
-  26: 'level_25',
-  27: 'level_50',
-  28: 'first_weapon_upgrade',
-  29: 'upgrade_damage_once',
-  30: 'upgrade_projectiles_once',
-  31: 'upgrade_cooldown_once',
-  32: 'upgrade_range_once',
-  33: 'upgrade_orbitalspeed_once',
-  34: 'weapon_level_5',
-  35: 'weapon_level_10',
-  36: 'projectiles_bonus_3',
-  37: 'cooldown_50',
-  38: 'range_150',
-  39: 'orbitalspeed_200',
-  40: 'rich',
-  41: 'shopaholic',
-  42: 'shop_clear_10',
-  43: 'collector',
-  44: 'big_spender',
-  45: 'arsenal',
-  46: 'orbit_master',
-  47: 'music_lover',
-  48: 'unlock_10_achievements',
-  49: 'unlock_25_achievements',
-  50: 'completionist',
+  1: "first_time_player",
+  2: "movie_buff",
+  3: "first_pause",
+  4: "first_restart",
+  5: "first_save",
+  6: "first_steps",
+  7: "first_blood",
+  8: "slayer_10",
+  9: "slayer_50",
+  10: "mass_murderer",
+  11: "multi_kill_10",
+  12: "multi_kill_20",
+  13: "no_hit_2min",
+  14: "tank_500",
+  15: "die_fast_15s",
+  16: "no_pause_run",
+  17: "afk_30s",
+  18: "survivor_5min",
+  19: "survivor_10min",
+  20: "survivor_15min",
+  21: "survivor_30min",
+  22: "level_5",
+  23: "level_10",
+  24: "level_15",
+  25: "level_20",
+  26: "level_25",
+  27: "level_50",
+  28: "first_weapon_upgrade",
+  29: "upgrade_damage_once",
+  30: "upgrade_projectiles_once",
+  31: "upgrade_cooldown_once",
+  32: "upgrade_range_once",
+  33: "upgrade_orbitalspeed_once",
+  34: "weapon_level_5",
+  35: "weapon_level_10",
+  36: "projectiles_bonus_3",
+  37: "cooldown_50",
+  38: "range_150",
+  39: "orbitalspeed_200",
+  40: "rich",
+  41: "shopaholic",
+  42: "shop_clear_10",
+  43: "collector",
+  44: "big_spender",
+  45: "arsenal",
+  46: "orbit_master",
+  47: "music_lover",
+  48: "unlock_10_achievements",
+  49: "unlock_25_achievements",
+  50: "completionist",
 };
 
 export default function Achievements(container) {
-  let achievementView = 'unlocked-first';
+  let achievementView = "unlocked-first";
   let cachedAchievements = [];
   let cachedUnlockedMap = new Map();
   container.innerHTML = `
@@ -200,48 +205,53 @@ export default function Achievements(container) {
   ensureGlobalStarfield();
 
   const user = getUser();
-  const fallbackDisplayName = user?.username ?? user?.email ?? 'Member';
-  const viewSelect = container.querySelector('#ac-view-select');
+  const fallbackDisplayName = user?.username ?? user?.email ?? "Member";
+  const viewSelect = container.querySelector("#ac-view-select");
 
-  const ddUsernameEl = container.querySelector('#ac-dd-username');
-  const mobileUsernameEl = container.querySelector('#ac-mobile-username');
+  const ddUsernameEl = container.querySelector("#ac-dd-username");
+  const mobileUsernameEl = container.querySelector("#ac-mobile-username");
   if (ddUsernameEl) ddUsernameEl.textContent = fallbackDisplayName;
   if (mobileUsernameEl) mobileUsernameEl.textContent = fallbackDisplayName;
 
-  const hamburger = container.querySelector('#ac-hamburger');
-  const mobileMenu = container.querySelector('#ac-mobile-menu');
+  const hamburger = container.querySelector("#ac-hamburger");
+  const mobileMenu = container.querySelector("#ac-mobile-menu");
   let mobileMenuOpen = false;
 
-  hamburger?.addEventListener('click', () => {
+  hamburger?.addEventListener("click", () => {
     mobileMenuOpen = !mobileMenuOpen;
-    hamburger.classList.toggle('open', mobileMenuOpen);
-    hamburger.setAttribute('aria-expanded', String(mobileMenuOpen));
+    hamburger.classList.toggle("open", mobileMenuOpen);
+    hamburger.setAttribute("aria-expanded", String(mobileMenuOpen));
     if (mobileMenu) {
-      mobileMenu.style.maxHeight = mobileMenuOpen ? `${mobileMenu.scrollHeight}px` : '0';
+      mobileMenu.style.maxHeight = mobileMenuOpen
+        ? `${mobileMenu.scrollHeight}px`
+        : "0";
     }
   });
 
-  mobileMenu?.querySelectorAll('.lb-mobile-link').forEach((link) => {
-    link.addEventListener('click', () => {
+  mobileMenu?.querySelectorAll(".lb-mobile-link").forEach((link) => {
+    link.addEventListener("click", () => {
       mobileMenuOpen = false;
-      hamburger?.classList.remove('open');
-      hamburger?.setAttribute('aria-expanded', 'false');
-      if (mobileMenu) mobileMenu.style.maxHeight = '0';
+      hamburger?.classList.remove("open");
+      hamburger?.setAttribute("aria-expanded", "false");
+      if (mobileMenu) mobileMenu.style.maxHeight = "0";
     });
   });
 
-  const avatarBtn = container.querySelector('#ac-avatar-btn');
-  const avatarDropdown = container.querySelector('#ac-avatar-dropdown');
+  const avatarBtn = container.querySelector("#ac-avatar-btn");
+  const avatarDropdown = container.querySelector("#ac-avatar-dropdown");
 
-  avatarBtn?.addEventListener('click', () => {
-    avatarDropdown?.classList.toggle('open');
-    avatarBtn.setAttribute('aria-expanded', String(avatarDropdown?.classList.contains('open')));
+  avatarBtn?.addEventListener("click", () => {
+    avatarDropdown?.classList.toggle("open");
+    avatarBtn.setAttribute(
+      "aria-expanded",
+      String(avatarDropdown?.classList.contains("open")),
+    );
   });
 
-  document.addEventListener('click', (event) => {
-    if (!event.target.closest('.lb-avatar-wrap')) {
-      avatarDropdown?.classList.remove('open');
-      avatarBtn?.setAttribute('aria-expanded', 'false');
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".lb-avatar-wrap")) {
+      avatarDropdown?.classList.remove("open");
+      avatarBtn?.setAttribute("aria-expanded", "false");
     }
   });
 
@@ -251,31 +261,34 @@ export default function Achievements(container) {
 
     await logout();
     if (window.router?.navigate) {
-      window.router.navigate('/login');
+      window.router.navigate("/login");
       return;
     }
-    window.location.href = '/login';
+    window.location.href = "/login";
   };
 
-  container.querySelector('#ac-dd-logout')?.addEventListener('click', doLogout);
-  container.querySelector('#ac-mobile-logout')?.addEventListener('click', doLogout);
+  container.querySelector("#ac-dd-logout")?.addEventListener("click", doLogout);
+  container
+    .querySelector("#ac-mobile-logout")
+    ?.addEventListener("click", doLogout);
 
-  viewSelect?.addEventListener('change', (event) => {
-    achievementView = event.target.value || 'unlocked-first';
+  viewSelect?.addEventListener("change", (event) => {
+    achievementView = event.target.value || "unlocked-first";
     renderAchievements(cachedAchievements, cachedUnlockedMap);
   });
 
   async function refreshNavbarUsername() {
     try {
       const res = await authFetch(`${API_BASE}/api/User/me`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
+        method: "GET",
+        headers: { Accept: "application/json" },
       });
 
       if (!res.ok) return;
 
       const userData = await res.json();
-      const liveDisplayName = userData?.username ?? userData?.email ?? fallbackDisplayName;
+      const liveDisplayName =
+        userData?.username ?? userData?.email ?? fallbackDisplayName;
 
       if (ddUsernameEl) ddUsernameEl.textContent = liveDisplayName;
       if (mobileUsernameEl) mobileUsernameEl.textContent = liveDisplayName;
@@ -285,13 +298,13 @@ export default function Achievements(container) {
   }
 
   function escapeHtml(value) {
-    const span = document.createElement('span');
-    span.textContent = String(value ?? '');
+    const span = document.createElement("span");
+    span.textContent = String(value ?? "");
     return span.innerHTML;
   }
 
   function normalizeAchievementText(value) {
-    if (typeof value !== 'string') return '';
+    if (typeof value !== "string") return "";
 
     let text = value.trim();
     if (text.startsWith('"') && text.endsWith('"') && text.length >= 2) {
@@ -304,8 +317,8 @@ export default function Achievements(container) {
   function makeTitleImageKey(value) {
     return normalizeAchievementText(value)
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '');
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
   }
 
   function getAchievementImageUrl(achievement) {
@@ -320,31 +333,31 @@ export default function Achievements(container) {
       return ACHIEVEMENT_IMAGE_BY_KEY.get(titleKey);
     }
 
-    return '';
+    return "";
   }
 
   function formatUnlockedAt(isoDate) {
-    const raw = typeof isoDate === 'string' ? isoDate.trim() : '';
-    if (!raw) return '';
+    const raw = typeof isoDate === "string" ? isoDate.trim() : "";
+    if (!raw) return "";
 
     const hasTimezone = /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw);
     const normalized = hasTimezone ? raw : `${raw}Z`;
     const parsedDate = new Date(normalized);
 
-    if (Number.isNaN(parsedDate.getTime())) return '';
+    if (Number.isNaN(parsedDate.getTime())) return "";
 
-    return new Intl.DateTimeFormat('hu-HU', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'Europe/Budapest',
+    return new Intl.DateTimeFormat("hu-HU", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Europe/Budapest",
     }).format(parsedDate);
   }
 
   function renderSummary(total, unlocked) {
-    const summaryEl = container.querySelector('#ac-summary');
+    const summaryEl = container.querySelector("#ac-summary");
     if (!summaryEl) return;
 
     const locked = Math.max(0, total - unlocked);
@@ -371,13 +384,13 @@ export default function Achievements(container) {
   }
 
   function renderLoading() {
-    const gridEl = container.querySelector('#ac-grid');
+    const gridEl = container.querySelector("#ac-grid");
     if (!gridEl) return;
     gridEl.innerHTML = '<div class="ach-loading">Loading achievements...</div>';
   }
 
   function renderError(message) {
-    const gridEl = container.querySelector('#ac-grid');
+    const gridEl = container.querySelector("#ac-grid");
     if (!gridEl) return;
 
     gridEl.innerHTML = `
@@ -387,16 +400,17 @@ export default function Achievements(container) {
       </div>
     `;
 
-    const retryBtn = gridEl.querySelector('#ac-retry');
-    retryBtn?.addEventListener('click', loadAchievements);
+    const retryBtn = gridEl.querySelector("#ac-retry");
+    retryBtn?.addEventListener("click", loadAchievements);
   }
 
   function renderAchievements(achievements, unlockedMap) {
-    const gridEl = container.querySelector('#ac-grid');
+    const gridEl = container.querySelector("#ac-grid");
     if (!gridEl) return;
 
     if (!Array.isArray(achievements) || achievements.length === 0) {
-      gridEl.innerHTML = '<div class="ach-loading">No achievements available.</div>';
+      gridEl.innerHTML =
+        '<div class="ach-loading">No achievements available.</div>';
       renderSummary(0, 0);
       return;
     }
@@ -404,45 +418,54 @@ export default function Achievements(container) {
     const unlockedCount = achievements.reduce((count, achievement) => {
       return count + (unlockedMap.has(Number(achievement.id)) ? 1 : 0);
     }, 0);
-    const sorted = applyAchievementView(achievements, unlockedMap, achievementView);
+    const sorted = applyAchievementView(
+      achievements,
+      unlockedMap,
+      achievementView,
+    );
 
     renderSummary(achievements.length, unlockedCount);
 
     if (!sorted.length) {
-      const emptyMessage = achievementView === 'unlocked-only'
-        ? 'No unlocked achievements yet.'
-        : achievementView === 'locked-only'
-          ? 'No locked achievements remaining.'
-          : 'No achievements available.';
+      const emptyMessage =
+        achievementView === "unlocked-only"
+          ? "No unlocked achievements yet."
+          : achievementView === "locked-only"
+            ? "No locked achievements remaining."
+            : "No achievements available.";
       gridEl.innerHTML = `<div class="ach-loading">${escapeHtml(emptyMessage)}</div>`;
       return;
     }
 
-    gridEl.innerHTML = sorted.map((achievement) => {
-      const achievementId = Number(achievement.id);
-      const unlockedAt = unlockedMap.get(achievementId);
-      const isUnlocked = Boolean(unlockedAt);
-      const title = escapeHtml(normalizeAchievementText(achievement.title));
-      const description = escapeHtml(normalizeAchievementText(achievement.description));
-      const unlockedText = isUnlocked ? formatUnlockedAt(unlockedAt) : '';
-      const imageUrl = getAchievementImageUrl(achievement);
-      const lockOverlay = isUnlocked
-        ? ''
-        : '<span class="ach-art-lock" aria-label="Locked" title="Locked"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 1 1 8 0v3"></path></svg></span>';
-      const imageMarkup = imageUrl
-        ? `<div class="ach-art"><img src="${escapeHtml(imageUrl)}" alt="${title}" loading="lazy" decoding="async">${lockOverlay}</div>`
-        : '';
+    gridEl.innerHTML = sorted
+      .map((achievement) => {
+        const achievementId = Number(achievement.id);
+        const unlockedAt = unlockedMap.get(achievementId);
+        const isUnlocked = Boolean(unlockedAt);
+        const title = escapeHtml(normalizeAchievementText(achievement.title));
+        const description = escapeHtml(
+          normalizeAchievementText(achievement.description),
+        );
+        const unlockedText = isUnlocked ? formatUnlockedAt(unlockedAt) : "";
+        const imageUrl = getAchievementImageUrl(achievement);
+        const lockOverlay = isUnlocked
+          ? ""
+          : '<span class="ach-art-lock" aria-label="Locked" title="Locked"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 1 1 8 0v3"></path></svg></span>';
+        const imageMarkup = imageUrl
+          ? `<div class="ach-art"><img src="${escapeHtml(imageUrl)}" alt="${title}" loading="lazy" decoding="async">${lockOverlay}</div>`
+          : "";
 
-      return `
-        <article class="ach-card ${isUnlocked ? 'is-unlocked' : 'is-locked'}" aria-label="Achievement ${achievementId}">
+        return `
+        <article class="ach-card ${isUnlocked ? "is-unlocked" : "is-locked"}" aria-label="Achievement ${achievementId}">
           <span class="ach-id">#${achievementId}</span>
           ${imageMarkup}
           <h3 class="ach-title">${title}</h3>
           <p class="ach-description">${description}</p>
-          <div class="ach-footer">${isUnlocked ? `Unlocked: ${escapeHtml(unlockedText)}` : 'Locked'}</div>
+          <div class="ach-footer">${isUnlocked ? `Unlocked: ${escapeHtml(unlockedText)}` : "Locked"}</div>
         </article>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   async function loadAchievements() {
@@ -451,17 +474,17 @@ export default function Achievements(container) {
     try {
       const [allRes, mineRes] = await Promise.all([
         authFetch(`${API_BASE}/api/Achievment`, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
+          method: "GET",
+          headers: { Accept: "application/json" },
         }),
         authFetch(`${API_BASE}/api/Achievment/me`, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
+          method: "GET",
+          headers: { Accept: "application/json" },
         }),
       ]);
 
       if (!allRes.ok) {
-        throw new Error('Failed to load achievements list.');
+        throw new Error("Failed to load achievements list.");
       }
 
       const allAchievements = await allRes.json();
@@ -473,16 +496,18 @@ export default function Achievements(container) {
           const achievementId = Number(row?.achievmentId);
           const unlockedAt = row?.unlockedAt;
           if (Number.isFinite(achievementId)) {
-            unlockedMap.set(achievementId, unlockedAt || '');
+            unlockedMap.set(achievementId, unlockedAt || "");
           }
         });
       }
 
-      cachedAchievements = Array.isArray(allAchievements) ? allAchievements : [];
+      cachedAchievements = Array.isArray(allAchievements)
+        ? allAchievements
+        : [];
       cachedUnlockedMap = unlockedMap;
       renderAchievements(cachedAchievements, cachedUnlockedMap);
     } catch (error) {
-      renderError(error?.message || 'Failed to load achievements.');
+      renderError(error?.message || "Failed to load achievements.");
     }
   }
 
@@ -492,33 +517,39 @@ export default function Achievements(container) {
     const getUnlockedTime = (achievement) => {
       const raw = unlockedMap.get(Number(achievement?.id));
       if (!raw) return 0;
-      const parsed = new Date(/(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw) ? raw : `${raw}Z`);
+      const parsed = new Date(
+        /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw) ? raw : `${raw}Z`,
+      );
       return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
     };
 
     switch (sortKey) {
-      case 'unlocked-first':
+      case "unlocked-first":
         return normalized.sort((a, b) => {
           const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
           const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
-          if (rightUnlocked !== leftUnlocked) return rightUnlocked - leftUnlocked;
+          if (rightUnlocked !== leftUnlocked)
+            return rightUnlocked - leftUnlocked;
           return Number(a.id) - Number(b.id);
         });
-      case 'recent-unlocked':
+      case "recent-unlocked":
         return normalized.sort((a, b) => {
           const leftUnlockedTime = getUnlockedTime(a);
           const rightUnlockedTime = getUnlockedTime(b);
-          if (rightUnlockedTime !== leftUnlockedTime) return rightUnlockedTime - leftUnlockedTime;
+          if (rightUnlockedTime !== leftUnlockedTime)
+            return rightUnlockedTime - leftUnlockedTime;
           const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
           const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
-          if (rightUnlocked !== leftUnlocked) return rightUnlocked - leftUnlocked;
+          if (rightUnlocked !== leftUnlocked)
+            return rightUnlocked - leftUnlocked;
           return Number(a.id) - Number(b.id);
         });
       default:
         return normalized.sort((a, b) => {
           const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
           const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
-          if (rightUnlocked !== leftUnlocked) return rightUnlocked - leftUnlocked;
+          if (rightUnlocked !== leftUnlocked)
+            return rightUnlocked - leftUnlocked;
           return Number(a.id) - Number(b.id);
         });
     }
@@ -528,24 +559,28 @@ export default function Achievements(container) {
     const normalized = Array.isArray(achievements) ? [...achievements] : [];
 
     switch (viewKey) {
-      case 'unlocked-only':
+      case "unlocked-only":
         return sortAchievements(
-          normalized.filter((achievement) => unlockedMap.has(Number(achievement?.id))),
+          normalized.filter((achievement) =>
+            unlockedMap.has(Number(achievement?.id)),
+          ),
           unlockedMap,
-          'unlocked-first',
+          "unlocked-first",
         );
-      case 'locked-only':
+      case "locked-only":
         return sortAchievements(
-          normalized.filter((achievement) => !unlockedMap.has(Number(achievement?.id))),
+          normalized.filter(
+            (achievement) => !unlockedMap.has(Number(achievement?.id)),
+          ),
           unlockedMap,
-          'unlocked-first',
+          "unlocked-first",
         );
-      case 'recent-unlocked':
-        return sortAchievements(normalized, unlockedMap, 'recent-unlocked');
-      case 'all':
-      case 'unlocked-first':
+      case "recent-unlocked":
+        return sortAchievements(normalized, unlockedMap, "recent-unlocked");
+      case "all":
+      case "unlocked-first":
       default:
-        return sortAchievements(normalized, unlockedMap, 'unlocked-first');
+        return sortAchievements(normalized, unlockedMap, "unlocked-first");
     }
   }
 

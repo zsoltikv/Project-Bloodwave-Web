@@ -1,4 +1,4 @@
-@import '../base/auth-common.css';
+@import "../base/auth-common.css";
 
 /* ============================================
    TERMS OF SERVICE PAGE
@@ -41,7 +41,8 @@
 }
 
 #app[data-route="/tos"] .bw-header {
-  padding: clamp(14px, 2.8vh, 22px) clamp(10px, 2vw, 16px) clamp(12px, 2.2vh, 18px);
+  padding: clamp(14px, 2.8vh, 22px) clamp(10px, 2vw, 16px)
+    clamp(12px, 2.2vh, 18px);
   margin-bottom: clamp(10px, 1.8vh, 16px) !important;
   overflow: visible;
 }
@@ -135,24 +136,24 @@
 }
 
 .bw-tos-heading {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: "Cormorant Garamond", serif;
   font-size: clamp(18px, 4vw, 24px);
   font-weight: 400;
   letter-spacing: clamp(2px, 0.8vw, 4px);
   color: var(--gold-light);
   text-transform: uppercase;
   margin-bottom: clamp(12px, 3vw, 18px);
-  text-shadow: 0 0 15px rgba(212,175,55,0.3);
-  border-bottom: 1px solid rgba(212,175,55,0.2);
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
   padding-bottom: 8px;
 }
 
 .bw-tos-subheading {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: clamp(12px, 2.8vw, 16px);
   font-weight: 400;
   letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   margin-top: clamp(16px, 3.5vw, 22px);
   margin-bottom: clamp(8px, 2vw, 12px);
 }
@@ -161,13 +162,13 @@
   font-size: clamp(10px, 2.3vw, 13px);
   font-weight: 300;
   letter-spacing: 0.8px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.45);
   line-height: 1.8;
   margin-bottom: clamp(12px, 3vw, 16px);
 }
 
 .bw-tos-text strong {
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.65);
   font-weight: 400;
 }
 
@@ -181,14 +182,14 @@
   font-size: clamp(10px, 2.3vw, 13px);
   font-weight: 300;
   letter-spacing: 0.8px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.45);
   line-height: 1.8;
   margin-bottom: 8px;
   position: relative;
 }
 
 .bw-tos-list li::before {
-  content: '*';
+  content: "*";
   position: absolute;
   left: -16px;
   color: var(--crimson);

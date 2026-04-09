@@ -1,6 +1,6 @@
-import '../../styles/pages/ForgotPassword.css';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
-import { API_BASE } from '../services/auth.js';
+import "../../styles/pages/ForgotPassword.css";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+import { API_BASE } from "../services/auth.js";
 export default function ForgotPassword(container) {
   container.innerHTML = `
     <div class="bw-root">
@@ -79,46 +79,47 @@ export default function ForgotPassword(container) {
 
   ensureGlobalStarfield();
 
-  const form       = document.getElementById('fpForm');
-  const btn        = document.getElementById('fpBtn');
-  const emailInput = document.getElementById('fpEmail');
-  const emailError = document.getElementById('fpEmailError');
-  const successPanel = document.getElementById('fpSuccess');
+  const form = document.getElementById("fpForm");
+  const btn = document.getElementById("fpBtn");
+  const emailInput = document.getElementById("fpEmail");
+  const emailError = document.getElementById("fpEmailError");
+  const successPanel = document.getElementById("fpSuccess");
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    emailError.textContent = '';
+    emailError.textContent = "";
 
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailInput.value.trim()) {
-      emailError.textContent = 'Email is required';
+      emailError.textContent = "Email is required";
       return;
     }
     if (!emailRe.test(emailInput.value.trim())) {
-      emailError.textContent = 'Invalid email address';
+      emailError.textContent = "Invalid email address";
       return;
     }
 
-    btn.classList.add('success');
-    btn.querySelector('.bw-btn-text').textContent = '✦  Sent  ✦';
+    btn.classList.add("success");
+    btn.querySelector(".bw-btn-text").textContent = "✦  Sent  ✦";
 
     // Example API call using API_BASE
     try {
       await fetch(`${API_BASE}/api/user/forgot-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: emailInput.value.trim() })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailInput.value.trim() }),
       });
     } catch (err) {
       // Optionally handle error
-      console.error('API error:', err);
+      console.error("API error:", err);
     }
 
     setTimeout(() => {
-      form.style.cssText = 'opacity:0; pointer-events:none; transform:translateY(-8px); transition:opacity 0.35s ease, transform 0.35s ease;';
+      form.style.cssText =
+        "opacity:0; pointer-events:none; transform:translateY(-8px); transition:opacity 0.35s ease, transform 0.35s ease;";
       setTimeout(() => {
-        form.style.display = 'none';
-        successPanel.classList.add('visible');
+        form.style.display = "none";
+        successPanel.classList.add("visible");
       }, 370);
     }, 650);
   });
@@ -128,15 +129,15 @@ export default function ForgotPassword(container) {
    CANVAS – same starry background as Main page
    ============================================================ */
 function initFpCanvas() {
-  const canvas = document.getElementById('fp-canvas');
+  const canvas = document.getElementById("fp-canvas");
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   let W, H;
   let stars = [];
 
   function measure() {
-    W = canvas.width  = window.innerWidth;
+    W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
   }
 
@@ -156,10 +157,10 @@ function initFpCanvas() {
 
   function anim() {
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = 'rgb(8,6,6)';
+    ctx.fillStyle = "rgb(8,6,6)";
     ctx.fillRect(0, 0, W, H);
 
-    stars.forEach(s => {
+    stars.forEach((s) => {
       s.x += s.vx;
       s.y += s.vy;
       if (s.x < 0) s.x = W;
@@ -171,7 +172,7 @@ function initFpCanvas() {
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
       glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
       glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
-      glow.addColorStop(1, 'rgba(212,175,55,0)');
+      glow.addColorStop(1, "rgba(212,175,55,0)");
 
       ctx.fillStyle = glow;
       ctx.beginPath();
@@ -191,28 +192,30 @@ function initFpCanvas() {
   initStars();
   anim();
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     measure();
     initStars();
   });
 }
 
 function spawnFpParticles() {
-  const root = document.querySelector('.bw-root');
+  const root = document.querySelector(".bw-root");
   if (!root) return;
 
   for (let i = 0; i < 18; i++) {
-    const p        = document.createElement('div');
-    p.className    = 'bw-particle';
-    const size     = Math.random() * 2.2 + 0.4;
-    const delay    = Math.random() * 20;
+    const p = document.createElement("div");
+    p.className = "bw-particle";
+    const size = Math.random() * 2.2 + 0.4;
+    const delay = Math.random() * 20;
     const duration = 18 + Math.random() * 22;
-    const drift    = (Math.random() - 0.5) * 90;
-    const isRed    = Math.random() < 0.28;
-    const isGold   = !isRed && Math.random() < 0.15;
-    const col      = isRed  ? 'rgba(192,57,43,0.55)'
-                   : isGold ? 'rgba(212,175,55,0.4)'
-                   :          'rgba(255,230,210,0.28)';
+    const drift = (Math.random() - 0.5) * 90;
+    const isRed = Math.random() < 0.28;
+    const isGold = !isRed && Math.random() < 0.15;
+    const col = isRed
+      ? "rgba(192,57,43,0.55)"
+      : isGold
+        ? "rgba(212,175,55,0.4)"
+        : "rgba(255,230,210,0.28)";
 
     p.style.cssText = `
       width:${size}px; height:${size}px;

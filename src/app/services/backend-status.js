@@ -1,4 +1,4 @@
-import { API_BASE, getToken } from './auth.js';
+import { API_BASE, getToken } from "./auth.js";
 
 const PING_CHECK_URL = `${API_BASE}/api/Test/ping`;
 const SESSION_CHECK_URL = `${API_BASE}/api/User/me`;
@@ -8,7 +8,7 @@ export async function fetchBackendStatus() {
   const [pingCheck, sessionCheck] = await Promise.all([
     probeEndpoint(PING_CHECK_URL, {
       headers: {
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     }),
     probeEndpoint(SESSION_CHECK_URL, {
@@ -18,24 +18,30 @@ export async function fetchBackendStatus() {
 
   const publicHealthy = isPingEndpointHealthy(pingCheck);
   const sessionHealthy = isSessionEndpointHealthy(sessionCheck);
-  const anyReachable = didEndpointRespond(pingCheck) || didEndpointRespond(sessionCheck);
+  const anyReachable =
+    didEndpointRespond(pingCheck) || didEndpointRespond(sessionCheck);
 
-  let tone = 'warn';
-  let label = 'Degraded';
-  let summary = 'Some backend checks responded, but the server is not fully healthy.';
+  let tone = "warn";
+  let label = "Degraded";
+  let summary =
+    "Some backend checks responded, but the server is not fully healthy.";
 
   if (!anyReachable) {
-    tone = 'down';
-    label = 'Down';
-    summary = 'The dashboard could not reach the backend server. It may be offline or blocked by the network.';
+    tone = "down";
+    label = "Down";
+    summary =
+      "The dashboard could not reach the backend server. It may be offline or blocked by the network.";
   } else if (publicHealthy && sessionHealthy) {
-    tone = 'ok';
-    label = 'Operational';
-    summary = 'The API and authenticated session endpoint are responding normally.';
+    tone = "ok";
+    label = "Operational";
+    summary =
+      "The API and authenticated session endpoint are responding normally.";
   } else if (publicHealthy) {
-    summary = 'The API is reachable, but the authenticated session check is failing.';
+    summary =
+      "The API is reachable, but the authenticated session check is failing.";
   } else if (sessionHealthy) {
-    summary = 'Authentication is responding, but the general API probe reported an issue.';
+    summary =
+      "Authentication is responding, but the general API probe reported an issue.";
   }
 
   return {
@@ -58,7 +64,7 @@ function buildSessionHeaders() {
   const token = getToken();
 
   return {
-    Accept: 'application/json',
+    Accept: "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
@@ -70,8 +76,8 @@ async function probeEndpoint(url, options = {}) {
 
   try {
     const response = await fetch(url, {
-      method: 'GET',
-      cache: 'no-store',
+      method: "GET",
+      cache: "no-store",
       ...options,
       signal: controller.signal,
     });
@@ -81,9 +87,9 @@ async function probeEndpoint(url, options = {}) {
       reachable: true,
       ok: response.ok,
       statusCode: response.status,
-      statusText: response.statusText || '',
+      statusText: response.statusText || "",
       responseTimeMs: Math.max(1, Date.now() - startedAt),
-      ...await readResponsePayload(response),
+      ...(await readResponsePayload(response)),
     };
   } catch (error) {
     return {
@@ -91,9 +97,9 @@ async function probeEndpoint(url, options = {}) {
       reachable: false,
       ok: false,
       statusCode: null,
-      statusText: '',
+      statusText: "",
       responseTimeMs: null,
-      detail: '',
+      detail: "",
       errorCode: normalizeNetworkError(error),
     };
   } finally {
@@ -102,16 +108,18 @@ async function probeEndpoint(url, options = {}) {
 }
 
 async function readResponsePayload(response) {
-  const contentType = (response.headers.get('content-type') || '').toLowerCase();
+  const contentType = (
+    response.headers.get("content-type") || ""
+  ).toLowerCase();
   const raw = (await response.text()).trim();
   if (!raw) {
     return {
       payload: null,
-      detail: '',
+      detail: "",
     };
   }
 
-  if (contentType.includes('application/json')) {
+  if (contentType.includes("application/json")) {
     try {
       const parsed = JSON.parse(raw);
       return {
@@ -130,12 +138,12 @@ async function readResponsePayload(response) {
 }
 
 function normalizePayloadDetail(payload) {
-  if (typeof payload === 'string') {
+  if (typeof payload === "string") {
     return normalizeTextDetail(payload);
   }
 
-  if (!payload || typeof payload !== 'object') {
-    return '';
+  if (!payload || typeof payload !== "object") {
+    return "";
   }
 
   const candidates = [
@@ -147,24 +155,24 @@ function normalizePayloadDetail(payload) {
   ];
 
   for (const candidate of candidates) {
-    if (typeof candidate === 'string' && candidate.trim()) {
+    if (typeof candidate === "string" && candidate.trim()) {
       return normalizeTextDetail(candidate);
     }
   }
 
-  return '';
+  return "";
 }
 
 function normalizeTextDetail(value) {
-  return String(value).replace(/\s+/g, ' ').trim().slice(0, 140);
+  return String(value).replace(/\s+/g, " ").trim().slice(0, 140);
 }
 
 function normalizeNetworkError(error) {
-  if (error?.name === 'AbortError') {
-    return 'timeout';
+  if (error?.name === "AbortError") {
+    return "timeout";
   }
 
-  return 'network';
+  return "network";
 }
 
 function didEndpointRespond(check) {
@@ -172,7 +180,11 @@ function didEndpointRespond(check) {
 }
 
 function isPingEndpointHealthy(check) {
-  return didEndpointRespond(check) && check.ok && readPayloadOk(check.payload) !== false;
+  return (
+    didEndpointRespond(check) &&
+    check.ok &&
+    readPayloadOk(check.payload) !== false
+  );
 }
 
 function isSessionEndpointHealthy(check) {
@@ -195,7 +207,7 @@ function formatSessionCheck(check) {
 
 function buildPingStatusLabel(check) {
   if (!didEndpointRespond(check)) {
-    return 'Unreachable';
+    return "Unreachable";
   }
 
   if (check.statusCode >= 500) {
@@ -215,7 +227,7 @@ function buildPingStatusLabel(check) {
 
 function buildSessionStatusLabel(check) {
   if (!didEndpointRespond(check)) {
-    return 'Unreachable';
+    return "Unreachable";
   }
 
   if (check.ok) {
@@ -235,46 +247,61 @@ function buildSessionStatusLabel(check) {
 
 function buildPingDetail(check) {
   if (!didEndpointRespond(check)) {
-    return check?.errorCode === 'timeout'
-      ? 'The API did not answer before the timeout window.'
-      : 'The browser could not reach this backend route.';
+    return check?.errorCode === "timeout"
+      ? "The API did not answer before the timeout window."
+      : "The browser could not reach this backend route.";
   }
 
   if (check.statusCode >= 500) {
-    return appendDetail(`The server returned HTTP ${check.statusCode}.`, check.detail);
+    return appendDetail(
+      `The server returned HTTP ${check.statusCode}.`,
+      check.detail,
+    );
   }
 
   if (check.ok && readPayloadOk(check.payload) !== false) {
-    return appendDetail('The ping route responded normally.', check.detail);
+    return appendDetail("The ping route responded normally.", check.detail);
   }
 
   if (check.ok) {
-    return appendDetail('The ping route responded, but the payload did not confirm an OK state.', check.detail);
+    return appendDetail(
+      "The ping route responded, but the payload did not confirm an OK state.",
+      check.detail,
+    );
   }
 
-  return appendDetail(`The route responded with HTTP ${check.statusCode}.`, check.detail);
+  return appendDetail(
+    `The route responded with HTTP ${check.statusCode}.`,
+    check.detail,
+  );
 }
 
 function buildSessionDetail(check) {
   if (!didEndpointRespond(check)) {
-    return check?.errorCode === 'timeout'
-      ? 'The authenticated route timed out before it could respond.'
-      : 'The browser could not reach the authenticated session route.';
+    return check?.errorCode === "timeout"
+      ? "The authenticated route timed out before it could respond."
+      : "The browser could not reach the authenticated session route.";
   }
 
   if (check.ok) {
-    return 'The authenticated session probe responded normally.';
+    return "The authenticated session probe responded normally.";
   }
 
   if (check.statusCode === 401 || check.statusCode === 403) {
-    return 'The backend is online, but the current login session was rejected.';
+    return "The backend is online, but the current login session was rejected.";
   }
 
   if (check.statusCode >= 500) {
-    return appendDetail(`The authenticated route returned HTTP ${check.statusCode}.`, check.detail);
+    return appendDetail(
+      `The authenticated route returned HTTP ${check.statusCode}.`,
+      check.detail,
+    );
   }
 
-  return appendDetail(`The authenticated route responded with HTTP ${check.statusCode}.`, check.detail);
+  return appendDetail(
+    `The authenticated route responded with HTTP ${check.statusCode}.`,
+    check.detail,
+  );
 }
 
 function appendDetail(prefix, detail) {
@@ -301,11 +328,11 @@ function formatHttpStatus(check) {
     return String(check.statusCode);
   }
 
-  if (check?.errorCode === 'timeout') {
-    return 'timeout';
+  if (check?.errorCode === "timeout") {
+    return "timeout";
   }
 
-  return 'unreachable';
+  return "unreachable";
 }
 
 function safeGetHost(url) {
@@ -317,25 +344,25 @@ function safeGetHost(url) {
 }
 
 function readPayloadOk(payload) {
-  if (!payload || typeof payload !== 'object') {
+  if (!payload || typeof payload !== "object") {
     return null;
   }
 
-  return typeof payload.ok === 'boolean' ? payload.ok : null;
+  return typeof payload.ok === "boolean" ? payload.ok : null;
 }
 
 function normalizeServerName(payload) {
-  if (!payload || typeof payload !== 'object') {
-    return '';
+  if (!payload || typeof payload !== "object") {
+    return "";
   }
 
-  return typeof payload.server === 'string' ? payload.server.trim() : '';
+  return typeof payload.server === "string" ? payload.server.trim() : "";
 }
 
 function normalizeServerUtc(payload) {
-  if (!payload || typeof payload !== 'object') {
-    return '';
+  if (!payload || typeof payload !== "object") {
+    return "";
   }
 
-  return typeof payload.utc === 'string' ? payload.utc.trim() : '';
+  return typeof payload.utc === "string" ? payload.utc.trim() : "";
 }

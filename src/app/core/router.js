@@ -1,21 +1,57 @@
-import { isLoggedIn } from '../services/auth.js';
-import { ensureGlobalStarfield, setGlobalStarfieldEnabled } from '../effects/global-starfield.js';
+import { isLoggedIn } from "../services/auth.js";
+import {
+  ensureGlobalStarfield,
+  setGlobalStarfieldEnabled,
+} from "../effects/global-starfield.js";
 
-const PROTECTED_PATHS = ['/main', '/stats', '/leaderboard', '/achievements', '/user-panel', '/backend-status'];
-const GUEST_ONLY_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/'];
-const FOOTER_VISIBLE_PATHS = ['/main', '/stats', '/leaderboard', '/achievements', '/user-panel'];
-const STARFIELD_PATHS = ['/', '/login', '/register', '/forgot-password', '/reset-password', '/tos', '/android-download', '/backend-status', '/main', '/stats', '/leaderboard', '/achievements', '/user-panel'];
-const GITHUB_PROJECT_URL = 'https://github.com/zsoltikv/Project-Bloodwave-Web';
+const PROTECTED_PATHS = [
+  "/main",
+  "/stats",
+  "/leaderboard",
+  "/achievements",
+  "/user-panel",
+  "/backend-status",
+];
+const GUEST_ONLY_PATHS = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/",
+];
+const FOOTER_VISIBLE_PATHS = [
+  "/main",
+  "/stats",
+  "/leaderboard",
+  "/achievements",
+  "/user-panel",
+];
+const STARFIELD_PATHS = [
+  "/",
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/tos",
+  "/android-download",
+  "/backend-status",
+  "/main",
+  "/stats",
+  "/leaderboard",
+  "/achievements",
+  "/user-panel",
+];
+const GITHUB_PROJECT_URL = "https://github.com/zsoltikv/Project-Bloodwave-Web";
 
 function forceScrollTop() {
-  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
 }
 
 function createGlobalFooter(loggedIn) {
-  const footer = document.createElement('footer');
-  footer.className = 'bw-site-footer';
+  const footer = document.createElement("footer");
+  footer.className = "bw-site-footer";
 
   const currentYear = new Date().getFullYear();
   const primaryAction = loggedIn
@@ -56,71 +92,72 @@ class Router {
     this.currentRoute = null;
     ensureGlobalStarfield();
 
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
     }
-    
+
     // Handle initial load
-    window.addEventListener('DOMContentLoaded', (e) => {
+    window.addEventListener("DOMContentLoaded", (e) => {
       e.preventDefault();
       this.handleRoute();
     });
-    
+
     // Handle browser back/forward
-    window.addEventListener('popstate', (e) => {
+    window.addEventListener("popstate", (e) => {
       this.handleRoute();
     });
-    
+
     // Intercept link clicks
-    document.addEventListener('click', (e) => {
-      const link = e.target.closest('[data-link]');
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-link]");
       if (!link) return;
 
       e.preventDefault();
-      const href = link.getAttribute('href');
+      const href = link.getAttribute("href");
       if (!href) return;
 
       this.navigate(href);
     });
   }
-  
+
   navigate(path) {
     window.history.pushState(null, null, path);
     this.handleRoute();
   }
-  
+
   handleRoute() {
-    const path    = window.location.pathname;
+    const path = window.location.pathname;
     const loggedIn = isLoggedIn();
 
     // Guard: protected page without a session → login
     if (PROTECTED_PATHS.includes(path) && !loggedIn) {
-      window.history.replaceState(null, null, '/login');
+      window.history.replaceState(null, null, "/login");
       return this.handleRoute();
     }
 
     // Guard: already logged-in user hits a guest-only page → main
     if (GUEST_ONLY_PATHS.includes(path) && loggedIn) {
-      window.history.replaceState(null, null, '/main');
+      window.history.replaceState(null, null, "/main");
       return this.handleRoute();
     }
 
     // Unknown path → login (or main if logged in, handled by the guard above on next call)
-    const route = this.routes.find(r => r.path === path)
-               || this.routes.find(r => r.path === '/login');
+    const route =
+      this.routes.find((r) => r.path === path) ||
+      this.routes.find((r) => r.path === "/login");
 
     setGlobalStarfieldEnabled(STARFIELD_PATHS.includes(path));
-    
+
     if (route) {
       this.currentRoute = route;
-      const app = document.getElementById('app');
-      app.setAttribute('data-route', route.path);
+      const app = document.getElementById("app");
+      app.setAttribute("data-route", route.path);
       const showFooter = FOOTER_VISIBLE_PATHS.includes(route.path);
-      app.setAttribute('data-has-footer', String(showFooter));
-      app.innerHTML = '';
+      app.setAttribute("data-has-footer", String(showFooter));
+      app.innerHTML = "";
 
-      const routeView = document.createElement('div');
-      routeView.className = 'bw-route-view';
+      const routeView = document.createElement("div");
+      routeView.className = "bw-route-view";
       app.appendChild(routeView);
 
       route.component(routeView);

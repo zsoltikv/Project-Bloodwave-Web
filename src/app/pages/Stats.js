@@ -1,7 +1,7 @@
-import '../../styles/pages/Stats.css';
-import { API_BASE, getUser, logout, authFetch } from '../services/auth.js';
-import { confirmLogout } from '../effects/logout-confirm.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
+import "../../styles/pages/Stats.css";
+import { API_BASE, getUser, logout, authFetch } from "../services/auth.js";
+import { confirmLogout } from "../effects/logout-confirm.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
 
 export default function Stats(container) {
   container.innerHTML = `
@@ -654,10 +654,10 @@ export default function Stats(container) {
   ensureGlobalStarfield();
 
   const user = getUser();
-  const displayName = user?.username ?? user?.email ?? 'Member';
-  const ddUsername     = container.querySelector('#st-dd-username');
-  const mobileUsername = container.querySelector('#st-mobile-username');
-  if (ddUsername)     ddUsername.textContent     = displayName;
+  const displayName = user?.username ?? user?.email ?? "Member";
+  const ddUsername = container.querySelector("#st-dd-username");
+  const mobileUsername = container.querySelector("#st-mobile-username");
+  if (ddUsername) ddUsername.textContent = displayName;
   if (mobileUsername) mobileUsername.textContent = displayName;
   refreshNavbarUsername();
   reorderStatCards(container);
@@ -668,14 +668,15 @@ export default function Stats(container) {
   async function refreshNavbarUsername() {
     try {
       const res = await authFetch(`${API_BASE}/api/User/me`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
+        method: "GET",
+        headers: { Accept: "application/json" },
       });
 
       if (!res.ok) return;
 
       const userData = await res.json();
-      const liveDisplayName = userData?.username ?? userData?.email ?? displayName;
+      const liveDisplayName =
+        userData?.username ?? userData?.email ?? displayName;
 
       if (ddUsername) ddUsername.textContent = liveDisplayName;
       if (mobileUsername) mobileUsername.textContent = liveDisplayName;
@@ -685,55 +686,57 @@ export default function Stats(container) {
   }
 
   // ── Hamburger toggle ──────────────────────────────────────────────────────
-  const hamburger  = container.querySelector('#st-hamburger');
-  const mobileMenu = container.querySelector('#st-mobile-menu');
+  const hamburger = container.querySelector("#st-hamburger");
+  const mobileMenu = container.querySelector("#st-mobile-menu");
   let menuOpen = false;
 
-  hamburger?.addEventListener('click', () => {
+  hamburger?.addEventListener("click", () => {
     menuOpen = !menuOpen;
-    hamburger.classList.toggle('open', menuOpen);
-    hamburger.setAttribute('aria-expanded', String(menuOpen));
-    mobileMenu.style.maxHeight = menuOpen ? mobileMenu.scrollHeight + 'px' : '0';
+    hamburger.classList.toggle("open", menuOpen);
+    hamburger.setAttribute("aria-expanded", String(menuOpen));
+    mobileMenu.style.maxHeight = menuOpen
+      ? mobileMenu.scrollHeight + "px"
+      : "0";
   });
 
-  mobileMenu?.querySelectorAll('.st-mobile-link').forEach(link => {
-    link.addEventListener('click', () => {
+  mobileMenu?.querySelectorAll(".st-mobile-link").forEach((link) => {
+    link.addEventListener("click", () => {
       menuOpen = false;
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', 'false');
-      mobileMenu.style.maxHeight = '0';
+      hamburger.classList.remove("open");
+      hamburger.setAttribute("aria-expanded", "false");
+      mobileMenu.style.maxHeight = "0";
     });
   });
 
   // ── Desktop avatar dropdown ───────────────────────────────────────────────
-  const avatarBtn  = container.querySelector('#st-avatar-btn');
-  const avatarDrop = container.querySelector('#st-avatar-dropdown');
+  const avatarBtn = container.querySelector("#st-avatar-btn");
+  const avatarDrop = container.querySelector("#st-avatar-dropdown");
   let dropOpen = false;
 
   function openDrop() {
     dropOpen = true;
-    avatarDrop.classList.add('open');
-    avatarBtn.setAttribute('aria-expanded', 'true');
+    avatarDrop.classList.add("open");
+    avatarBtn.setAttribute("aria-expanded", "true");
   }
   function closeDrop() {
     dropOpen = false;
-    avatarDrop.classList.remove('open');
-    avatarBtn.setAttribute('aria-expanded', 'false');
+    avatarDrop.classList.remove("open");
+    avatarBtn.setAttribute("aria-expanded", "false");
   }
 
-  avatarBtn?.addEventListener('click', (e) => {
+  avatarBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
     dropOpen ? closeDrop() : openDrop();
   });
 
-  document.addEventListener('click', (e) => {
+  document.addEventListener("click", (e) => {
     if (dropOpen && !avatarDrop.contains(e.target) && e.target !== avatarBtn) {
       closeDrop();
     }
   });
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && dropOpen) closeDrop();
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && dropOpen) closeDrop();
   });
 
   // ── Logout ───────────────────────────────────────────────────────────────
@@ -744,57 +747,59 @@ export default function Stats(container) {
     await logout();
   };
 
-  container.querySelector('#st-dd-logout')?.addEventListener('click', doLogout);
-  container.querySelector('#st-mobile-logout')?.addEventListener('click', doLogout);
+  container.querySelector("#st-dd-logout")?.addEventListener("click", doLogout);
+  container
+    .querySelector("#st-mobile-logout")
+    ?.addEventListener("click", doLogout);
 }
 
 function reorderStatCards(container) {
   const sectionOrders = {
-    'Core Totals': [
-      'matches',
-      'time-lived',
-      'damage',
-      'damage-taken',
-      'kills',
-      'coins',
+    "Core Totals": [
+      "matches",
+      "time-lived",
+      "damage",
+      "damage-taken",
+      "kills",
+      "coins",
     ],
-    'Per Match Efficiency': [
-      'avg-survival-match',
-      'avg-damage-match',
-      'avg-damage-minute',
-      'avg-kills-match',
-      'avg-kills-minute',
-      'avg-coins-match',
+    "Per Match Efficiency": [
+      "avg-survival-match",
+      "avg-damage-match",
+      "avg-damage-minute",
+      "avg-kills-match",
+      "avg-kills-minute",
+      "avg-coins-match",
     ],
-    'Peak Records': [
-      'best-score',
-      'highest-level',
-      'best-survival',
-      'best-damage',
-      'best-kills',
-      'best-coins',
+    "Peak Records": [
+      "best-score",
+      "highest-level",
+      "best-survival",
+      "best-damage",
+      "best-kills",
+      "best-coins",
     ],
-    'Run Shape And Stability': [
-      'short-match-ratio',
-      'long-match-ratio',
-      'performance-volatility',
+    "Run Shape And Stability": [
+      "short-match-ratio",
+      "long-match-ratio",
+      "performance-volatility",
     ],
   };
 
-  const sections = container.querySelectorAll('.st-stat-section');
+  const sections = container.querySelectorAll(".st-stat-section");
   sections.forEach((sectionEl) => {
-    const titleEl = sectionEl.querySelector('.st-section-title');
-    const gridEl = sectionEl.querySelector('.st-grid--section');
+    const titleEl = sectionEl.querySelector(".st-section-title");
+    const gridEl = sectionEl.querySelector(".st-grid--section");
     if (!titleEl || !gridEl) return;
 
     const desiredOrder = sectionOrders[titleEl.textContent?.trim()];
     if (!Array.isArray(desiredOrder) || !desiredOrder.length) return;
 
-    const cards = Array.from(gridEl.querySelectorAll('.st-card'));
+    const cards = Array.from(gridEl.querySelectorAll(".st-card"));
     const cardsByStat = new Map();
 
     cards.forEach((cardEl) => {
-      const valueEl = cardEl.querySelector('.js-st-count[data-stat]');
+      const valueEl = cardEl.querySelector(".js-st-count[data-stat]");
       const statKey = valueEl?.dataset?.stat;
       if (statKey) {
         cardsByStat.set(statKey, cardEl);
@@ -846,15 +851,18 @@ async function loadAllTimeStats(container, user) {
   }
 
   try {
-    const response = await authFetch(`${API_BASE}/api/Match/player?playerId=${encodeURIComponent(playerId)}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
+    const response = await authFetch(
+      `${API_BASE}/api/Match/player?playerId=${encodeURIComponent(playerId)}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch player matches');
+      throw new Error("Failed to fetch player matches");
     }
 
     const apiMatches = await parseResponsePayload(response);
@@ -871,32 +879,64 @@ async function loadAllTimeStats(container, user) {
 
 function applyStatsToCards(container, stats) {
   const setStatTarget = (statKey, value) => {
-    const valueEl = container.querySelector(`.js-st-count[data-stat="${statKey}"]`);
+    const valueEl = container.querySelector(
+      `.js-st-count[data-stat="${statKey}"]`,
+    );
     if (!valueEl) return;
     valueEl.dataset.target = String(value);
   };
 
-  setStatTarget('damage', toNonNegativeInt(stats.damageDealt));
-  setStatTarget('damage-taken', toNonNegativeInt(stats.damageTaken));
-  setStatTarget('kills', toNonNegativeInt(stats.enemiesKilled));
-  setStatTarget('time-lived', toNonNegativeInt(stats.totalMinutesLived));
-  setStatTarget('matches', toNonNegativeInt(stats.matchesPlayed));
-  setStatTarget('coins', toNonNegativeInt(stats.coinsCollected));
-  setStatTarget('avg-damage-match', toNonNegativeInt(stats.averageDamagePerMatch));
-  setStatTarget('avg-kills-match', toNonNegativeInt(stats.averageKillsPerMatch));
-  setStatTarget('avg-coins-match', toNonNegativeInt(stats.averageCoinsPerMatch));
-  setStatTarget('avg-kills-minute', toNonNegativeInt(stats.averageKillsPerMinute));
-  setStatTarget('avg-damage-minute', toNonNegativeInt(stats.averageDamagePerMinute));
-  setStatTarget('avg-survival-match', toNonNegativeInt(stats.averageSurvivalSecondsPerMatch));
-  setStatTarget('best-damage', toNonNegativeInt(stats.bestMatchDamage));
-  setStatTarget('best-kills', toNonNegativeInt(stats.bestMatchKills));
-  setStatTarget('best-survival', toNonNegativeInt(stats.bestMatchSurvivalSeconds));
-  setStatTarget('highest-level', toNonNegativeInt(stats.highestLevelReached));
-  setStatTarget('best-coins', toNonNegativeInt(stats.bestMatchCoins));
-  setStatTarget('best-score', toNonNegativeInt(stats.bestMatchScore));
-  setStatTarget('short-match-ratio', toNonNegativeInt(stats.shortMatchRatioPercent));
-  setStatTarget('long-match-ratio', toNonNegativeInt(stats.longMatchRatioPercent));
-  setStatTarget('performance-volatility', toNonNegativeInt(stats.performanceVolatilityPercent));
+  setStatTarget("damage", toNonNegativeInt(stats.damageDealt));
+  setStatTarget("damage-taken", toNonNegativeInt(stats.damageTaken));
+  setStatTarget("kills", toNonNegativeInt(stats.enemiesKilled));
+  setStatTarget("time-lived", toNonNegativeInt(stats.totalMinutesLived));
+  setStatTarget("matches", toNonNegativeInt(stats.matchesPlayed));
+  setStatTarget("coins", toNonNegativeInt(stats.coinsCollected));
+  setStatTarget(
+    "avg-damage-match",
+    toNonNegativeInt(stats.averageDamagePerMatch),
+  );
+  setStatTarget(
+    "avg-kills-match",
+    toNonNegativeInt(stats.averageKillsPerMatch),
+  );
+  setStatTarget(
+    "avg-coins-match",
+    toNonNegativeInt(stats.averageCoinsPerMatch),
+  );
+  setStatTarget(
+    "avg-kills-minute",
+    toNonNegativeInt(stats.averageKillsPerMinute),
+  );
+  setStatTarget(
+    "avg-damage-minute",
+    toNonNegativeInt(stats.averageDamagePerMinute),
+  );
+  setStatTarget(
+    "avg-survival-match",
+    toNonNegativeInt(stats.averageSurvivalSecondsPerMatch),
+  );
+  setStatTarget("best-damage", toNonNegativeInt(stats.bestMatchDamage));
+  setStatTarget("best-kills", toNonNegativeInt(stats.bestMatchKills));
+  setStatTarget(
+    "best-survival",
+    toNonNegativeInt(stats.bestMatchSurvivalSeconds),
+  );
+  setStatTarget("highest-level", toNonNegativeInt(stats.highestLevelReached));
+  setStatTarget("best-coins", toNonNegativeInt(stats.bestMatchCoins));
+  setStatTarget("best-score", toNonNegativeInt(stats.bestMatchScore));
+  setStatTarget(
+    "short-match-ratio",
+    toNonNegativeInt(stats.shortMatchRatioPercent),
+  );
+  setStatTarget(
+    "long-match-ratio",
+    toNonNegativeInt(stats.longMatchRatioPercent),
+  );
+  setStatTarget(
+    "performance-volatility",
+    toNonNegativeInt(stats.performanceVolatilityPercent),
+  );
 }
 
 function aggregateMatchStats(apiMatches) {
@@ -964,7 +1004,10 @@ function aggregateMatchStats(apiMatches) {
 
     bestMatchDamage = Math.max(bestMatchDamage, damageDealt);
     bestMatchKills = Math.max(bestMatchKills, enemiesKilled);
-    bestMatchSurvivalSeconds = Math.max(bestMatchSurvivalSeconds, durationSeconds);
+    bestMatchSurvivalSeconds = Math.max(
+      bestMatchSurvivalSeconds,
+      durationSeconds,
+    );
     highestLevelReached = Math.max(highestLevelReached, levelReached);
     bestMatchCoins = Math.max(bestMatchCoins, coinsCollected);
 
@@ -996,21 +1039,39 @@ function aggregateMatchStats(apiMatches) {
     matchesPlayed,
     coinsCollected: totalCoinsCollected,
     totalLevelsReached,
-    averageDamagePerMatch: toNonNegativeInt(safeDivide(totalDamageDealt, matchesPlayed)),
-    averageKillsPerMatch: toNonNegativeInt(safeDivide(totalEnemiesKilled, matchesPlayed)),
-    averageCoinsPerMatch: toNonNegativeInt(safeDivide(totalCoinsCollected, matchesPlayed)),
-    averageKillsPerMinute: toNonNegativeInt(safeDivide(totalEnemiesKilled, totalDurationMinutes)),
-    averageDamagePerMinute: toNonNegativeInt(safeDivide(totalDamageDealt, totalDurationMinutes)),
-    averageSurvivalSecondsPerMatch: toNonNegativeInt(safeDivide(totalDurationSeconds, matchesPlayed)),
+    averageDamagePerMatch: toNonNegativeInt(
+      safeDivide(totalDamageDealt, matchesPlayed),
+    ),
+    averageKillsPerMatch: toNonNegativeInt(
+      safeDivide(totalEnemiesKilled, matchesPlayed),
+    ),
+    averageCoinsPerMatch: toNonNegativeInt(
+      safeDivide(totalCoinsCollected, matchesPlayed),
+    ),
+    averageKillsPerMinute: toNonNegativeInt(
+      safeDivide(totalEnemiesKilled, totalDurationMinutes),
+    ),
+    averageDamagePerMinute: toNonNegativeInt(
+      safeDivide(totalDamageDealt, totalDurationMinutes),
+    ),
+    averageSurvivalSecondsPerMatch: toNonNegativeInt(
+      safeDivide(totalDurationSeconds, matchesPlayed),
+    ),
     bestMatchDamage,
     bestMatchKills,
     bestMatchSurvivalSeconds,
     highestLevelReached,
     bestMatchCoins,
     bestMatchScore,
-    shortMatchRatioPercent: toNonNegativeInt(safeDivide(shortMatchesCount * 100, matchesPlayed)),
-    longMatchRatioPercent: toNonNegativeInt(safeDivide(longMatchesCount * 100, matchesPlayed)),
-    performanceVolatilityPercent: toNonNegativeInt(calculateCoefficientOfVariationPercent(performanceScores)),
+    shortMatchRatioPercent: toNonNegativeInt(
+      safeDivide(shortMatchesCount * 100, matchesPlayed),
+    ),
+    longMatchRatioPercent: toNonNegativeInt(
+      safeDivide(longMatchesCount * 100, matchesPlayed),
+    ),
+    performanceVolatilityPercent: toNonNegativeInt(
+      calculateCoefficientOfVariationPercent(performanceScores),
+    ),
     recentTimelineMatches,
   };
 }
@@ -1019,9 +1080,19 @@ function buildRecentTimelineMatches(apiMatches) {
   if (!Array.isArray(apiMatches) || !apiMatches.length) return [];
 
   const withDate = apiMatches.map((match, index) => {
-    const createdAtRaw = typeof match?.createdAt === 'string' ? match.createdAt.trim() : '';
-    const createdAt = createdAtRaw ? new Date(/(?:Z|[+\-]\d{2}:\d{2})$/i.test(createdAtRaw) ? createdAtRaw : `${createdAtRaw}Z`) : null;
-    const createdAtTime = createdAt && !Number.isNaN(createdAt.getTime()) ? createdAt.getTime() : index;
+    const createdAtRaw =
+      typeof match?.createdAt === "string" ? match.createdAt.trim() : "";
+    const createdAt = createdAtRaw
+      ? new Date(
+          /(?:Z|[+\-]\d{2}:\d{2})$/i.test(createdAtRaw)
+            ? createdAtRaw
+            : `${createdAtRaw}Z`,
+        )
+      : null;
+    const createdAtTime =
+      createdAt && !Number.isNaN(createdAt.getTime())
+        ? createdAt.getTime()
+        : index;
 
     const damage = toNonNegativeInt(match?.damageDealt);
     const kills = toNonNegativeInt(match?.enemiesKilled);
@@ -1066,12 +1137,14 @@ function calculateCoefficientOfVariationPercent(values) {
 
   if (normalized.length < 2) return 0;
 
-  const mean = normalized.reduce((sum, value) => sum + value, 0) / normalized.length;
+  const mean =
+    normalized.reduce((sum, value) => sum + value, 0) / normalized.length;
   if (mean <= 0) return 0;
 
-  const variance = normalized
-    .map((value) => Math.pow(value - mean, 2))
-    .reduce((sum, value) => sum + value, 0) / normalized.length;
+  const variance =
+    normalized
+      .map((value) => Math.pow(value - mean, 2))
+      .reduce((sum, value) => sum + value, 0) / normalized.length;
 
   const standardDeviation = Math.sqrt(variance);
   return safeDivide(standardDeviation * 100, mean);
@@ -1102,7 +1175,7 @@ async function parseResponsePayload(response) {
 function resolvePlayerId(user) {
   // Check if a userId query parameter is provided
   const queryParams = new URLSearchParams(window.location.search);
-  const userIdParam = queryParams.get('userId');
+  const userIdParam = queryParams.get("userId");
   if (userIdParam) {
     const value = Number(userIdParam);
     if (Number.isInteger(value) && value > 0) {
@@ -1124,26 +1197,26 @@ function resolvePlayerId(user) {
 
 function updateNavbarLinksForPlayer(container) {
   const queryParams = new URLSearchParams(window.location.search);
-  const userIdParam = queryParams.get('userId');
+  const userIdParam = queryParams.get("userId");
 
   if (!userIdParam) return;
 
   // Back-only navbar in viewed-player mode.
-  const navLinks = container.querySelector('.st-links');
-  const backLink = container.querySelector('#stBackToDashboard');
-  const avatarWrap = container.querySelector('.st-avatar-wrap');
-  const hamburger = container.querySelector('#st-hamburger');
-  const mobileMenu = container.querySelector('#st-mobile-menu');
-  const root = container.querySelector('.st-root');
+  const navLinks = container.querySelector(".st-links");
+  const backLink = container.querySelector("#stBackToDashboard");
+  const avatarWrap = container.querySelector(".st-avatar-wrap");
+  const hamburger = container.querySelector("#st-hamburger");
+  const mobileMenu = container.querySelector("#st-mobile-menu");
+  const root = container.querySelector(".st-root");
 
-  if (root) root.classList.add('st-view-mode');
-  if (navLinks) navLinks.style.display = 'none';
-  if (avatarWrap) avatarWrap.style.display = 'none';
-  if (hamburger) hamburger.style.display = 'none';
-  if (mobileMenu) mobileMenu.style.display = 'none';
+  if (root) root.classList.add("st-view-mode");
+  if (navLinks) navLinks.style.display = "none";
+  if (avatarWrap) avatarWrap.style.display = "none";
+  if (hamburger) hamburger.style.display = "none";
+  if (mobileMenu) mobileMenu.style.display = "none";
   if (backLink) {
-    backLink.style.display = 'inline-block';
-    backLink.setAttribute('href', '/main');
+    backLink.style.display = "inline-block";
+    backLink.setAttribute("href", "/main");
   }
 
   // Fetch and display viewed player's username
@@ -1152,27 +1225,30 @@ function updateNavbarLinksForPlayer(container) {
 
 async function loadViewedPlayerUsername(userId, container) {
   try {
-    const res = await authFetch(`${API_BASE}/api/User/name?id=${encodeURIComponent(userId)}`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-    });
-    if (!res.ok) throw new Error('User not found');
-    
+    const res = await authFetch(
+      `${API_BASE}/api/User/name?id=${encodeURIComponent(userId)}`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      },
+    );
+    if (!res.ok) throw new Error("User not found");
+
     const data = await res.json();
     const username = data?.username || `User #${userId}`;
-    
-    const viewingEl = container.querySelector('#st-viewing-user');
-    const viewingNameEl = container.querySelector('#st-viewing-name');
+
+    const viewingEl = container.querySelector("#st-viewing-user");
+    const viewingNameEl = container.querySelector("#st-viewing-name");
     if (viewingEl && viewingNameEl) {
       viewingNameEl.textContent = username;
-      viewingEl.style.display = 'inline-flex';
+      viewingEl.style.display = "inline-flex";
     }
   } catch {
-    const viewingEl = container.querySelector('#st-viewing-user');
-    const viewingNameEl = container.querySelector('#st-viewing-name');
+    const viewingEl = container.querySelector("#st-viewing-user");
+    const viewingNameEl = container.querySelector("#st-viewing-name");
     if (viewingEl && viewingNameEl) {
       viewingNameEl.textContent = `User #${userId}`;
-      viewingEl.style.display = 'inline-flex';
+      viewingEl.style.display = "inline-flex";
     }
   }
 }
@@ -1205,20 +1281,27 @@ function clamp(value, min, max) {
 
 function renderStatsVisuals(container, stats) {
   const matchesPlayed = toNonNegativeInt(stats.matchesPlayed);
-  const shortRatio = matchesPlayed > 0 ? clamp(toNonNegativeInt(stats.shortMatchRatioPercent), 0, 100) : 0;
-  const longRatio = matchesPlayed > 0 ? clamp(toNonNegativeInt(stats.longMatchRatioPercent), 0, 100) : 0;
-  const normalRatio = matchesPlayed > 0 ? clamp(100 - shortRatio - longRatio, 0, 100) : 0;
+  const shortRatio =
+    matchesPlayed > 0
+      ? clamp(toNonNegativeInt(stats.shortMatchRatioPercent), 0, 100)
+      : 0;
+  const longRatio =
+    matchesPlayed > 0
+      ? clamp(toNonNegativeInt(stats.longMatchRatioPercent), 0, 100)
+      : 0;
+  const normalRatio =
+    matchesPlayed > 0 ? clamp(100 - shortRatio - longRatio, 0, 100) : 0;
 
-  const shortEl = container.querySelector('#st-ratio-short');
-  const normalEl = container.querySelector('#st-ratio-normal');
-  const longEl = container.querySelector('#st-ratio-long');
+  const shortEl = container.querySelector("#st-ratio-short");
+  const normalEl = container.querySelector("#st-ratio-normal");
+  const longEl = container.querySelector("#st-ratio-long");
   if (shortEl) shortEl.style.width = `${shortRatio}%`;
   if (normalEl) normalEl.style.width = `${normalRatio}%`;
   if (longEl) longEl.style.width = `${longRatio}%`;
 
-  const shortLabel = container.querySelector('#st-ratio-short-label');
-  const normalLabel = container.querySelector('#st-ratio-normal-label');
-  const longLabel = container.querySelector('#st-ratio-long-label');
+  const shortLabel = container.querySelector("#st-ratio-short-label");
+  const normalLabel = container.querySelector("#st-ratio-normal-label");
+  const longLabel = container.querySelector("#st-ratio-long-label");
   if (shortLabel) shortLabel.textContent = `${shortRatio}%`;
   if (normalLabel) normalLabel.textContent = `${normalRatio}%`;
   if (longLabel) longLabel.textContent = `${longRatio}%`;
@@ -1231,88 +1314,116 @@ function renderStatsVisuals(container, stats) {
   const damageWeighted = avgDamage;
   const killsWeighted = avgKills * 120;
   const coinsWeighted = avgCoins * 4;
-  const weightedBase = Math.max(damageWeighted, killsWeighted, coinsWeighted, 1);
+  const weightedBase = Math.max(
+    damageWeighted,
+    killsWeighted,
+    coinsWeighted,
+    1,
+  );
 
-  const damageWidth = clamp(Math.round((damageWeighted / weightedBase) * 100), 0, 100);
-  const killsWidth = clamp(Math.round((killsWeighted / weightedBase) * 100), 0, 100);
-  const coinsWidth = clamp(Math.round((coinsWeighted / weightedBase) * 100), 0, 100);
+  const damageWidth = clamp(
+    Math.round((damageWeighted / weightedBase) * 100),
+    0,
+    100,
+  );
+  const killsWidth = clamp(
+    Math.round((killsWeighted / weightedBase) * 100),
+    0,
+    100,
+  );
+  const coinsWidth = clamp(
+    Math.round((coinsWeighted / weightedBase) * 100),
+    0,
+    100,
+  );
 
-  const damageBar = container.querySelector('#st-bar-damage');
-  const killsBar = container.querySelector('#st-bar-kills');
-  const coinsBar = container.querySelector('#st-bar-coins');
+  const damageBar = container.querySelector("#st-bar-damage");
+  const killsBar = container.querySelector("#st-bar-kills");
+  const coinsBar = container.querySelector("#st-bar-coins");
   if (damageBar) damageBar.style.width = `${damageWidth}%`;
   if (killsBar) killsBar.style.width = `${killsWidth}%`;
   if (coinsBar) coinsBar.style.width = `${coinsWidth}%`;
 
-  const damageValue = container.querySelector('#st-bar-damage-value');
-  const killsValue = container.querySelector('#st-bar-kills-value');
-  const coinsValue = container.querySelector('#st-bar-coins-value');
-  if (damageValue) damageValue.textContent = avgDamage.toLocaleString('en-US');
-  if (killsValue) killsValue.textContent = avgKills.toLocaleString('en-US');
-  if (coinsValue) coinsValue.textContent = avgCoins.toLocaleString('en-US');
+  const damageValue = container.querySelector("#st-bar-damage-value");
+  const killsValue = container.querySelector("#st-bar-kills-value");
+  const coinsValue = container.querySelector("#st-bar-coins-value");
+  if (damageValue) damageValue.textContent = avgDamage.toLocaleString("en-US");
+  if (killsValue) killsValue.textContent = avgKills.toLocaleString("en-US");
+  if (coinsValue) coinsValue.textContent = avgCoins.toLocaleString("en-US");
 
-  const volatility = clamp(toNonNegativeInt(stats.performanceVolatilityPercent), 0, 100);
-  const gauge = container.querySelector('#st-gauge');
+  const volatility = clamp(
+    toNonNegativeInt(stats.performanceVolatilityPercent),
+    0,
+    100,
+  );
+  const gauge = container.querySelector("#st-gauge");
   if (gauge) {
-    gauge.style.setProperty('--volatility', String(volatility));
+    gauge.style.setProperty("--volatility", String(volatility));
   }
 
-  const gaugeValue = container.querySelector('#st-gauge-value');
+  const gaugeValue = container.querySelector("#st-gauge-value");
   if (gaugeValue) gaugeValue.textContent = String(volatility);
 
-  const gaugeNote = container.querySelector('#st-gauge-note');
+  const gaugeNote = container.querySelector("#st-gauge-note");
   if (gaugeNote) {
     if (volatility <= 15) {
-      gaugeNote.textContent = 'Very stable';
+      gaugeNote.textContent = "Very stable";
     } else if (volatility <= 35) {
-      gaugeNote.textContent = 'Stable';
+      gaugeNote.textContent = "Stable";
     } else if (volatility <= 60) {
-      gaugeNote.textContent = 'Swingy';
+      gaugeNote.textContent = "Swingy";
     } else {
-      gaugeNote.textContent = 'High variance';
+      gaugeNote.textContent = "High variance";
     }
   }
 
-  const timelineLine = container.querySelector('#st-timeline-line');
-  const timelinePoints = container.querySelector('#st-timeline-points');
+  const timelineLine = container.querySelector("#st-timeline-line");
+  const timelinePoints = container.querySelector("#st-timeline-points");
   if (!timelineLine || !timelinePoints) return;
 
-  const timelineMatches = Array.isArray(stats.recentTimelineMatches) ? stats.recentTimelineMatches : [];
-  timelinePoints.innerHTML = '';
+  const timelineMatches = Array.isArray(stats.recentTimelineMatches)
+    ? stats.recentTimelineMatches
+    : [];
+  timelinePoints.innerHTML = "";
 
   if (timelineMatches.length < 2) {
-    timelineLine.style.clipPath = 'polygon(0% 65%, 100% 65%, 100% 69%, 0% 69%)';
+    timelineLine.style.clipPath = "polygon(0% 65%, 100% 65%, 100% 69%, 0% 69%)";
     return;
   }
 
-  const scores = timelineMatches.map((entry) => toNonNegativeInt(entry.performanceScore));
+  const scores = timelineMatches.map((entry) =>
+    toNonNegativeInt(entry.performanceScore),
+  );
   const maxScore = Math.max(...scores, 1);
   const minScore = Math.min(...scores, 0);
   const range = Math.max(1, maxScore - minScore);
 
   const points = timelineMatches.map((entry, index) => {
     const x = (index / (timelineMatches.length - 1)) * 100;
-    const y = 86 - ((toNonNegativeInt(entry.performanceScore) - minScore) / range) * 72;
+    const y =
+      86 - ((toNonNegativeInt(entry.performanceScore) - minScore) / range) * 72;
     return { x, y, entry };
   });
 
-  const polygonTop = points.map((point) => `${point.x.toFixed(2)}% ${point.y.toFixed(2)}%`).join(', ');
+  const polygonTop = points
+    .map((point) => `${point.x.toFixed(2)}% ${point.y.toFixed(2)}%`)
+    .join(", ");
   timelineLine.style.clipPath = `polygon(${polygonTop}, 100% 100%, 0% 100%)`;
 
   points.forEach((point) => {
-    const dot = document.createElement('span');
-    dot.className = 'st-timeline-point';
+    const dot = document.createElement("span");
+    dot.className = "st-timeline-point";
     dot.style.left = `${point.x}%`;
     dot.style.top = `${point.y}%`;
 
     const tooltip =
-      `M${point.entry.matchNumber} | Score ${toNonNegativeInt(point.entry.performanceScore).toLocaleString('en-US')} | ` +
+      `M${point.entry.matchNumber} | Score ${toNonNegativeInt(point.entry.performanceScore).toLocaleString("en-US")} | ` +
       `Dmg ${toNonNegativeInt(point.entry.damage)} | K ${toNonNegativeInt(point.entry.kills)} | ` +
       `C ${toNonNegativeInt(point.entry.coins)} | Lv ${toNonNegativeInt(point.entry.level)} | ` +
       `${formatDurationLabel(point.entry.durationSeconds)}`;
 
-    dot.setAttribute('data-tip', tooltip);
-    dot.setAttribute('aria-label', tooltip);
+    dot.setAttribute("data-tip", tooltip);
+    dot.setAttribute("aria-label", tooltip);
     timelinePoints.appendChild(dot);
   });
 }
@@ -1321,15 +1432,15 @@ function renderStatsVisuals(container, stats) {
    CANVAS — Starry background from Profile
    ====================================================================== */
 function initStCanvas() {
-  const canvas = document.getElementById('st-canvas');
+  const canvas = document.getElementById("st-canvas");
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   let W, H;
   let stars = [];
 
   function measure() {
-    W = canvas.width  = window.innerWidth;
+    W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
   }
 
@@ -1350,10 +1461,10 @@ function initStCanvas() {
   function anim() {
     // Full clear each frame so stars remain points without motion trails.
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = 'rgb(8,6,6)';
+    ctx.fillStyle = "rgb(8,6,6)";
     ctx.fillRect(0, 0, W, H);
 
-    stars.forEach(s => {
+    stars.forEach((s) => {
       s.x += s.vx;
       s.y += s.vy;
       if (s.x < 0) s.x = W;
@@ -1365,7 +1476,7 @@ function initStCanvas() {
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
       glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
       glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
-      glow.addColorStop(1, 'rgba(212,175,55,0)');
+      glow.addColorStop(1, "rgba(212,175,55,0)");
 
       ctx.fillStyle = glow;
       ctx.beginPath();
@@ -1385,25 +1496,26 @@ function initStCanvas() {
   initStars();
   anim();
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     measure();
     initStars();
   });
 }
 
-
 function spawnStParticles() {
-  const root = document.querySelector('.st-root');
+  const root = document.querySelector(".st-root");
   if (!root) return;
   for (let i = 0; i < 18; i++) {
-    const p        = document.createElement('div');
-    p.className    = 'bw-particle';
-    const size     = Math.random() * 2.2 + 0.4;
-    const isRed    = Math.random() < 0.28;
-    const isGold   = !isRed && Math.random() < 0.15;
-    const col      = isRed  ? 'rgba(192,57,43,0.55)'
-                   : isGold ? 'rgba(212,175,55,0.4)'
-                   :          'rgba(255,230,210,0.28)';
+    const p = document.createElement("div");
+    p.className = "bw-particle";
+    const size = Math.random() * 2.2 + 0.4;
+    const isRed = Math.random() < 0.28;
+    const isGold = !isRed && Math.random() < 0.15;
+    const col = isRed
+      ? "rgba(192,57,43,0.55)"
+      : isGold
+        ? "rgba(212,175,55,0.4)"
+        : "rgba(255,230,210,0.28)";
     p.style.cssText = `
       width:${size}px; height:${size}px;
       left:${Math.random() * 100}%;
@@ -1418,13 +1530,13 @@ function spawnStParticles() {
 }
 
 function animateStStats(container) {
-  const valueEls = container.querySelectorAll('.js-st-count');
+  const valueEls = container.querySelectorAll(".js-st-count");
   if (!valueEls.length) return;
 
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
   function formatInt(value) {
-    return Math.round(value).toLocaleString('en-US');
+    return Math.round(value).toLocaleString("en-US");
   }
 
   function formatDecimal(value) {
@@ -1447,26 +1559,26 @@ function animateStStats(container) {
   }
 
   valueEls.forEach((el, index) => {
-    const type = el.dataset.type || 'int';
+    const type = el.dataset.type || "int";
     const targetValue = Number(el.dataset.target);
     if (!Number.isFinite(targetValue)) return;
 
     const startDelay = 140 + index * 80;
-    const duration = type === 'int' ? 900 : 780;
+    const duration = type === "int" ? 900 : 780;
     const startValue = 0;
 
-    el.classList.add('is-counting');
+    el.classList.add("is-counting");
 
     const render = (value) => {
-      if (type === 'time-hm') {
+      if (type === "time-hm") {
         el.textContent = formatHoursMinutes(value);
         return;
       }
-      if (type === 'time-hms') {
+      if (type === "time-hms") {
         el.textContent = formatHoursMinutesSeconds(value);
         return;
       }
-      if (type === 'decimal') {
+      if (type === "decimal") {
         el.textContent = formatDecimal(value);
         return;
       }
@@ -1490,7 +1602,7 @@ function animateStStats(container) {
         }
 
         render(targetValue);
-        el.classList.remove('is-counting');
+        el.classList.remove("is-counting");
       };
 
       requestAnimationFrame(step);
@@ -1499,4 +1611,3 @@ function animateStStats(container) {
     window.setTimeout(run, startDelay);
   });
 }
-

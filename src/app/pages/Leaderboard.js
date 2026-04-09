@@ -1,11 +1,11 @@
-import '../../styles/pages/Leaderboard.css';
-import { API_BASE, getUser, logout, authFetch } from '../services/auth.js';
-import { confirmLogout } from '../effects/logout-confirm.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
+import "../../styles/pages/Leaderboard.css";
+import { API_BASE, getUser, logout, authFetch } from "../services/auth.js";
+import { confirmLogout } from "../effects/logout-confirm.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
 
 export default function Leaderboard(container) {
   let leaderboardRows = [];
-  let leaderboardSort = 'rank';
+  let leaderboardSort = "rank";
   container.innerHTML = `
     
 
@@ -150,15 +150,15 @@ export default function Leaderboard(container) {
 
   // ========== CANVAS ANIMATION ==========
   function initLbCanvas() {
-    const canvas = document.getElementById('lb-canvas');
+    const canvas = document.getElementById("lb-canvas");
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
 
     let W, H;
     let stars = [];
 
     function measure() {
-      W = canvas.width  = window.innerWidth;
+      W = canvas.width = window.innerWidth;
       H = canvas.height = window.innerHeight;
     }
 
@@ -179,10 +179,10 @@ export default function Leaderboard(container) {
     function anim() {
       // Full clear each frame so stars remain points without motion trails.
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = 'rgb(8,6,6)';
+      ctx.fillStyle = "rgb(8,6,6)";
       ctx.fillRect(0, 0, W, H);
 
-      stars.forEach(s => {
+      stars.forEach((s) => {
         s.x += s.vx;
         s.y += s.vy;
         if (s.x < 0) s.x = W;
@@ -191,10 +191,20 @@ export default function Leaderboard(container) {
         if (s.y > H) s.y = 0;
 
         const glowRadius = s.r * 6;
-        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
-        glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
+        const glow = ctx.createRadialGradient(
+          s.x,
+          s.y,
+          0,
+          s.x,
+          s.y,
+          glowRadius,
+        );
+        glow.addColorStop(
+          0,
+          `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`,
+        );
         glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
-        glow.addColorStop(1, 'rgba(212,175,55,0)');
+        glow.addColorStop(1, "rgba(212,175,55,0)");
 
         ctx.fillStyle = glow;
         ctx.beginPath();
@@ -214,7 +224,7 @@ export default function Leaderboard(container) {
     initStars();
     anim();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       measure();
       initStars();
     });
@@ -222,25 +232,27 @@ export default function Leaderboard(container) {
 
   // ========== NAVBAR SETUP ==========
   const user = getUser();
-  const sortSelect = document.getElementById('lb-sort-select');
-  document.getElementById('lb-dd-username').textContent = user?.username || '—';
-  document.getElementById('lb-mobile-username').textContent = user?.username || '—';
+  const sortSelect = document.getElementById("lb-sort-select");
+  document.getElementById("lb-dd-username").textContent = user?.username || "—";
+  document.getElementById("lb-mobile-username").textContent =
+    user?.username || "—";
   refreshNavbarUsername();
 
   async function refreshNavbarUsername() {
     try {
       const res = await authFetch(`${API_BASE}/api/User/me`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
+        method: "GET",
+        headers: { Accept: "application/json" },
       });
 
       if (!res.ok) return;
 
       const userData = await res.json();
-      const liveDisplayName = userData?.username ?? userData?.email ?? user?.username ?? '—';
+      const liveDisplayName =
+        userData?.username ?? userData?.email ?? user?.username ?? "—";
 
-      const ddUsernameEl = document.getElementById('lb-dd-username');
-      const mobileUsernameEl = document.getElementById('lb-mobile-username');
+      const ddUsernameEl = document.getElementById("lb-dd-username");
+      const mobileUsernameEl = document.getElementById("lb-mobile-username");
       if (ddUsernameEl) ddUsernameEl.textContent = liveDisplayName;
       if (mobileUsernameEl) mobileUsernameEl.textContent = liveDisplayName;
     } catch {
@@ -248,38 +260,43 @@ export default function Leaderboard(container) {
     }
   }
 
-  const hamburger = document.getElementById('lb-hamburger');
-  const mobileMenu = document.getElementById('lb-mobile-menu');
+  const hamburger = document.getElementById("lb-hamburger");
+  const mobileMenu = document.getElementById("lb-mobile-menu");
   let mobileMenuOpen = false;
 
-  hamburger?.addEventListener('click', () => {
+  hamburger?.addEventListener("click", () => {
     mobileMenuOpen = !mobileMenuOpen;
-    hamburger.classList.toggle('open', mobileMenuOpen);
-    hamburger.setAttribute('aria-expanded', String(mobileMenuOpen));
-    mobileMenu.style.maxHeight = mobileMenuOpen ? mobileMenu.scrollHeight + 'px' : '0';
+    hamburger.classList.toggle("open", mobileMenuOpen);
+    hamburger.setAttribute("aria-expanded", String(mobileMenuOpen));
+    mobileMenu.style.maxHeight = mobileMenuOpen
+      ? mobileMenu.scrollHeight + "px"
+      : "0";
   });
 
-  mobileMenu?.querySelectorAll('.lb-mobile-link').forEach((link) => {
-    link.addEventListener('click', () => {
+  mobileMenu?.querySelectorAll(".lb-mobile-link").forEach((link) => {
+    link.addEventListener("click", () => {
       mobileMenuOpen = false;
-      hamburger?.classList.remove('open');
-      hamburger?.setAttribute('aria-expanded', 'false');
-      mobileMenu.style.maxHeight = '0';
+      hamburger?.classList.remove("open");
+      hamburger?.setAttribute("aria-expanded", "false");
+      mobileMenu.style.maxHeight = "0";
     });
   });
 
   // Avatar dropdown
-  const avatarBtn = document.getElementById('lb-avatar-btn');
-  const avatarDropdown = document.getElementById('lb-avatar-dropdown');
-  avatarBtn?.addEventListener('click', () => {
-    avatarDropdown.classList.toggle('open');
-    avatarBtn.setAttribute('aria-expanded', String(avatarDropdown.classList.contains('open')));
+  const avatarBtn = document.getElementById("lb-avatar-btn");
+  const avatarDropdown = document.getElementById("lb-avatar-dropdown");
+  avatarBtn?.addEventListener("click", () => {
+    avatarDropdown.classList.toggle("open");
+    avatarBtn.setAttribute(
+      "aria-expanded",
+      String(avatarDropdown.classList.contains("open")),
+    );
   });
 
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.lb-avatar-wrap')) {
-      avatarDropdown?.classList.remove('open');
-      avatarBtn?.setAttribute('aria-expanded', 'false');
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".lb-avatar-wrap")) {
+      avatarDropdown?.classList.remove("open");
+      avatarBtn?.setAttribute("aria-expanded", "false");
     }
   });
 
@@ -289,17 +306,19 @@ export default function Leaderboard(container) {
 
     await logout();
     if (window.router?.navigate) {
-      window.router.navigate('/login');
+      window.router.navigate("/login");
       return;
     }
-    window.location.href = '/login';
+    window.location.href = "/login";
   };
 
-  document.getElementById('lb-dd-logout')?.addEventListener('click', doLogout);
-  document.getElementById('lb-mobile-logout')?.addEventListener('click', doLogout);
+  document.getElementById("lb-dd-logout")?.addEventListener("click", doLogout);
+  document
+    .getElementById("lb-mobile-logout")
+    ?.addEventListener("click", doLogout);
 
-  sortSelect?.addEventListener('change', (event) => {
-    leaderboardSort = event.target.value || 'rank';
+  sortSelect?.addEventListener("change", (event) => {
+    leaderboardSort = event.target.value || "rank";
     renderLeaderboard();
   });
 
@@ -309,25 +328,29 @@ export default function Leaderboard(container) {
       const currentUserContext = await resolveCurrentUserContext(user);
 
       const response = await authFetch(`${API_BASE}/api/Match`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' }
+        method: "GET",
+        headers: { Accept: "application/json" },
       });
-      if (!response.ok) throw new Error('Failed to fetch leaderboard');
+      if (!response.ok) throw new Error("Failed to fetch leaderboard");
       const matches = await response.json();
       const baseRows = buildLeaderboardRows(matches, currentUserContext);
-      leaderboardRows = await hydrateLeaderboardRows(baseRows, currentUserContext);
+      leaderboardRows = await hydrateLeaderboardRows(
+        baseRows,
+        currentUserContext,
+      );
       renderLeaderboard();
     } catch (error) {
-      console.error('Leaderboard error:', error);
-      document.getElementById('lb-grid').innerHTML = '<div class="lb-empty">Failed to load leaderboard</div>';
+      console.error("Leaderboard error:", error);
+      document.getElementById("lb-grid").innerHTML =
+        '<div class="lb-empty">Failed to load leaderboard</div>';
     }
   }
 
   function renderLeaderboard() {
-    const grid = document.getElementById('lb-grid');
+    const grid = document.getElementById("lb-grid");
     if (!grid) return;
 
-    grid.innerHTML = '';
+    grid.innerHTML = "";
 
     if (!leaderboardRows.length) {
       grid.innerHTML = '<div class="lb-empty">No players yet</div>';
@@ -337,14 +360,22 @@ export default function Leaderboard(container) {
     const sortedRows = sortLeaderboardRows(leaderboardRows, leaderboardSort);
 
     sortedRows.forEach((entry, index) => {
-      const card = document.createElement('div');
-      card.className = 'lb-card';
-      if (leaderboardSort === 'rank' && index < 3) card.classList.add(`lb-rank-${index + 1}`);
-      if (entry.isCurrentUser) card.classList.add('lb-card-you');
+      const card = document.createElement("div");
+      card.className = "lb-card";
+      if (leaderboardSort === "rank" && index < 3)
+        card.classList.add(`lb-rank-${index + 1}`);
+      if (entry.isCurrentUser) card.classList.add("lb-card-you");
 
-      const medal = leaderboardSort === 'rank'
-        ? (index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`)
-        : `${index + 1}.`;
+      const medal =
+        leaderboardSort === "rank"
+          ? index === 0
+            ? "👑"
+            : index === 1
+              ? "🥈"
+              : index === 2
+                ? "🥉"
+                : `${index + 1}.`
+          : `${index + 1}.`;
 
       card.innerHTML = `
         <div class="lb-card-corner lb-card-corner--tl"></div>
@@ -355,7 +386,7 @@ export default function Leaderboard(container) {
           <div class="lb-card-rank">${medal}</div>
           <div class="lb-card-username-wrap">
             <div class="lb-card-username" data-user-id="${entry.userId}">${escapeHtml(entry.username)}</div>
-            <span class="lb-you-badge ${entry.isCurrentUser ? '' : 'is-hidden'}">YOU</span>
+            <span class="lb-you-badge ${entry.isCurrentUser ? "" : "is-hidden"}">YOU</span>
           </div>
           <div class="lb-card-sep"></div>
           <div class="lb-card-stats">
@@ -372,13 +403,15 @@ export default function Leaderboard(container) {
       `;
 
       if (!entry.isCurrentUser) {
-        card.classList.add('lb-card--clickable');
-        card.addEventListener('click', () => {
-          window.router?.navigate(`/main?userId=${encodeURIComponent(entry.userId)}`);
+        card.classList.add("lb-card--clickable");
+        card.addEventListener("click", () => {
+          window.router?.navigate(
+            `/main?userId=${encodeURIComponent(entry.userId)}`,
+          );
         });
       } else {
-        card.setAttribute('aria-disabled', 'true');
-        card.style.cursor = 'default';
+        card.setAttribute("aria-disabled", "true");
+        card.style.cursor = "default";
       }
 
       grid.appendChild(card);
@@ -411,11 +444,18 @@ export default function Leaderboard(container) {
       return currentUser.username;
     }
 
-    return `User #${userId || 'Unknown'}`;
+    return `User #${userId || "Unknown"}`;
   }
 
   function resolveCurrentUserId(currentUser) {
-    const candidates = [currentUser?.id, currentUser?.userId, currentUser?.playerId, currentUser?.Id, currentUser?.UserId, currentUser?.PlayerId];
+    const candidates = [
+      currentUser?.id,
+      currentUser?.userId,
+      currentUser?.playerId,
+      currentUser?.Id,
+      currentUser?.UserId,
+      currentUser?.PlayerId,
+    ];
     for (const candidate of candidates) {
       const parsed = Number(candidate);
       if (Number.isInteger(parsed) && parsed > 0) {
@@ -427,7 +467,7 @@ export default function Leaderboard(container) {
   }
 
   function normalizeUsername(value) {
-    if (!value) return '';
+    if (!value) return "";
     return String(value).trim().toLowerCase();
   }
 
@@ -445,8 +485,8 @@ export default function Leaderboard(container) {
 
     try {
       const res = await authFetch(`${API_BASE}/api/User/me`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
+        method: "GET",
+        headers: { Accept: "application/json" },
       });
       if (!res.ok) return fallback;
 
@@ -495,59 +535,67 @@ export default function Leaderboard(container) {
   async function hydrateLeaderboardRows(rows, currentUserContext) {
     if (!Array.isArray(rows) || !rows.length) return [];
 
-    return Promise.all(rows.map(async (row) => {
-      try {
-        const res = await authFetch(`${API_BASE}/api/User/name?id=${encodeURIComponent(row.userId)}`, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-        });
-        if (!res.ok) throw new Error('User not found');
+    return Promise.all(
+      rows.map(async (row) => {
+        try {
+          const res = await authFetch(
+            `${API_BASE}/api/User/name?id=${encodeURIComponent(row.userId)}`,
+            {
+              method: "GET",
+              headers: { Accept: "application/json" },
+            },
+          );
+          if (!res.ok) throw new Error("User not found");
 
-        const data = await res.json();
-        const username = data?.username || row.username || `User #${row.userId}`;
-        return {
-          ...row,
-          username,
-          isCurrentUser: row.isCurrentUser || isSameUsername(username, currentUserContext?.username),
-        };
-      } catch {
-        return {
-          ...row,
-          username: row.username || `User #${row.userId}`,
-        };
-      }
-    }));
+          const data = await res.json();
+          const username =
+            data?.username || row.username || `User #${row.userId}`;
+          return {
+            ...row,
+            username,
+            isCurrentUser:
+              row.isCurrentUser ||
+              isSameUsername(username, currentUserContext?.username),
+          };
+        } catch {
+          return {
+            ...row,
+            username: row.username || `User #${row.userId}`,
+          };
+        }
+      }),
+    );
   }
 
   function sortLeaderboardRows(rows, sortKey) {
     const normalizedRows = Array.isArray(rows) ? [...rows] : [];
 
     switch (sortKey) {
-      case 'level-desc':
+      case "level-desc":
         return normalizedRows.sort((a, b) => {
           if (b.level !== a.level) return b.level - a.level;
           if (b.runTimeMs !== a.runTimeMs) return b.runTimeMs - a.runTimeMs;
           return a.username.localeCompare(b.username);
         });
-      case 'time-asc':
+      case "time-asc":
         return normalizedRows.sort((a, b) => {
           if (a.runTimeMs !== b.runTimeMs) return a.runTimeMs - b.runTimeMs;
           if (b.level !== a.level) return b.level - a.level;
           return a.username.localeCompare(b.username);
         });
-      case 'time-desc':
+      case "time-desc":
         return normalizedRows.sort((a, b) => {
           if (b.runTimeMs !== a.runTimeMs) return b.runTimeMs - a.runTimeMs;
           if (b.level !== a.level) return b.level - a.level;
           return a.username.localeCompare(b.username);
         });
-      case 'name-asc':
+      case "name-asc":
         return normalizedRows.sort((a, b) => {
           const byName = a.username.localeCompare(b.username);
           if (byName !== 0) return byName;
           return compareByRank(a, b);
         });
-      case 'rank':
+      case "rank":
       default:
         return normalizedRows.sort(compareByRank);
     }
@@ -565,40 +613,40 @@ export default function Leaderboard(container) {
   }
 
   function escapeHtml(value) {
-    return String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   function animateLbStats(container) {
-    const valueEls = container.querySelectorAll('.js-lb-count');
+    const valueEls = container.querySelectorAll(".js-lb-count");
     if (!valueEls.length) return;
 
     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-    const formatInt = (value) => Math.round(value).toLocaleString('en-US');
+    const formatInt = (value) => Math.round(value).toLocaleString("en-US");
 
     valueEls.forEach((el, index) => {
-      const type = el.dataset.type || 'int';
+      const type = el.dataset.type || "int";
       const targetValue = Number(el.dataset.target);
       if (!Number.isFinite(targetValue)) return;
 
       const startDelay = 140 + index * 48;
-      const duration = type === 'time-hm' ? 980 : 860;
+      const duration = type === "time-hm" ? 980 : 860;
       const startValue = 0;
 
       const render = (value) => {
-        if (type === 'time-hm') {
+        if (type === "time-hm") {
           el.textContent = formatTime(value);
           return;
         }
         el.textContent = formatInt(value);
       };
 
-      el.classList.add('is-counting');
+      el.classList.add("is-counting");
       render(startValue);
 
       const run = () => {
@@ -616,7 +664,7 @@ export default function Leaderboard(container) {
           }
 
           render(targetValue);
-          el.classList.remove('is-counting');
+          el.classList.remove("is-counting");
         };
 
         requestAnimationFrame(step);

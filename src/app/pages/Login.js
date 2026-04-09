@@ -1,7 +1,7 @@
-import '../../styles/pages/Login.css';
-import { login } from '../services/auth.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
-import { attachCapsLockHint } from '../utils/caps-lock.js';
+import "../../styles/pages/Login.css";
+import { login } from "../services/auth.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+import { attachCapsLockHint } from "../utils/caps-lock.js";
 
 export default function Login(container) {
   container.innerHTML = `
@@ -83,44 +83,45 @@ export default function Login(container) {
 
   ensureGlobalStarfield();
 
-  const form = document.getElementById('lxForm');
-  const btn  = document.getElementById('lxBtn');
+  const form = document.getElementById("lxForm");
+  const btn = document.getElementById("lxBtn");
 
-  const errorEl = document.getElementById('lxError');
+  const errorEl = document.getElementById("lxError");
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    errorEl.textContent = '';
+    errorEl.textContent = "";
 
-    const username   = document.getElementById('lxUsername').value.trim();
-    const password   = document.getElementById('lxPassword').value;
-    const rememberMe = document.querySelector('#lxForm .bw-checkbox')?.checked ?? false;
+    const username = document.getElementById("lxUsername").value.trim();
+    const password = document.getElementById("lxPassword").value;
+    const rememberMe =
+      document.querySelector("#lxForm .bw-checkbox")?.checked ?? false;
 
     btn.disabled = true;
-    btn.querySelector('.bw-btn-text').textContent = '✦  Entering…  ✦';
+    btn.querySelector(".bw-btn-text").textContent = "✦  Entering…  ✦";
 
     try {
       await login(username, password, rememberMe);
-      btn.classList.add('success');
-      btn.querySelector('.bw-btn-text').textContent = '✦  Welcome Back  ✦';
-      setTimeout(() => window.router.navigate('/main'), 700);
+      btn.classList.add("success");
+      btn.querySelector(".bw-btn-text").textContent = "✦  Welcome Back  ✦";
+      setTimeout(() => window.router.navigate("/main"), 700);
     } catch (err) {
-      errorEl.textContent = err.message || 'Login failed. Please try again.';
-      btn.querySelector('.bw-btn-text').textContent = 'Enter';
+      errorEl.textContent = err.message || "Login failed. Please try again.";
+      btn.querySelector(".bw-btn-text").textContent = "Enter";
       btn.disabled = false;
     }
   });
 
   // Password visibility toggle
-  const pwToggle  = document.getElementById('lxPwToggle');
-  const pwInput   = document.getElementById('lxPassword');
-  const eyeIcon   = document.getElementById('lxEyeIcon');
-  const capsLockHint = document.getElementById('lxPasswordCapsHint');
-  const eyeOpen   = `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />`;
+  const pwToggle = document.getElementById("lxPwToggle");
+  const pwInput = document.getElementById("lxPassword");
+  const eyeIcon = document.getElementById("lxEyeIcon");
+  const capsLockHint = document.getElementById("lxPasswordCapsHint");
+  const eyeOpen = `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />`;
   const eyeClosed = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />`;
-  pwToggle.addEventListener('click', () => {
-    const isHidden = pwInput.type === 'password';
-    pwInput.type = isHidden ? 'text' : 'password';
+  pwToggle.addEventListener("click", () => {
+    const isHidden = pwInput.type === "password";
+    pwInput.type = isHidden ? "text" : "password";
     eyeIcon.innerHTML = isHidden ? eyeClosed : eyeOpen;
   });
 
@@ -131,15 +132,15 @@ export default function Login(container) {
    CANVAS – same starry background as Main page
    ============================================================ */
 function initCanvas() {
-  const canvas = document.getElementById('lx-canvas');
+  const canvas = document.getElementById("lx-canvas");
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   let W, H;
   let stars = [];
 
   function measure() {
-    W = canvas.width  = window.innerWidth;
+    W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
   }
 
@@ -159,10 +160,10 @@ function initCanvas() {
 
   function anim() {
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = 'rgb(8,6,6)';
+    ctx.fillStyle = "rgb(8,6,6)";
     ctx.fillRect(0, 0, W, H);
 
-    stars.forEach(s => {
+    stars.forEach((s) => {
       s.x += s.vx;
       s.y += s.vy;
       if (s.x < 0) s.x = W;
@@ -174,7 +175,7 @@ function initCanvas() {
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
       glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
       glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
-      glow.addColorStop(1, 'rgba(212,175,55,0)');
+      glow.addColorStop(1, "rgba(212,175,55,0)");
 
       ctx.fillStyle = glow;
       ctx.beginPath();
@@ -194,28 +195,30 @@ function initCanvas() {
   initStars();
   anim();
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     measure();
     initStars();
   });
 }
 
 function spawnParticles() {
-  const root = document.querySelector('.bw-root');
+  const root = document.querySelector(".bw-root");
   if (!root) return;
 
   for (let i = 0; i < 18; i++) {
-    const p        = document.createElement('div');
-    p.className    = 'bw-particle';
-    const size     = Math.random() * 2.2 + 0.4;
-    const delay    = Math.random() * 20;
+    const p = document.createElement("div");
+    p.className = "bw-particle";
+    const size = Math.random() * 2.2 + 0.4;
+    const delay = Math.random() * 20;
     const duration = 18 + Math.random() * 22;
-    const drift    = (Math.random() - 0.5) * 90;
-    const isRed    = Math.random() < 0.28;
-    const isGold   = !isRed && Math.random() < 0.15;
-    const col      = isRed  ? 'rgba(192,57,43,0.55)'
-                   : isGold ? 'rgba(212,175,55,0.4)'
-                   :          'rgba(255,230,210,0.28)';
+    const drift = (Math.random() - 0.5) * 90;
+    const isRed = Math.random() < 0.28;
+    const isGold = !isRed && Math.random() < 0.15;
+    const col = isRed
+      ? "rgba(192,57,43,0.55)"
+      : isGold
+        ? "rgba(212,175,55,0.4)"
+        : "rgba(255,230,210,0.28)";
 
     p.style.cssText = `
       width:${size}px; height:${size}px;

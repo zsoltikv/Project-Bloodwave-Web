@@ -1,14 +1,14 @@
-import '../../styles/pages/BackendStatus.css';
-import '../../styles/pages/Main.css';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
-import { fetchBackendStatus } from '../services/backend-status.js';
+import "../../styles/pages/BackendStatus.css";
+import "../../styles/pages/Main.css";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+import { fetchBackendStatus } from "../services/backend-status.js";
 
 const AUTO_REFRESH_MS = 60_000;
 
 export default function BackendStatus(container) {
   let backendStatusSnapshot = null;
   let backendStatusLoading = false;
-  let backendStatusError = '';
+  let backendStatusError = "";
   let backendStatusRequestId = 0;
   let backendStatusTimerId = 0;
   let backendStatusCountdownId = 0;
@@ -50,13 +50,13 @@ export default function BackendStatus(container) {
 
   ensureGlobalStarfield();
 
-  const monitorSection = container.querySelector('#bw-bs-monitor');
+  const monitorSection = container.querySelector("#bw-bs-monitor");
   renderBackendStatusPanel();
 
-  monitorSection?.addEventListener('click', (event) => {
+  monitorSection?.addEventListener("click", (event) => {
     if (!(event.target instanceof Element)) return;
 
-    const refreshButton = event.target.closest('#mn-server-refresh');
+    const refreshButton = event.target.closest("#mn-server-refresh");
     if (!refreshButton || backendStatusLoading) return;
 
     void loadBackendStatus();
@@ -84,20 +84,20 @@ export default function BackendStatus(container) {
 
           <div class="mn-server-visuals">
             <div class="mn-server-gauge-shell">
-              ${renderServerGauge('Checking', 24, 'loading')}
+              ${renderServerGauge("Checking", 24, "loading")}
             </div>
             <div class="mn-server-bars">
-              ${renderServerBar('Ping', '--', 22, 'loading')}
-              ${renderServerBar('Session', '--', 18, 'loading')}
-              ${renderServerBar('Latency', '--', 14, 'loading')}
+              ${renderServerBar("Ping", "--", 22, "loading")}
+              ${renderServerBar("Session", "--", 18, "loading")}
+              ${renderServerBar("Latency", "--", 14, "loading")}
             </div>
           </div>
 
           <div class="mn-server-chip-row">
-            ${renderServerChip('Server', '--')}
-            ${renderServerChip('UTC', '--')}
-            ${renderServerChip('Base', 'api.bloodwave.site')}
-            ${renderServerChip('Checked', '--')}
+            ${renderServerChip("Server", "--")}
+            ${renderServerChip("UTC", "--")}
+            ${renderServerChip("Base", "api.bloodwave.site")}
+            ${renderServerChip("Checked", "--")}
           </div>
         </section>
       `;
@@ -105,11 +105,15 @@ export default function BackendStatus(container) {
     }
 
     const overallMeter = getOverallHealthMeter(backendStatusSnapshot);
-    const pingMeter = getStatusMeter(backendStatusSnapshot.pingCheck?.statusLabel);
-    const sessionMeter = getStatusMeter(backendStatusSnapshot.sessionCheck?.statusLabel);
+    const pingMeter = getStatusMeter(
+      backendStatusSnapshot.pingCheck?.statusLabel,
+    );
+    const sessionMeter = getStatusMeter(
+      backendStatusSnapshot.sessionCheck?.statusLabel,
+    );
     const latencyMeter = getLatencyMeter(backendStatusSnapshot.responseTimeMs);
-    const toneClass = `mn-server-card--${backendStatusSnapshot.tone || 'warn'}`;
-    const refreshLabel = backendStatusLoading ? 'Checking...' : 'Refresh';
+    const toneClass = `mn-server-card--${backendStatusSnapshot.tone || "warn"}`;
+    const refreshLabel = backendStatusLoading ? "Checking..." : "Refresh";
 
     monitorSection.innerHTML = `
       <section class="mn-server-card ${toneClass}" aria-busy="${String(backendStatusLoading)}">
@@ -120,35 +124,35 @@ export default function BackendStatus(container) {
               <h2 class="mn-server-title">Live API Monitor</h2>
             </div>
             <div class="bw-bs-status-actions">
-              <span class="mn-server-badge mn-server-badge--${backendStatusSnapshot.tone || 'warn'}">
+              <span class="mn-server-badge mn-server-badge--${backendStatusSnapshot.tone || "warn"}">
                 <span class="mn-server-badge-dot" aria-hidden="true"></span>
-                ${escapeHtml(backendStatusSnapshot.label || 'Unknown')}
+                ${escapeHtml(backendStatusSnapshot.label || "Unknown")}
               </span>
-              <button type="button" class="mn-server-refresh" id="mn-server-refresh" ${backendStatusLoading ? 'disabled' : ''}>${refreshLabel}</button>
+              <button type="button" class="mn-server-refresh" id="mn-server-refresh" ${backendStatusLoading ? "disabled" : ""}>${refreshLabel}</button>
             </div>
           </div>
         </div>
 
         <div class="mn-server-visuals">
           <div class="mn-server-gauge-shell">
-            ${renderServerGauge(backendStatusSnapshot.label || 'Unknown', overallMeter.score, overallMeter.tone)}
+            ${renderServerGauge(backendStatusSnapshot.label || "Unknown", overallMeter.score, overallMeter.tone)}
           </div>
           <div class="mn-server-bars">
-            ${renderServerBar('Ping', backendStatusSnapshot.pingCheck?.statusLabel || 'Unknown', pingMeter.score, pingMeter.tone)}
-            ${renderServerBar('Session', backendStatusSnapshot.sessionCheck?.statusLabel || 'Unknown', sessionMeter.score, sessionMeter.tone)}
-            ${renderServerBar('Latency', formatResponseTime(backendStatusSnapshot.responseTimeMs), latencyMeter.score, latencyMeter.tone)}
+            ${renderServerBar("Ping", backendStatusSnapshot.pingCheck?.statusLabel || "Unknown", pingMeter.score, pingMeter.tone)}
+            ${renderServerBar("Session", backendStatusSnapshot.sessionCheck?.statusLabel || "Unknown", sessionMeter.score, sessionMeter.tone)}
+            ${renderServerBar("Latency", formatResponseTime(backendStatusSnapshot.responseTimeMs), latencyMeter.score, latencyMeter.tone)}
           </div>
         </div>
 
         <div class="mn-server-chip-row">
-          ${renderServerChip('Server', backendStatusSnapshot.serverName || 'Unavailable')}
-          ${renderServerChip('UTC', formatBackendUtcClock(backendStatusSnapshot.serverUtc))}
-          ${renderServerChip('Base', backendStatusSnapshot.apiHost || 'Unavailable')}
-          ${renderServerChip('Checked', formatBackendLocalClock(backendStatusSnapshot.lastCheckedAt))}
+          ${renderServerChip("Server", backendStatusSnapshot.serverName || "Unavailable")}
+          ${renderServerChip("UTC", formatBackendUtcClock(backendStatusSnapshot.serverUtc))}
+          ${renderServerChip("Base", backendStatusSnapshot.apiHost || "Unavailable")}
+          ${renderServerChip("Checked", formatBackendLocalClock(backendStatusSnapshot.lastCheckedAt))}
         </div>
 
         <div class="mn-server-legend">
-          <span class="mn-server-legend-item">${escapeHtml(backendStatusSnapshot.httpSummary || 'No HTTP details available.')}</span>
+          <span class="mn-server-legend-item">${escapeHtml(backendStatusSnapshot.httpSummary || "No HTTP details available.")}</span>
           <span class="mn-server-legend-item mn-server-legend-item--countdown" id="mn-server-countdown">${escapeHtml(formatRefreshCountdown(backendStatusNextRefreshAt))}</span>
         </div>
       </section>
@@ -173,7 +177,7 @@ export default function BackendStatus(container) {
     window.clearTimeout(backendStatusTimerId);
     stopBackendStatusCountdown();
     backendStatusLoading = true;
-    backendStatusError = '';
+    backendStatusError = "";
     renderBackendStatusPanel();
 
     const requestId = ++backendStatusRequestId;
@@ -186,7 +190,7 @@ export default function BackendStatus(container) {
     } catch {
       if (requestId !== backendStatusRequestId || !isActive()) return;
 
-      backendStatusError = 'Refresh failed';
+      backendStatusError = "Refresh failed";
     } finally {
       if (requestId !== backendStatusRequestId || !isActive()) return;
 
@@ -211,10 +215,12 @@ export default function BackendStatus(container) {
   }
 
   function syncBackendStatusCountdown() {
-    const countdownEl = container.querySelector('#mn-server-countdown');
+    const countdownEl = container.querySelector("#mn-server-countdown");
     if (!countdownEl) return;
 
-    countdownEl.textContent = formatRefreshCountdown(backendStatusNextRefreshAt);
+    countdownEl.textContent = formatRefreshCountdown(
+      backendStatusNextRefreshAt,
+    );
   }
 }
 
@@ -258,67 +264,73 @@ function renderServerChip(label, value) {
 
 function formatResponseTime(value) {
   const latency = Number(value);
-  if (!Number.isFinite(latency) || latency <= 0) return '--';
+  if (!Number.isFinite(latency) || latency <= 0) return "--";
   return `${Math.round(latency)} ms`;
 }
 
 function formatBackendLocalClock(isoDateString) {
   const parsedDate = parseBackendDate(isoDateString);
-  if (Number.isNaN(parsedDate.getTime())) return '-';
+  if (Number.isNaN(parsedDate.getTime())) return "-";
 
-  return new Intl.DateTimeFormat('hu-HU', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZone: 'Europe/Budapest',
+  return new Intl.DateTimeFormat("hu-HU", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "Europe/Budapest",
   }).format(parsedDate);
 }
 
 function formatBackendUtcClock(isoDateString) {
   const parsedDate = parseBackendDate(isoDateString);
-  if (Number.isNaN(parsedDate.getTime())) return '--';
+  if (Number.isNaN(parsedDate.getTime())) return "--";
 
-  return `${new Intl.DateTimeFormat('hu-HU', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZone: 'UTC',
+  return `${new Intl.DateTimeFormat("hu-HU", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "UTC",
   }).format(parsedDate)} UTC`;
 }
 
 function formatRefreshCountdown(nextRefreshAt) {
   const targetTime = Number(nextRefreshAt);
-  if (!Number.isFinite(targetTime) || targetTime <= 0) return 'Refresh --s';
-  const secondsRemaining = Math.max(0, Math.ceil((targetTime - Date.now()) / 1000));
+  if (!Number.isFinite(targetTime) || targetTime <= 0) return "Refresh --s";
+  const secondsRemaining = Math.max(
+    0,
+    Math.ceil((targetTime - Date.now()) / 1000),
+  );
   return `Refresh ${secondsRemaining}s`;
 }
 
 function getOverallHealthMeter(snapshot) {
-  const tone = snapshot?.tone || 'warn';
-  if (tone === 'ok') return { score: 100, tone: 'ok' };
-  if (tone === 'down') return { score: 18, tone: 'down' };
-  return { score: 62, tone: 'warn' };
+  const tone = snapshot?.tone || "warn";
+  if (tone === "ok") return { score: 100, tone: "ok" };
+  if (tone === "down") return { score: 18, tone: "down" };
+  return { score: 62, tone: "warn" };
 }
 
 function getStatusMeter(statusLabel) {
-  const label = String(statusLabel || '').toLowerCase();
-  if (!label) return { score: 12, tone: 'loading' };
-  if (label.includes('healthy')) return { score: 100, tone: 'ok' };
-  if (label.includes('auth issue') || label.includes('reachable')) return { score: 64, tone: 'warn' };
-  if (label.includes('unexpected payload') || label.includes('unexpected')) return { score: 48, tone: 'warn' };
-  if (label.includes('server error')) return { score: 24, tone: 'down' };
-  if (label.includes('unreachable')) return { score: 10, tone: 'down' };
-  return { score: 40, tone: 'warn' };
+  const label = String(statusLabel || "").toLowerCase();
+  if (!label) return { score: 12, tone: "loading" };
+  if (label.includes("healthy")) return { score: 100, tone: "ok" };
+  if (label.includes("auth issue") || label.includes("reachable"))
+    return { score: 64, tone: "warn" };
+  if (label.includes("unexpected payload") || label.includes("unexpected"))
+    return { score: 48, tone: "warn" };
+  if (label.includes("server error")) return { score: 24, tone: "down" };
+  if (label.includes("unreachable")) return { score: 10, tone: "down" };
+  return { score: 40, tone: "warn" };
 }
 
 function getLatencyMeter(value) {
   const latency = Number(value);
-  if (!Number.isFinite(latency) || latency <= 0) return { score: 10, tone: 'down' };
-  if (latency <= 80) return { score: 100, tone: 'ok' };
-  if (latency <= 160) return { score: 82, tone: 'ok' };
-  if (latency <= 280) return { score: 62, tone: 'warn' };
-  if (latency <= 500) return { score: 42, tone: 'warn' };
-  return { score: 22, tone: 'down' };
+  if (!Number.isFinite(latency) || latency <= 0)
+    return { score: 10, tone: "down" };
+  if (latency <= 80) return { score: 100, tone: "ok" };
+  if (latency <= 160) return { score: 82, tone: "ok" };
+  if (latency <= 280) return { score: 62, tone: "warn" };
+  if (latency <= 500) return { score: 42, tone: "warn" };
+  return { score: 22, tone: "down" };
 }
 
 function clampMeter(value) {
@@ -328,7 +340,7 @@ function clampMeter(value) {
 }
 
 function parseBackendDate(value) {
-  const raw = typeof value === 'string' ? value.trim() : '';
+  const raw = typeof value === "string" ? value.trim() : "";
   const hasTimezone = /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw);
   const normalized = raw && !hasTimezone ? `${raw}Z` : raw;
   return new Date(normalized);
@@ -336,9 +348,9 @@ function parseBackendDate(value) {
 
 function escapeHtml(value) {
   return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }

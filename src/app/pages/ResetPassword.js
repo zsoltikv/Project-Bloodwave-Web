@@ -1,7 +1,7 @@
-import '../../styles/pages/ResetPassword.css';
-import { API_BASE } from '../services/auth.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
-import { attachCapsLockHints } from '../utils/caps-lock.js';
+import "../../styles/pages/ResetPassword.css";
+import { API_BASE } from "../services/auth.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+import { attachCapsLockHints } from "../utils/caps-lock.js";
 
 export default function ResetPassword(container) {
   container.innerHTML = `
@@ -113,16 +113,16 @@ export default function ResetPassword(container) {
 
   ensureGlobalStarfield();
 
-  const form = document.getElementById('rpForm');
-  const btn = document.getElementById('rpBtn');
-  const passwordInput = document.getElementById('rpPassword');
-  const confirmInput = document.getElementById('rpConfirm');
-  const passwordError = document.getElementById('rpPasswordError');
-  const confirmError = document.getElementById('rpConfirmError');
-  const generalError = document.getElementById('rpGeneralError');
-  const successPanel = document.getElementById('rpSuccess');
-  const passwordCapsHint = document.getElementById('rpPasswordCapsHint');
-  const confirmCapsHint = document.getElementById('rpConfirmCapsHint');
+  const form = document.getElementById("rpForm");
+  const btn = document.getElementById("rpBtn");
+  const passwordInput = document.getElementById("rpPassword");
+  const confirmInput = document.getElementById("rpConfirm");
+  const passwordError = document.getElementById("rpPasswordError");
+  const confirmError = document.getElementById("rpConfirmError");
+  const generalError = document.getElementById("rpGeneralError");
+  const successPanel = document.getElementById("rpSuccess");
+  const passwordCapsHint = document.getElementById("rpPasswordCapsHint");
+  const confirmCapsHint = document.getElementById("rpConfirmCapsHint");
 
   function getParamFromUrl(name) {
     const searchParams = new URLSearchParams(window.location.search);
@@ -130,61 +130,61 @@ export default function ResetPassword(container) {
     if (fromSearch) return fromSearch.trim();
 
     // Fallback: some links can place query params after #
-    const hashQuery = window.location.hash.split('?')[1] || '';
+    const hashQuery = window.location.hash.split("?")[1] || "";
     const hashParams = new URLSearchParams(hashQuery);
     const fromHash = hashParams.get(name);
-    return fromHash ? fromHash.trim() : '';
+    return fromHash ? fromHash.trim() : "";
   }
 
-  const token = getParamFromUrl('token');
-  const email = getParamFromUrl('email');
+  const token = getParamFromUrl("token");
+  const email = getParamFromUrl("email");
 
   if (!token) {
-    generalError.textContent = 'Missing or invalid reset token.';
+    generalError.textContent = "Missing or invalid reset token.";
     btn.disabled = true;
   }
 
   function clearErrors() {
-    passwordError.textContent = '';
-    confirmError.textContent = '';
-    generalError.textContent = '';
+    passwordError.textContent = "";
+    confirmError.textContent = "";
+    generalError.textContent = "";
   }
 
   function validate() {
     let valid = true;
 
     if (!passwordInput.value) {
-      passwordError.textContent = 'Password is required';
+      passwordError.textContent = "Password is required";
       valid = false;
     } else if (passwordInput.value.length < 8) {
-      passwordError.textContent = 'Minimum 8 characters';
+      passwordError.textContent = "Minimum 8 characters";
       valid = false;
     }
 
     if (!confirmInput.value) {
-      confirmError.textContent = 'Please confirm your password';
+      confirmError.textContent = "Please confirm your password";
       valid = false;
     } else if (confirmInput.value !== passwordInput.value) {
-      confirmError.textContent = 'Passwords do not match';
+      confirmError.textContent = "Passwords do not match";
       valid = false;
     }
 
     return valid;
   }
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors();
 
     if (!token) {
-      generalError.textContent = 'Missing or invalid reset token.';
+      generalError.textContent = "Missing or invalid reset token.";
       return;
     }
 
     if (!validate()) return;
 
     btn.disabled = true;
-    btn.querySelector('.bw-btn-text').textContent = 'Updating...';
+    btn.querySelector(".bw-btn-text").textContent = "Updating...";
 
     const payload = {
       token,
@@ -196,29 +196,33 @@ export default function ResetPassword(container) {
 
     try {
       const res = await fetch(`${API_BASE}/api/user/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data?.success === false) {
-        throw new Error(data?.message || 'Password reset failed. Please try again.');
+        throw new Error(
+          data?.message || "Password reset failed. Please try again.",
+        );
       }
 
-      btn.classList.add('success');
-      btn.querySelector('.bw-btn-text').textContent = 'Updated';
+      btn.classList.add("success");
+      btn.querySelector(".bw-btn-text").textContent = "Updated";
 
       setTimeout(() => {
-        form.style.cssText = 'opacity:0; pointer-events:none; transform:translateY(-8px); transition:opacity 0.35s ease, transform 0.35s ease;';
+        form.style.cssText =
+          "opacity:0; pointer-events:none; transform:translateY(-8px); transition:opacity 0.35s ease, transform 0.35s ease;";
         setTimeout(() => {
-          form.style.display = 'none';
-          successPanel.classList.add('visible');
+          form.style.display = "none";
+          successPanel.classList.add("visible");
         }, 370);
       }, 500);
     } catch (err) {
-      generalError.textContent = err.message || 'Password reset failed. Please try again.';
-      btn.querySelector('.bw-btn-text').textContent = 'Update Password';
+      generalError.textContent =
+        err.message || "Password reset failed. Please try again.";
+      btn.querySelector(".bw-btn-text").textContent = "Update Password";
       btn.disabled = false;
     }
   });
@@ -226,16 +230,20 @@ export default function ResetPassword(container) {
   const eyeOpen = `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />`;
   const eyeClosed = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />`;
 
-  document.getElementById('rpPwToggle').addEventListener('click', () => {
-    const hidden = passwordInput.type === 'password';
-    passwordInput.type = hidden ? 'text' : 'password';
-    document.getElementById('rpEyeIcon').innerHTML = hidden ? eyeClosed : eyeOpen;
+  document.getElementById("rpPwToggle").addEventListener("click", () => {
+    const hidden = passwordInput.type === "password";
+    passwordInput.type = hidden ? "text" : "password";
+    document.getElementById("rpEyeIcon").innerHTML = hidden
+      ? eyeClosed
+      : eyeOpen;
   });
 
-  document.getElementById('rpConfirmToggle').addEventListener('click', () => {
-    const hidden = confirmInput.type === 'password';
-    confirmInput.type = hidden ? 'text' : 'password';
-    document.getElementById('rpConfirmEyeIcon').innerHTML = hidden ? eyeClosed : eyeOpen;
+  document.getElementById("rpConfirmToggle").addEventListener("click", () => {
+    const hidden = confirmInput.type === "password";
+    confirmInput.type = hidden ? "text" : "password";
+    document.getElementById("rpConfirmEyeIcon").innerHTML = hidden
+      ? eyeClosed
+      : eyeOpen;
   });
 
   attachCapsLockHints([

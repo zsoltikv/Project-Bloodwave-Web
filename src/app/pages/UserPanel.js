@@ -1,17 +1,21 @@
-import '../../styles/pages/UserPanel.css';
-import { API_BASE, getUser, logout, authFetch } from '../services/auth.js';
-import { confirmLogout, confirmDeleteAccount, showDeleteAccountError } from '../effects/logout-confirm.js';
-import { ensureGlobalStarfield } from '../effects/global-starfield.js';
-import { usernameIsProfane } from '../utils/profanity.js';
-import { attachCapsLockHints } from '../utils/caps-lock.js';
+import "../../styles/pages/UserPanel.css";
+import { API_BASE, getUser, logout, authFetch } from "../services/auth.js";
+import {
+  confirmLogout,
+  confirmDeleteAccount,
+  showDeleteAccountError,
+} from "../effects/logout-confirm.js";
+import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+import { usernameIsProfane } from "../utils/profanity.js";
+import { attachCapsLockHints } from "../utils/caps-lock.js";
 
 export default function UserPanel(container) {
   const cachedUser = getUser();
   const profileState = {
-    username: cachedUser?.username || '',
-    email: cachedUser?.email || '',
-    createdAt: cachedUser?.createdAt || ''
-  }; 
+    username: cachedUser?.username || "",
+    email: cachedUser?.email || "",
+    createdAt: cachedUser?.createdAt || "",
+  };
 
   container.innerHTML = `
     
@@ -81,17 +85,17 @@ export default function UserPanel(container) {
           <div class="up-info-grid">
             <div class="up-info-card">
               <span class="up-info-label">👤 Username</span>
-              <span class="up-info-value" id="up-username-value">${escapeHtml(cachedUser?.username || 'N/A')}</span>
+              <span class="up-info-value" id="up-username-value">${escapeHtml(cachedUser?.username || "N/A")}</span>
             </div>
 
             <div class="up-info-card">
               <span class="up-info-label">✉ Email</span>
-              <span class="up-info-value" id="up-email-value">${escapeHtml(cachedUser?.email || 'N/A')}</span>
+              <span class="up-info-value" id="up-email-value">${escapeHtml(cachedUser?.email || "N/A")}</span>
             </div>
 
             <div class="up-info-card">
               <span class="up-info-label">📅 Member Since</span>
-              <span class="up-info-value" id="up-created-at-value">${formatDate(cachedUser?.createdAt || 'N/A')}</span>
+              <span class="up-info-value" id="up-created-at-value">${formatDate(cachedUser?.createdAt || "N/A")}</span>
             </div>
           </div>
 
@@ -235,15 +239,28 @@ export default function UserPanel(container) {
 
   // ========== HELPERS ==========
   function escapeHtml(text) {
-    const span = document.createElement('span');
+    const span = document.createElement("span");
     span.textContent = text;
     return span.innerHTML;
   }
 
   function formatDate(dateStr) {
-    if (!dateStr) return 'N/A';
+    if (!dateStr) return "N/A";
     const date = new Date(dateStr);
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
     const day = date.getDate();
     const month = months[date.getMonth()];
     const year = date.getFullYear();
@@ -252,19 +269,20 @@ export default function UserPanel(container) {
 
   function clearFormError(errorEl) {
     if (!errorEl) return;
-    errorEl.classList.remove('show');
-    errorEl.textContent = '';
+    errorEl.classList.remove("show");
+    errorEl.textContent = "";
   }
 
   function showFormError(errorEl, message) {
     if (!errorEl) return;
-    errorEl.textContent = message || 'Something went wrong. Please try again.';
-    errorEl.classList.add('show');
+    errorEl.textContent = message || "Something went wrong. Please try again.";
+    errorEl.classList.add("show");
   }
 
-  const mobileUsername = document.getElementById('up-mobile-username');
+  const mobileUsername = document.getElementById("up-mobile-username");
   if (mobileUsername) {
-    mobileUsername.textContent = cachedUser?.username || cachedUser?.email || 'Member';
+    mobileUsername.textContent =
+      cachedUser?.username || cachedUser?.email || "Member";
   }
 
   function applyUserToUi(userData) {
@@ -274,31 +292,33 @@ export default function UserPanel(container) {
     profileState.email = userData.email || profileState.email;
     profileState.createdAt = userData.createdAt || profileState.createdAt;
 
-    const usernameEl = document.getElementById('up-username-value');
-    const emailEl = document.getElementById('up-email-value');
-    const createdAtEl = document.getElementById('up-created-at-value');
+    const usernameEl = document.getElementById("up-username-value");
+    const emailEl = document.getElementById("up-email-value");
+    const createdAtEl = document.getElementById("up-created-at-value");
 
-    if (usernameEl) usernameEl.textContent = profileState.username || 'N/A';
-    if (emailEl) emailEl.textContent = profileState.email || 'N/A';
-    if (createdAtEl) createdAtEl.textContent = formatDate(profileState.createdAt || '');
+    if (usernameEl) usernameEl.textContent = profileState.username || "N/A";
+    if (emailEl) emailEl.textContent = profileState.email || "N/A";
+    if (createdAtEl)
+      createdAtEl.textContent = formatDate(profileState.createdAt || "");
     if (mobileUsername) {
-      mobileUsername.textContent = profileState.username || profileState.email || 'Member';
+      mobileUsername.textContent =
+        profileState.username || profileState.email || "Member";
     }
   }
 
   async function updateCurrentUser(payload) {
     const res = await authFetch(`${API_BASE}/api/User/me`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || 'Failed to update profile');
+      throw new Error(errData.message || "Failed to update profile");
     }
 
     const updatedUser = await res.json();
@@ -309,8 +329,8 @@ export default function UserPanel(container) {
   async function fetchCurrentUser() {
     try {
       const res = await authFetch(`${API_BASE}/api/User/me`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' }
+        method: "GET",
+        headers: { Accept: "application/json" },
       });
 
       if (!res.ok) {
@@ -320,41 +340,43 @@ export default function UserPanel(container) {
       const userData = await res.json();
       applyUserToUi(userData);
     } catch (err) {
-      console.error('Failed to fetch current user profile:', err);
+      console.error("Failed to fetch current user profile:", err);
     }
   }
 
-  const hamburger = document.getElementById('up-hamburger');
-  const mobileMenu = document.getElementById('up-mobile-menu');
+  const hamburger = document.getElementById("up-hamburger");
+  const mobileMenu = document.getElementById("up-mobile-menu");
   let mobileMenuOpen = false;
 
-  hamburger?.addEventListener('click', () => {
+  hamburger?.addEventListener("click", () => {
     mobileMenuOpen = !mobileMenuOpen;
-    hamburger.classList.toggle('open', mobileMenuOpen);
-    hamburger.setAttribute('aria-expanded', String(mobileMenuOpen));
-    mobileMenu.style.maxHeight = mobileMenuOpen ? mobileMenu.scrollHeight + 'px' : '0';
+    hamburger.classList.toggle("open", mobileMenuOpen);
+    hamburger.setAttribute("aria-expanded", String(mobileMenuOpen));
+    mobileMenu.style.maxHeight = mobileMenuOpen
+      ? mobileMenu.scrollHeight + "px"
+      : "0";
   });
 
-  mobileMenu?.querySelectorAll('.up-mobile-link').forEach((link) => {
-    link.addEventListener('click', () => {
+  mobileMenu?.querySelectorAll(".up-mobile-link").forEach((link) => {
+    link.addEventListener("click", () => {
       mobileMenuOpen = false;
-      hamburger?.classList.remove('open');
-      hamburger?.setAttribute('aria-expanded', 'false');
-      mobileMenu.style.maxHeight = '0';
+      hamburger?.classList.remove("open");
+      hamburger?.setAttribute("aria-expanded", "false");
+      mobileMenu.style.maxHeight = "0";
     });
   });
 
   // ========== CANVAS ANIMATION ==========
   function initUpCanvas() {
-    const canvas = document.getElementById('up-canvas');
+    const canvas = document.getElementById("up-canvas");
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
 
     let W, H;
     let stars = [];
 
     function measure() {
-      W = canvas.width  = window.innerWidth;
+      W = canvas.width = window.innerWidth;
       H = canvas.height = window.innerHeight;
     }
 
@@ -375,10 +397,10 @@ export default function UserPanel(container) {
     function anim() {
       // Full clear each frame so stars remain points without motion trails.
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = 'rgb(8,6,6)';
+      ctx.fillStyle = "rgb(8,6,6)";
       ctx.fillRect(0, 0, W, H);
 
-      stars.forEach(s => {
+      stars.forEach((s) => {
         s.x += s.vx;
         s.y += s.vy;
         if (s.x < 0) s.x = W;
@@ -387,10 +409,20 @@ export default function UserPanel(container) {
         if (s.y > H) s.y = 0;
 
         const glowRadius = s.r * 6;
-        const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
-        glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
+        const glow = ctx.createRadialGradient(
+          s.x,
+          s.y,
+          0,
+          s.x,
+          s.y,
+          glowRadius,
+        );
+        glow.addColorStop(
+          0,
+          `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`,
+        );
         glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
-        glow.addColorStop(1, 'rgba(212,175,55,0)');
+        glow.addColorStop(1, "rgba(212,175,55,0)");
 
         ctx.fillStyle = glow;
         ctx.beginPath();
@@ -410,7 +442,7 @@ export default function UserPanel(container) {
     initStars();
     anim();
 
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       measure();
       initStars();
     });
@@ -422,170 +454,194 @@ export default function UserPanel(container) {
     const btn = document.getElementById(triggerBtnId);
     const cancelBtn = document.getElementById(cancelBtnId);
     const form = document.getElementById(formId);
-    const errorEl = form?.querySelector('.up-form-error');
+    const errorEl = form?.querySelector(".up-form-error");
 
-    btn?.addEventListener('click', () => {
-      modal.style.display = 'flex';
+    btn?.addEventListener("click", () => {
+      modal.style.display = "flex";
       clearFormError(errorEl);
-      const firstInput = form?.querySelector('input');
+      const firstInput = form?.querySelector("input");
       firstInput?.focus();
     });
 
-    cancelBtn?.addEventListener('click', () => {
-      modal.style.display = 'none';
+    cancelBtn?.addEventListener("click", () => {
+      modal.style.display = "none";
       clearFormError(errorEl);
       form?.reset();
     });
 
-    modal?.addEventListener('click', (e) => {
+    modal?.addEventListener("click", (e) => {
       if (e.target === modal) {
-        modal.style.display = 'none';
+        modal.style.display = "none";
         clearFormError(errorEl);
         form?.reset();
       }
     });
 
-    form?.addEventListener('submit', onSubmit);
+    form?.addEventListener("submit", onSubmit);
   }
 
   // === USERNAME MODAL ===
-  setupModal('upUsernameModal', 'upEditUsername', 'upUsernameCancel', 'upUsernameForm', async (e) => {
-    e.preventDefault();
-    const input = document.getElementById('upUsernameInput');
-    const errorEl = document.getElementById('upUsernameError');
-    const submitBtn = document.querySelector('#upUsernameForm button[type="submit"]');
+  setupModal(
+    "upUsernameModal",
+    "upEditUsername",
+    "upUsernameCancel",
+    "upUsernameForm",
+    async (e) => {
+      e.preventDefault();
+      const input = document.getElementById("upUsernameInput");
+      const errorEl = document.getElementById("upUsernameError");
+      const submitBtn = document.querySelector(
+        '#upUsernameForm button[type="submit"]',
+      );
 
-    clearFormError(errorEl);
+      clearFormError(errorEl);
 
-    const username = input.value.trim();
-    if (username.length < 3) {
-      showFormError(errorEl, 'Username must be at least 3 characters');
-      return;
-    }
+      const username = input.value.trim();
+      if (username.length < 3) {
+        showFormError(errorEl, "Username must be at least 3 characters");
+        return;
+      }
 
-    if (await usernameIsProfane(username)) {
-      showFormError(errorEl, 'This username is not allowed');
-      return;
-    }
+      if (await usernameIsProfane(username)) {
+        showFormError(errorEl, "This username is not allowed");
+        return;
+      }
 
-    submitBtn.disabled = true;
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = '✦ Updating… ✦';
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "✦ Updating… ✦";
 
-    try {
-      await updateCurrentUser({
-        username,
-        email: profileState.email
-      });
+      try {
+        await updateCurrentUser({
+          username,
+          email: profileState.email,
+        });
 
-      submitBtn.textContent = '✦ Updated ✦';
-      submitBtn.classList.add('success');
-      setTimeout(() => {
-        document.getElementById('upUsernameModal').style.display = 'none';
-        document.getElementById('upUsernameForm')?.reset();
+        submitBtn.textContent = "✦ Updated ✦";
+        submitBtn.classList.add("success");
+        setTimeout(() => {
+          document.getElementById("upUsernameModal").style.display = "none";
+          document.getElementById("upUsernameForm")?.reset();
+          submitBtn.textContent = originalText;
+          submitBtn.classList.remove("success");
+          submitBtn.disabled = false;
+        }, 700);
+      } catch (err) {
+        showFormError(errorEl, err.message);
         submitBtn.textContent = originalText;
-        submitBtn.classList.remove('success');
         submitBtn.disabled = false;
-      }, 700);
-    } catch (err) {
-      showFormError(errorEl, err.message);
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-    }
-  });
+      }
+    },
+  );
 
   // === EMAIL MODAL ===
-  setupModal('upEmailModal', 'upEditEmail', 'upEmailCancel', 'upEmailForm', async (e) => {
-    e.preventDefault();
-    const input = document.getElementById('upEmailInput');
-    const errorEl = document.getElementById('upEmailError');
-    const submitBtn = document.querySelector('#upEmailForm button[type="submit"]');
+  setupModal(
+    "upEmailModal",
+    "upEditEmail",
+    "upEmailCancel",
+    "upEmailForm",
+    async (e) => {
+      e.preventDefault();
+      const input = document.getElementById("upEmailInput");
+      const errorEl = document.getElementById("upEmailError");
+      const submitBtn = document.querySelector(
+        '#upEmailForm button[type="submit"]',
+      );
 
-    clearFormError(errorEl);
+      clearFormError(errorEl);
 
-    const email = input.value.trim();
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const email = input.value.trim();
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRe.test(email)) {
-      showFormError(errorEl, 'Invalid email address');
-      return;
-    }
+      if (!emailRe.test(email)) {
+        showFormError(errorEl, "Invalid email address");
+        return;
+      }
 
-    submitBtn.disabled = true;
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = '✦ Updating… ✦';
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "✦ Updating… ✦";
 
-    try {
-      await updateCurrentUser({
-        username: profileState.username,
-        email
-      });
+      try {
+        await updateCurrentUser({
+          username: profileState.username,
+          email,
+        });
 
-      submitBtn.textContent = '✦ Updated ✦';
-      submitBtn.classList.add('success');
-      setTimeout(() => {
-        document.getElementById('upEmailModal').style.display = 'none';
-        document.getElementById('upEmailForm')?.reset();
+        submitBtn.textContent = "✦ Updated ✦";
+        submitBtn.classList.add("success");
+        setTimeout(() => {
+          document.getElementById("upEmailModal").style.display = "none";
+          document.getElementById("upEmailForm")?.reset();
+          submitBtn.textContent = originalText;
+          submitBtn.classList.remove("success");
+          submitBtn.disabled = false;
+        }, 700);
+      } catch (err) {
+        showFormError(errorEl, err.message);
         submitBtn.textContent = originalText;
-        submitBtn.classList.remove('success');
         submitBtn.disabled = false;
-      }, 700);
-    } catch (err) {
-      showFormError(errorEl, err.message);
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-    }
-  });
+      }
+    },
+  );
 
   // === PASSWORD MODAL ===
-  setupModal('upPasswordModal', 'upEditPassword', 'upPasswordCancel', 'upPasswordForm', async (e) => {
-    e.preventDefault();
-    const newPass = document.getElementById('upPasswordNew');
-    const confirm = document.getElementById('upPasswordConfirm');
-    const errorEl = document.getElementById('upPasswordError');
-    const submitBtn = document.querySelector('#upPasswordForm button[type="submit"]');
+  setupModal(
+    "upPasswordModal",
+    "upEditPassword",
+    "upPasswordCancel",
+    "upPasswordForm",
+    async (e) => {
+      e.preventDefault();
+      const newPass = document.getElementById("upPasswordNew");
+      const confirm = document.getElementById("upPasswordConfirm");
+      const errorEl = document.getElementById("upPasswordError");
+      const submitBtn = document.querySelector(
+        '#upPasswordForm button[type="submit"]',
+      );
 
-    clearFormError(errorEl);
+      clearFormError(errorEl);
 
-    let valid = true;
-    if (newPass.value.length < 6) {
-      showFormError(errorEl, 'New password must be at least 6 characters');
-      valid = false;
-    } else if (newPass.value !== confirm.value) {
-      showFormError(errorEl, 'Passwords do not match');
-      valid = false;
-    }
+      let valid = true;
+      if (newPass.value.length < 6) {
+        showFormError(errorEl, "New password must be at least 6 characters");
+        valid = false;
+      } else if (newPass.value !== confirm.value) {
+        showFormError(errorEl, "Passwords do not match");
+        valid = false;
+      }
 
-    if (!valid) {
-      return;
-    }
+      if (!valid) {
+        return;
+      }
 
-    submitBtn.disabled = true;
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = '✦ Changing… ✦';
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "✦ Changing… ✦";
 
-    try {
-      await updateCurrentUser({
-        username: profileState.username,
-        email: profileState.email,
-        password: newPass.value
-      });
+      try {
+        await updateCurrentUser({
+          username: profileState.username,
+          email: profileState.email,
+          password: newPass.value,
+        });
 
-      submitBtn.textContent = '✦ Changed ✦';
-      submitBtn.classList.add('success');
-      setTimeout(() => {
-        document.getElementById('upPasswordModal').style.display = 'none';
-        document.getElementById('upPasswordForm')?.reset();
+        submitBtn.textContent = "✦ Changed ✦";
+        submitBtn.classList.add("success");
+        setTimeout(() => {
+          document.getElementById("upPasswordModal").style.display = "none";
+          document.getElementById("upPasswordForm")?.reset();
+          submitBtn.textContent = originalText;
+          submitBtn.classList.remove("success");
+          submitBtn.disabled = false;
+        }, 700);
+      } catch (err) {
+        showFormError(errorEl, err.message);
         submitBtn.textContent = originalText;
-        submitBtn.classList.remove('success');
         submitBtn.disabled = false;
-      }, 700);
-    } catch (err) {
-      showFormError(errorEl, err.message);
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-    }
-  });
+      }
+    },
+  );
 
   // ========== LOGOUT ==========
   const doLogout = async (button) => {
@@ -594,44 +650,50 @@ export default function UserPanel(container) {
 
     if (button) {
       button.disabled = true;
-      if (button.id === 'upLogout') {
-        button.textContent = '✦ Goodbye… ✦';
+      if (button.id === "upLogout") {
+        button.textContent = "✦ Goodbye… ✦";
       } else {
-        button.innerHTML = '✦ Logging out… ✦';
+        button.innerHTML = "✦ Logging out… ✦";
       }
     }
 
     try {
       await logout();
     } catch (err) {
-      console.error('Logout error:', err);
+      console.error("Logout error:", err);
     }
   };
 
-  document.getElementById('upLogout')?.addEventListener('click', async () => {
-    await doLogout(document.getElementById('upLogout'));
+  document.getElementById("upLogout")?.addEventListener("click", async () => {
+    await doLogout(document.getElementById("upLogout"));
   });
 
-  document.getElementById('up-mobile-logout')?.addEventListener('click', async () => {
-    await doLogout(document.getElementById('up-mobile-logout'));
-  });
+  document
+    .getElementById("up-mobile-logout")
+    ?.addEventListener("click", async () => {
+      await doLogout(document.getElementById("up-mobile-logout"));
+    });
 
   const doDeleteAccount = async (button) => {
-    const expectedUsername = (profileState.username || cachedUser?.username || '').trim();
+    const expectedUsername = (
+      profileState.username ||
+      cachedUser?.username ||
+      ""
+    ).trim();
     const confirmation = await confirmDeleteAccount(expectedUsername);
     if (!confirmation || confirmation.confirmed !== true) return;
 
-    const originalText = button?.textContent || '';
+    const originalText = button?.textContent || "";
     if (button) {
       button.disabled = true;
-      button.textContent = '✦ Deleting… ✦';
+      button.textContent = "✦ Deleting… ✦";
     }
 
     try {
       const response = await authFetch(`${API_BASE}/api/User/me`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          Accept: 'application/json',
+          Accept: "application/json",
         },
         body: JSON.stringify({
           password: confirmation.password,
@@ -641,7 +703,7 @@ export default function UserPanel(container) {
 
       if (!response.ok) {
         const errorPayload = await response.json().catch(() => ({}));
-        throw new Error(errorPayload?.message || 'Failed to delete account.');
+        throw new Error(errorPayload?.message || "Failed to delete account.");
       }
 
       // Sikeres törlés - kijelentkeztetés
@@ -649,10 +711,10 @@ export default function UserPanel(container) {
       return;
     } catch (err) {
       // HIBA - NEM logout, marad az oldalon
-      console.error('Delete account error:', err);
+      console.error("Delete account error:", err);
       await showDeleteAccountError(
-        err?.message || 'Could not delete account. Please try again.',
-        'Please verify your username and password are correct.'
+        err?.message || "Could not delete account. Please try again.",
+        "Please verify your username and password are correct.",
       );
       if (button) {
         button.disabled = false;
@@ -661,36 +723,39 @@ export default function UserPanel(container) {
     }
   };
 
-  document.getElementById('upDeleteAccount')?.addEventListener('click', async () => {
-    await doDeleteAccount(document.getElementById('upDeleteAccount'));
-  });
+  document
+    .getElementById("upDeleteAccount")
+    ?.addEventListener("click", async () => {
+      await doDeleteAccount(document.getElementById("upDeleteAccount"));
+    });
 
   attachCapsLockHints([
     {
-      input: document.getElementById('upPasswordCurrent'),
-      hintEl: document.getElementById('upPasswordCurrentCapsHint'),
+      input: document.getElementById("upPasswordCurrent"),
+      hintEl: document.getElementById("upPasswordCurrentCapsHint"),
     },
     {
-      input: document.getElementById('upPasswordNew'),
-      hintEl: document.getElementById('upPasswordNewCapsHint'),
+      input: document.getElementById("upPasswordNew"),
+      hintEl: document.getElementById("upPasswordNewCapsHint"),
     },
     {
-      input: document.getElementById('upPasswordConfirm'),
-      hintEl: document.getElementById('upPasswordConfirmCapsHint'),
+      input: document.getElementById("upPasswordConfirm"),
+      hintEl: document.getElementById("upPasswordConfirmCapsHint"),
     },
   ]);
 
-  document.getElementById('upBackToDashboard')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (window.router?.navigate) {
-      window.router.navigate('/main');
-      return;
-    }
-    window.location.href = '/main';
-  });
+  document
+    .getElementById("upBackToDashboard")
+    ?.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (window.router?.navigate) {
+        window.router.navigate("/main");
+        return;
+      }
+      window.location.href = "/main";
+    });
 
   // ========== INIT ==========
   ensureGlobalStarfield();
   fetchCurrentUser();
 }
-
