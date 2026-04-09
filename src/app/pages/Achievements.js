@@ -1,83 +1,158 @@
+// imports dependencies used by this module
 import "../../styles/pages/Leaderboard.css";
+// imports dependencies used by this module
 import "../../styles/pages/Achievements.css";
+// imports dependencies used by this module
 import { API_BASE, getUser, logout, authFetch } from "../services/auth.js";
+// imports dependencies used by this module
 import { confirmLogout } from "../effects/logout-confirm.js";
+// imports dependencies used by this module
 import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+
+// achievements page: loads and renders game achievements
+// includes helper functions for image lookup, formatting and ui rendering
+
 
 const ACHIEVEMENT_IMAGE_MODULES = import.meta.glob(
   "../../assets/achievements/*",
   {
+    // sets a named field inside an object or configuration block
     eager: true,
+    // sets a named field inside an object or configuration block
     import: "default",
   },
 );
 
+// declares a constant used in this scope
 const ACHIEVEMENT_IMAGE_BY_KEY = Object.entries(
   ACHIEVEMENT_IMAGE_MODULES,
+// defines an arrow function used by surrounding logic
 ).reduce((acc, [path, url]) => {
+  // declares a constant used in this scope
   const fileName = path.split("/").pop() || "";
+  // declares a constant used in this scope
   const key = fileName.replace(/\.[^.]+$/, "").toLowerCase();
+  // executes this operation step as part of the flow
   acc.set(key, url);
+  // returns a value from the current function
   return acc;
+// executes this operation step as part of the flow
 }, new Map());
 
+// declares a constant used in this scope
 const ACHIEVEMENT_IMAGE_KEY_BY_ID = {
+  // sets a named field inside an object or configuration block
   1: "first_time_player",
+  // sets a named field inside an object or configuration block
   2: "movie_buff",
+  // sets a named field inside an object or configuration block
   3: "first_pause",
+  // sets a named field inside an object or configuration block
   4: "first_restart",
+  // sets a named field inside an object or configuration block
   5: "first_save",
+  // sets a named field inside an object or configuration block
   6: "first_steps",
+  // sets a named field inside an object or configuration block
   7: "first_blood",
+  // sets a named field inside an object or configuration block
   8: "slayer_10",
+  // sets a named field inside an object or configuration block
   9: "slayer_50",
+  // sets a named field inside an object or configuration block
   10: "mass_murderer",
+  // sets a named field inside an object or configuration block
   11: "multi_kill_10",
+  // sets a named field inside an object or configuration block
   12: "multi_kill_20",
+  // sets a named field inside an object or configuration block
   13: "no_hit_2min",
+  // sets a named field inside an object or configuration block
   14: "tank_500",
+  // sets a named field inside an object or configuration block
   15: "die_fast_15s",
+  // sets a named field inside an object or configuration block
   16: "no_pause_run",
+  // sets a named field inside an object or configuration block
   17: "afk_30s",
+  // sets a named field inside an object or configuration block
   18: "survivor_5min",
+  // sets a named field inside an object or configuration block
   19: "survivor_10min",
+  // sets a named field inside an object or configuration block
   20: "survivor_15min",
+  // sets a named field inside an object or configuration block
   21: "survivor_30min",
+  // sets a named field inside an object or configuration block
   22: "level_5",
+  // sets a named field inside an object or configuration block
   23: "level_10",
+  // sets a named field inside an object or configuration block
   24: "level_15",
+  // sets a named field inside an object or configuration block
   25: "level_20",
+  // sets a named field inside an object or configuration block
   26: "level_25",
+  // sets a named field inside an object or configuration block
   27: "level_50",
+  // sets a named field inside an object or configuration block
   28: "first_weapon_upgrade",
+  // sets a named field inside an object or configuration block
   29: "upgrade_damage_once",
+  // sets a named field inside an object or configuration block
   30: "upgrade_projectiles_once",
+  // sets a named field inside an object or configuration block
   31: "upgrade_cooldown_once",
+  // sets a named field inside an object or configuration block
   32: "upgrade_range_once",
+  // sets a named field inside an object or configuration block
   33: "upgrade_orbitalspeed_once",
+  // sets a named field inside an object or configuration block
   34: "weapon_level_5",
+  // sets a named field inside an object or configuration block
   35: "weapon_level_10",
+  // sets a named field inside an object or configuration block
   36: "projectiles_bonus_3",
+  // sets a named field inside an object or configuration block
   37: "cooldown_50",
+  // sets a named field inside an object or configuration block
   38: "range_150",
+  // sets a named field inside an object or configuration block
   39: "orbitalspeed_200",
+  // sets a named field inside an object or configuration block
   40: "rich",
+  // sets a named field inside an object or configuration block
   41: "shopaholic",
+  // sets a named field inside an object or configuration block
   42: "shop_clear_10",
+  // sets a named field inside an object or configuration block
   43: "collector",
+  // sets a named field inside an object or configuration block
   44: "big_spender",
+  // sets a named field inside an object or configuration block
   45: "arsenal",
+  // sets a named field inside an object or configuration block
   46: "orbit_master",
+  // sets a named field inside an object or configuration block
   47: "music_lover",
+  // sets a named field inside an object or configuration block
   48: "unlock_10_achievements",
+  // sets a named field inside an object or configuration block
   49: "unlock_25_achievements",
+  // sets a named field inside an object or configuration block
   50: "completionist",
 };
 
+// exports the main function for this module
 export default function Achievements(container) {
+  // render the achievements ui into the provided container
+  // set up interactions, fetch data and manage view state
   let achievementView = "unlocked-first";
+  // declares mutable state used in this scope
   let cachedAchievements = [];
+  // declares mutable state used in this scope
   let cachedUnlockedMap = new Map();
+  // executes this operation step as part of the flow
   container.innerHTML = `
     <div class="lb-root">
       <div class="lb-glow"></div>
@@ -202,45 +277,73 @@ export default function Achievements(container) {
     </div>
   `;
 
+  // executes this operation step as part of the flow
   ensureGlobalStarfield();
 
+  // declares a constant used in this scope
   const user = getUser();
+  // declares a constant used in this scope
   const fallbackDisplayName = user?.username ?? user?.email ?? "Member";
+  // declares a constant used in this scope
   const viewSelect = container.querySelector("#ac-view-select");
 
+  // declares a constant used in this scope
   const ddUsernameEl = container.querySelector("#ac-dd-username");
+  // declares a constant used in this scope
   const mobileUsernameEl = container.querySelector("#ac-mobile-username");
+  // checks a condition before executing this branch
   if (ddUsernameEl) ddUsernameEl.textContent = fallbackDisplayName;
+  // checks a condition before executing this branch
   if (mobileUsernameEl) mobileUsernameEl.textContent = fallbackDisplayName;
 
+  // declares a constant used in this scope
   const hamburger = container.querySelector("#ac-hamburger");
+  // declares a constant used in this scope
   const mobileMenu = container.querySelector("#ac-mobile-menu");
+  // declares mutable state used in this scope
   let mobileMenuOpen = false;
 
+  // attaches a dom event listener for user interaction
   hamburger?.addEventListener("click", () => {
+    // executes this operation step as part of the flow
     mobileMenuOpen = !mobileMenuOpen;
+    // executes this operation step as part of the flow
     hamburger.classList.toggle("open", mobileMenuOpen);
+    // executes this operation step as part of the flow
     hamburger.setAttribute("aria-expanded", String(mobileMenuOpen));
+    // checks a condition before executing this branch
     if (mobileMenu) {
+      // executes this operation step as part of the flow
       mobileMenu.style.maxHeight = mobileMenuOpen
         ? `${mobileMenu.scrollHeight}px`
+        // executes this operation step as part of the flow
         : "0";
     }
   });
 
+  // defines an arrow function used by surrounding logic
   mobileMenu?.querySelectorAll(".lb-mobile-link").forEach((link) => {
+    // attaches a dom event listener for user interaction
     link.addEventListener("click", () => {
+      // executes this operation step as part of the flow
       mobileMenuOpen = false;
+      // executes this operation step as part of the flow
       hamburger?.classList.remove("open");
+      // executes this operation step as part of the flow
       hamburger?.setAttribute("aria-expanded", "false");
+      // checks a condition before executing this branch
       if (mobileMenu) mobileMenu.style.maxHeight = "0";
     });
   });
 
+  // declares a constant used in this scope
   const avatarBtn = container.querySelector("#ac-avatar-btn");
+  // declares a constant used in this scope
   const avatarDropdown = container.querySelector("#ac-avatar-dropdown");
 
+  // attaches a dom event listener for user interaction
   avatarBtn?.addEventListener("click", () => {
+    // executes this operation step as part of the flow
     avatarDropdown?.classList.toggle("open");
     avatarBtn.setAttribute(
       "aria-expanded",
@@ -248,121 +351,197 @@ export default function Achievements(container) {
     );
   });
 
+  // attaches a dom event listener for user interaction
   document.addEventListener("click", (event) => {
+    // checks a condition before executing this branch
     if (!event.target.closest(".lb-avatar-wrap")) {
+      // executes this operation step as part of the flow
       avatarDropdown?.classList.remove("open");
+      // executes this operation step as part of the flow
       avatarBtn?.setAttribute("aria-expanded", "false");
     }
   });
 
+  // declares a constant used in this scope
   const doLogout = async () => {
+    // declares a constant used in this scope
     const confirmed = await confirmLogout();
+    // checks a condition before executing this branch
     if (!confirmed) return;
 
+    // waits for an asynchronous operation to complete
     await logout();
+    // checks a condition before executing this branch
     if (window.router?.navigate) {
+      // executes this operation step as part of the flow
       window.router.navigate("/login");
+      // returns a value from the current function
       return;
     }
+    // executes this operation step as part of the flow
     window.location.href = "/login";
   };
 
+  // attaches a dom event listener for user interaction
   container.querySelector("#ac-dd-logout")?.addEventListener("click", doLogout);
   container
     .querySelector("#ac-mobile-logout")
+    // attaches a dom event listener for user interaction
     ?.addEventListener("click", doLogout);
 
+  // attaches a dom event listener for user interaction
   viewSelect?.addEventListener("change", (event) => {
+    // executes this operation step as part of the flow
     achievementView = event.target.value || "unlocked-first";
+    // executes this operation step as part of the flow
     renderAchievements(cachedAchievements, cachedUnlockedMap);
   });
 
   async function refreshNavbarUsername() {
+    // starts guarded logic to catch runtime errors
     try {
+      // declares a constant used in this scope
       const res = await authFetch(`${API_BASE}/api/User/me`, {
+        // sets a named field inside an object or configuration block
         method: "GET",
+        // sets a named field inside an object or configuration block
         headers: { Accept: "application/json" },
       });
 
+      // checks a condition before executing this branch
       if (!res.ok) return;
 
+      // declares a constant used in this scope
       const userData = await res.json();
+      // declares a constant used in this scope
       const liveDisplayName =
+        // executes this operation step as part of the flow
         userData?.username ?? userData?.email ?? fallbackDisplayName;
 
+      // checks a condition before executing this branch
       if (ddUsernameEl) ddUsernameEl.textContent = liveDisplayName;
+      // checks a condition before executing this branch
       if (mobileUsernameEl) mobileUsernameEl.textContent = liveDisplayName;
     } catch {
       // Keep cached name if the request fails.
     }
   }
 
+  // declares a helper function for a focused task
   function escapeHtml(value) {
+    // declares a constant used in this scope
     const span = document.createElement("span");
+    // executes this operation step as part of the flow
     span.textContent = String(value ?? "");
+    // returns a value from the current function
     return span.innerHTML;
   }
 
+  // normalize raw achievement text coming from the api
+  // removes surrounding quotes and unescapes quoted characters
   function normalizeAchievementText(value) {
+    // checks a condition before executing this branch
     if (typeof value !== "string") return "";
 
+    // declares mutable state used in this scope
     let text = value.trim();
+    // checks a condition before executing this branch
     if (text.startsWith('"') && text.endsWith('"') && text.length >= 2) {
+      // executes this operation step as part of the flow
       text = text.slice(1, -1);
     }
 
+    // returns a value from the current function
     return text.replace(/\\"/g, '"').trim();
   }
 
+  
+  // convert a title string into a filesystem-like key used for image lookup
+  // lowercases, replaces non-alphanumerics with underscores and trims extra underscores
   function makeTitleImageKey(value) {
+    // returns a value from the current function
     return normalizeAchievementText(value)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "_")
+      // executes this operation step as part of the flow
       .replace(/^_+|_+$/g, "");
   }
 
+  
+  // resolve an appropriate image url for an achievement
+  // first try a hardcoded id→key map, then fall back to a title-derived key
   function getAchievementImageUrl(achievement) {
+    // declares a constant used in this scope
     const achievementId = Number(achievement?.id);
+    // declares a constant used in this scope
     const idKey = ACHIEVEMENT_IMAGE_KEY_BY_ID[achievementId];
+    // checks a condition before executing this branch
     if (idKey && ACHIEVEMENT_IMAGE_BY_KEY.has(idKey)) {
+      // returns a value from the current function
       return ACHIEVEMENT_IMAGE_BY_KEY.get(idKey);
     }
 
+    // declares a constant used in this scope
     const titleKey = makeTitleImageKey(achievement?.title);
+    // checks a condition before executing this branch
     if (titleKey && ACHIEVEMENT_IMAGE_BY_KEY.has(titleKey)) {
+      // returns a value from the current function
       return ACHIEVEMENT_IMAGE_BY_KEY.get(titleKey);
     }
 
+    // returns a value from the current function
     return "";
   }
 
+  // parse and format an iso timestamp into a localized human readable string
+  // returns empty string for invalid or missing values
   function formatUnlockedAt(isoDate) {
+    // declares a constant used in this scope
     const raw = typeof isoDate === "string" ? isoDate.trim() : "";
+    // checks a condition before executing this branch
     if (!raw) return "";
 
+    // declares a constant used in this scope
     const hasTimezone = /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw);
+    // declares a constant used in this scope
     const normalized = hasTimezone ? raw : `${raw}Z`;
+    // declares a constant used in this scope
     const parsedDate = new Date(normalized);
 
+    // checks a condition before executing this branch
     if (Number.isNaN(parsedDate.getTime())) return "";
 
+    // returns a value from the current function
     return new Intl.DateTimeFormat("hu-HU", {
+      // sets a named field inside an object or configuration block
       year: "numeric",
+      // sets a named field inside an object or configuration block
       month: "2-digit",
+      // sets a named field inside an object or configuration block
       day: "2-digit",
+      // sets a named field inside an object or configuration block
       hour: "2-digit",
+      // sets a named field inside an object or configuration block
       minute: "2-digit",
+      // sets a named field inside an object or configuration block
       timeZone: "Europe/Budapest",
+    // executes this operation step as part of the flow
     }).format(parsedDate);
   }
 
+  // render the small summary cards (total, unlocked, locked, progress)
   function renderSummary(total, unlocked) {
+    // declares a constant used in this scope
     const summaryEl = container.querySelector("#ac-summary");
+    // checks a condition before executing this branch
     if (!summaryEl) return;
 
+    // declares a constant used in this scope
     const locked = Math.max(0, total - unlocked);
+    // declares a constant used in this scope
     const percentage = total > 0 ? Math.round((unlocked / total) * 100) : 0;
 
+    // executes this operation step as part of the flow
     summaryEl.innerHTML = `
       <article class="ach-summary-card">
         <span class="ach-summary-label">Total</span>
@@ -383,16 +562,23 @@ export default function Achievements(container) {
     `;
   }
 
+  // render a loading placeholder into the achievements grid
   function renderLoading() {
+    // declares a constant used in this scope
     const gridEl = container.querySelector("#ac-grid");
+    // checks a condition before executing this branch
     if (!gridEl) return;
+    // executes this operation step as part of the flow
     gridEl.innerHTML = '<div class="ach-loading">Loading achievements...</div>';
   }
 
+  // render an error message with a retry button into the grid area
   function renderError(message) {
+    // declares a constant used in this scope
     const gridEl = container.querySelector("#ac-grid");
+    // checks a condition before executing this branch
     if (!gridEl) return;
-
+    // executes this operation step as part of the flow
     gridEl.innerHTML = `
       <div class="ach-error">
         <p>${escapeHtml(message)}</p>
@@ -400,61 +586,98 @@ export default function Achievements(container) {
       </div>
     `;
 
+    // declares a constant used in this scope
     const retryBtn = gridEl.querySelector("#ac-retry");
+    // attaches a dom event listener for user interaction
     retryBtn?.addEventListener("click", loadAchievements);
   }
 
+  // declares a helper function for a focused task
   function renderAchievements(achievements, unlockedMap) {
+    // declares a constant used in this scope
     const gridEl = container.querySelector("#ac-grid");
+    // checks a condition before executing this branch
     if (!gridEl) return;
 
+    // checks a condition before executing this branch
     if (!Array.isArray(achievements) || achievements.length === 0) {
+      // executes this operation step as part of the flow
       gridEl.innerHTML =
+        // executes this operation step as part of the flow
         '<div class="ach-loading">No achievements available.</div>';
+      // executes this operation step as part of the flow
       renderSummary(0, 0);
+      // returns a value from the current function
       return;
     }
 
+    // declares a constant used in this scope
     const unlockedCount = achievements.reduce((count, achievement) => {
+      // returns a value from the current function
       return count + (unlockedMap.has(Number(achievement.id)) ? 1 : 0);
+    // executes this operation step as part of the flow
     }, 0);
+    // declares a constant used in this scope
     const sorted = applyAchievementView(
       achievements,
       unlockedMap,
       achievementView,
     );
 
+    // executes this operation step as part of the flow
     renderSummary(achievements.length, unlockedCount);
 
+    // checks a condition before executing this branch
     if (!sorted.length) {
+      // declares a constant used in this scope
       const emptyMessage =
+        // executes this operation step as part of the flow
         achievementView === "unlocked-only"
           ? "No unlocked achievements yet."
+          // executes this operation step as part of the flow
           : achievementView === "locked-only"
             ? "No locked achievements remaining."
+            // executes this operation step as part of the flow
             : "No achievements available.";
+      // executes this operation step as part of the flow
       gridEl.innerHTML = `<div class="ach-loading">${escapeHtml(emptyMessage)}</div>`;
+      // returns a value from the current function
       return;
     }
 
+    // executes this operation step as part of the flow
     gridEl.innerHTML = sorted
+      // defines an arrow function used by surrounding logic
       .map((achievement) => {
+        // declares a constant used in this scope
         const achievementId = Number(achievement.id);
+        // declares a constant used in this scope
         const unlockedAt = unlockedMap.get(achievementId);
+        // declares a constant used in this scope
         const isUnlocked = Boolean(unlockedAt);
+        // declares a constant used in this scope
         const title = escapeHtml(normalizeAchievementText(achievement.title));
+        // declares a constant used in this scope
         const description = escapeHtml(
           normalizeAchievementText(achievement.description),
         );
+        // declares a constant used in this scope
         const unlockedText = isUnlocked ? formatUnlockedAt(unlockedAt) : "";
+        // declares a constant used in this scope
         const imageUrl = getAchievementImageUrl(achievement);
+        // declares a constant used in this scope
         const lockOverlay = isUnlocked
           ? ""
+          // executes this operation step as part of the flow
           : '<span class="ach-art-lock" aria-label="Locked" title="Locked"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 1 1 8 0v3"></path></svg></span>';
+        // declares a constant used in this scope
         const imageMarkup = imageUrl
+          // executes this operation step as part of the flow
           ? `<div class="ach-art"><img src="${escapeHtml(imageUrl)}" alt="${title}" loading="lazy" decoding="async">${lockOverlay}</div>`
+          // executes this operation step as part of the flow
           : "";
 
+        // returns a value from the current function
         return `
         <article class="ach-card ${isUnlocked ? "is-unlocked" : "is-locked"}" aria-label="Achievement ${achievementId}">
           <span class="ach-id">#${achievementId}</span>
@@ -465,125 +688,199 @@ export default function Achievements(container) {
         </article>
       `;
       })
+      // executes this operation step as part of the flow
       .join("");
   }
 
   async function loadAchievements() {
+    // executes this operation step as part of the flow
     renderLoading();
 
+    // starts guarded logic to catch runtime errors
     try {
+      // waits for an asynchronous operation to complete
       const [allRes, mineRes] = await Promise.all([
         authFetch(`${API_BASE}/api/Achievment`, {
+          // sets a named field inside an object or configuration block
           method: "GET",
+          // sets a named field inside an object or configuration block
           headers: { Accept: "application/json" },
         }),
         authFetch(`${API_BASE}/api/Achievment/me`, {
+          // sets a named field inside an object or configuration block
           method: "GET",
+          // sets a named field inside an object or configuration block
           headers: { Accept: "application/json" },
         }),
       ]);
 
+      // checks a condition before executing this branch
       if (!allRes.ok) {
+        // throws an error to be handled by calling code
         throw new Error("Failed to load achievements list.");
       }
 
+      // declares a constant used in this scope
       const allAchievements = await allRes.json();
+      // declares a constant used in this scope
       const unlockedRows = mineRes.ok ? await mineRes.json() : [];
+      // declares a constant used in this scope
       const unlockedMap = new Map();
 
+      // checks a condition before executing this branch
       if (Array.isArray(unlockedRows)) {
+        // defines an arrow function used by surrounding logic
         unlockedRows.forEach((row) => {
+          // declares a constant used in this scope
           const achievementId = Number(row?.achievmentId);
+          // declares a constant used in this scope
           const unlockedAt = row?.unlockedAt;
+          // checks a condition before executing this branch
           if (Number.isFinite(achievementId)) {
+            // executes this operation step as part of the flow
             unlockedMap.set(achievementId, unlockedAt || "");
           }
         });
       }
 
+      // executes this operation step as part of the flow
       cachedAchievements = Array.isArray(allAchievements)
         ? allAchievements
+        // executes this operation step as part of the flow
         : [];
+      // executes this operation step as part of the flow
       cachedUnlockedMap = unlockedMap;
+      // executes this operation step as part of the flow
       renderAchievements(cachedAchievements, cachedUnlockedMap);
     } catch (error) {
+      // executes this operation step as part of the flow
       renderError(error?.message || "Failed to load achievements.");
     }
   }
 
+  // declares a helper function for a focused task
   function sortAchievements(achievements, unlockedMap, sortKey) {
+    // declares a constant used in this scope
     const normalized = Array.isArray(achievements) ? [...achievements] : [];
 
+    // declares a constant used in this scope
     const getUnlockedTime = (achievement) => {
+      // declares a constant used in this scope
       const raw = unlockedMap.get(Number(achievement?.id));
+      // checks a condition before executing this branch
       if (!raw) return 0;
+      // declares a constant used in this scope
       const parsed = new Date(
         /(?:Z|[+\-]\d{2}:\d{2})$/i.test(raw) ? raw : `${raw}Z`,
       );
+      // returns a value from the current function
       return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
     };
 
+    // switches behavior based on the current value
     switch (sortKey) {
+      // handles one specific switch case
       case "unlocked-first":
+        // returns a value from the current function
         return normalized.sort((a, b) => {
+          // declares a constant used in this scope
           const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
+          // declares a constant used in this scope
           const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
+          // checks a condition before executing this branch
           if (rightUnlocked !== leftUnlocked)
+            // returns a value from the current function
             return rightUnlocked - leftUnlocked;
+          // returns a value from the current function
           return Number(a.id) - Number(b.id);
         });
+      // handles one specific switch case
       case "recent-unlocked":
+        // returns a value from the current function
         return normalized.sort((a, b) => {
+          // declares a constant used in this scope
           const leftUnlockedTime = getUnlockedTime(a);
+          // declares a constant used in this scope
           const rightUnlockedTime = getUnlockedTime(b);
+          // checks a condition before executing this branch
           if (rightUnlockedTime !== leftUnlockedTime)
+            // returns a value from the current function
             return rightUnlockedTime - leftUnlockedTime;
+          // declares a constant used in this scope
           const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
+          // declares a constant used in this scope
           const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
+          // checks a condition before executing this branch
           if (rightUnlocked !== leftUnlocked)
+            // returns a value from the current function
             return rightUnlocked - leftUnlocked;
+          // returns a value from the current function
           return Number(a.id) - Number(b.id);
         });
+      // handles the default switch case
       default:
+        // returns a value from the current function
         return normalized.sort((a, b) => {
+          // declares a constant used in this scope
           const leftUnlocked = unlockedMap.has(Number(a.id)) ? 1 : 0;
+          // declares a constant used in this scope
           const rightUnlocked = unlockedMap.has(Number(b.id)) ? 1 : 0;
+          // checks a condition before executing this branch
           if (rightUnlocked !== leftUnlocked)
+            // returns a value from the current function
             return rightUnlocked - leftUnlocked;
+          // returns a value from the current function
           return Number(a.id) - Number(b.id);
         });
     }
   }
 
+  // declares a helper function for a focused task
   function applyAchievementView(achievements, unlockedMap, viewKey) {
+    // declares a constant used in this scope
     const normalized = Array.isArray(achievements) ? [...achievements] : [];
 
+    // switches behavior based on the current value
     switch (viewKey) {
+      // handles one specific switch case
       case "unlocked-only":
+        // returns a value from the current function
         return sortAchievements(
+          // defines an arrow function used by surrounding logic
           normalized.filter((achievement) =>
             unlockedMap.has(Number(achievement?.id)),
           ),
           unlockedMap,
           "unlocked-first",
         );
+      // handles one specific switch case
       case "locked-only":
+        // returns a value from the current function
         return sortAchievements(
           normalized.filter(
+            // executes this operation step as part of the flow
             (achievement) => !unlockedMap.has(Number(achievement?.id)),
           ),
           unlockedMap,
           "unlocked-first",
         );
+      // handles one specific switch case
       case "recent-unlocked":
+        // returns a value from the current function
         return sortAchievements(normalized, unlockedMap, "recent-unlocked");
+      // handles one specific switch case
       case "all":
+      // handles one specific switch case
       case "unlocked-first":
+      // handles the default switch case
       default:
+        // returns a value from the current function
         return sortAchievements(normalized, unlockedMap, "unlocked-first");
     }
   }
 
+  // executes this operation step as part of the flow
   refreshNavbarUsername();
+  // executes this operation step as part of the flow
   loadAchievements();
 }

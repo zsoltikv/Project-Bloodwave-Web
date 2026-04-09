@@ -1,18 +1,33 @@
+// androiddownload page module: renders the view and wires user interactions.
+// keeps page state, events and data loading logic in one place.
+
 import "../../styles/pages/AndroidDownload.css";
+// imports dependencies used by this module
 import { isLoggedIn } from "../services/auth.js";
+// imports dependencies used by this module
 import { ensureGlobalStarfield } from "../effects/global-starfield.js";
 
+// declares a constant used in this scope
 const APK_FILE_NAME = "Project-Bloodwave-Android.apk";
+// declares a constant used in this scope
 const APK_PUBLIC_PATH = `https://github.com/zsoltikv/Project-Bloodwave/releases/download/APK/Project-Bloodwave.apk`;
+// declares a constant used in this scope
 const PORTAL_APK_FILE_NAME = "bloodwave-portal.apk";
+// declares a constant used in this scope
 const PORTAL_APK_PUBLIC_PATH =
+  // executes this operation step as part of the flow
   "https://github.com/zsoltikv/Project-Bloodwave-Web/releases/download/APK/bloodwave-portal.apk";
 
+// exports the main function for this module
 export default function AndroidDownload(container) {
+  // declares a constant used in this scope
   const loggedIn = isLoggedIn();
+  // declares a constant used in this scope
   const backHref = loggedIn ? "/main" : "/login";
+  // declares a constant used in this scope
   const backLabel = loggedIn ? "Back to Dashboard" : "Back to Login";
 
+  // executes this operation step as part of the flow
   container.innerHTML = `
     <div class="bw-root bw-apk-root">
       <div class="bw-glow-center"></div>
@@ -135,58 +150,90 @@ export default function AndroidDownload(container) {
     </div>
   `;
 
+  // executes this operation step as part of the flow
   ensureGlobalStarfield();
+  // executes this operation step as part of the flow
   updateApkAvailability(container);
 }
 
 async function updateApkAvailability(container) {
+  // declares a constant used in this scope
   const downloadButtons = container.querySelectorAll(
     ".bw-apk-btn[data-apk-check-url]",
   );
+  // checks a condition before executing this branch
   if (!downloadButtons.length) return;
 
+  // waits for an asynchronous operation to complete
   await Promise.all(
+    // defines an arrow function used by surrounding logic
     Array.from(downloadButtons).map((downloadBtn) => {
+      // declares a constant used in this scope
       const checkUrl = downloadBtn.dataset.apkCheckUrl;
+      // declares a constant used in this scope
       const statusId = downloadBtn.dataset.apkStatusId;
+      // declares a constant used in this scope
       const statusEl = statusId
         ? container.querySelector(`#${statusId}`)
+        // executes this operation step as part of the flow
         : null;
+      // returns a value from the current function
       return checkReleaseAvailability(downloadBtn, statusEl, checkUrl);
     }),
   );
 }
 
 async function checkReleaseAvailability(downloadBtn, statusEl, checkUrl) {
+  // checks a condition before executing this branch
   if (!downloadBtn || !statusEl || !checkUrl) return;
 
+  // starts guarded logic to catch runtime errors
   try {
+    // declares a constant used in this scope
     const response = await fetch(checkUrl, {
+      // sets a named field inside an object or configuration block
       method: "GET",
+      // sets a named field inside an object or configuration block
       cache: "no-store",
+      // sets a named field inside an object or configuration block
       headers: { Accept: "application/vnd.github.v3+json" },
     });
 
+    // checks a condition before executing this branch
     if (response.ok) {
+      // executes this operation step as part of the flow
       statusEl.textContent =
+        // executes this operation step as part of the flow
         "APK is available on GitHub releases and ready to download.";
+      // executes this operation step as part of the flow
       statusEl.classList.add("ok");
+      // executes this operation step as part of the flow
       downloadBtn.classList.remove("bw-apk-disabled");
+      // returns a value from the current function
       return;
     }
 
+    // executes this operation step as part of the flow
     markApkUnavailable(downloadBtn, statusEl);
   } catch {
+    // executes this operation step as part of the flow
     markApkUnavailable(downloadBtn, statusEl);
   }
 }
 
+// declares a helper function for a focused task
 function markApkUnavailable(downloadBtn, statusEl) {
+  // executes this operation step as part of the flow
   statusEl.textContent =
+    // executes this operation step as part of the flow
     "APK is currently unavailable. Please try again later.";
+  // executes this operation step as part of the flow
   statusEl.classList.add("warn");
+  // executes this operation step as part of the flow
   downloadBtn.classList.add("bw-apk-disabled");
+  // attaches a dom event listener for user interaction
   downloadBtn.addEventListener("click", (e) => e.preventDefault(), {
+    // sets a named field inside an object or configuration block
     once: false,
   });
 }

@@ -1,9 +1,17 @@
+// stats page module: renders the view and wires user interactions.
+// keeps page state, events and data loading logic in one place.
+
 import "../../styles/pages/Stats.css";
+// imports dependencies used by this module
 import { API_BASE, getUser, logout, authFetch } from "../services/auth.js";
+// imports dependencies used by this module
 import { confirmLogout } from "../effects/logout-confirm.js";
+// imports dependencies used by this module
 import { ensureGlobalStarfield } from "../effects/global-starfield.js";
 
+// exports the main function for this module
 export default function Stats(container) {
+  // executes this operation step as part of the flow
   container.innerHTML = `
     
 
@@ -653,32 +661,52 @@ export default function Stats(container) {
   // ── Canvas starfield ──────────────────────────────────────────────────────
   ensureGlobalStarfield();
 
+  // declares a constant used in this scope
   const user = getUser();
+  // declares a constant used in this scope
   const displayName = user?.username ?? user?.email ?? "Member";
+  // declares a constant used in this scope
   const ddUsername = container.querySelector("#st-dd-username");
+  // declares a constant used in this scope
   const mobileUsername = container.querySelector("#st-mobile-username");
+  // checks a condition before executing this branch
   if (ddUsername) ddUsername.textContent = displayName;
+  // checks a condition before executing this branch
   if (mobileUsername) mobileUsername.textContent = displayName;
+  // executes this operation step as part of the flow
   refreshNavbarUsername();
+  // executes this operation step as part of the flow
   reorderStatCards(container);
+  // executes this operation step as part of the flow
   updateNavbarLinksForPlayer(container);
 
+  // executes this operation step as part of the flow
   loadAllTimeStats(container, user);
 
   async function refreshNavbarUsername() {
+    // starts guarded logic to catch runtime errors
     try {
+      // declares a constant used in this scope
       const res = await authFetch(`${API_BASE}/api/User/me`, {
+        // sets a named field inside an object or configuration block
         method: "GET",
+        // sets a named field inside an object or configuration block
         headers: { Accept: "application/json" },
       });
 
+      // checks a condition before executing this branch
       if (!res.ok) return;
 
+      // declares a constant used in this scope
       const userData = await res.json();
+      // declares a constant used in this scope
       const liveDisplayName =
+        // executes this operation step as part of the flow
         userData?.username ?? userData?.email ?? displayName;
 
+      // checks a condition before executing this branch
       if (ddUsername) ddUsername.textContent = liveDisplayName;
+      // checks a condition before executing this branch
       if (mobileUsername) mobileUsername.textContent = liveDisplayName;
     } catch {
       // Keep cached display name on fetch failure.
@@ -687,73 +715,112 @@ export default function Stats(container) {
 
   // ── Hamburger toggle ──────────────────────────────────────────────────────
   const hamburger = container.querySelector("#st-hamburger");
+  // declares a constant used in this scope
   const mobileMenu = container.querySelector("#st-mobile-menu");
+  // declares mutable state used in this scope
   let menuOpen = false;
 
+  // attaches a dom event listener for user interaction
   hamburger?.addEventListener("click", () => {
+    // executes this operation step as part of the flow
     menuOpen = !menuOpen;
+    // executes this operation step as part of the flow
     hamburger.classList.toggle("open", menuOpen);
+    // executes this operation step as part of the flow
     hamburger.setAttribute("aria-expanded", String(menuOpen));
+    // executes this operation step as part of the flow
     mobileMenu.style.maxHeight = menuOpen
       ? mobileMenu.scrollHeight + "px"
+      // executes this operation step as part of the flow
       : "0";
   });
 
+  // defines an arrow function used by surrounding logic
   mobileMenu?.querySelectorAll(".st-mobile-link").forEach((link) => {
+    // attaches a dom event listener for user interaction
     link.addEventListener("click", () => {
+      // executes this operation step as part of the flow
       menuOpen = false;
+      // executes this operation step as part of the flow
       hamburger.classList.remove("open");
+      // executes this operation step as part of the flow
       hamburger.setAttribute("aria-expanded", "false");
+      // executes this operation step as part of the flow
       mobileMenu.style.maxHeight = "0";
     });
   });
 
   // ── Desktop avatar dropdown ───────────────────────────────────────────────
   const avatarBtn = container.querySelector("#st-avatar-btn");
+  // declares a constant used in this scope
   const avatarDrop = container.querySelector("#st-avatar-dropdown");
+  // declares mutable state used in this scope
   let dropOpen = false;
 
+  // declares a helper function for a focused task
   function openDrop() {
+    // executes this operation step as part of the flow
     dropOpen = true;
+    // executes this operation step as part of the flow
     avatarDrop.classList.add("open");
+    // executes this operation step as part of the flow
     avatarBtn.setAttribute("aria-expanded", "true");
   }
+  // declares a helper function for a focused task
   function closeDrop() {
+    // executes this operation step as part of the flow
     dropOpen = false;
+    // executes this operation step as part of the flow
     avatarDrop.classList.remove("open");
+    // executes this operation step as part of the flow
     avatarBtn.setAttribute("aria-expanded", "false");
   }
 
+  // attaches a dom event listener for user interaction
   avatarBtn?.addEventListener("click", (e) => {
+    // executes this operation step as part of the flow
     e.stopPropagation();
+    // executes this operation step as part of the flow
     dropOpen ? closeDrop() : openDrop();
   });
 
+  // attaches a dom event listener for user interaction
   document.addEventListener("click", (e) => {
+    // checks a condition before executing this branch
     if (dropOpen && !avatarDrop.contains(e.target) && e.target !== avatarBtn) {
+      // executes this operation step as part of the flow
       closeDrop();
     }
   });
 
+  // attaches a dom event listener for user interaction
   document.addEventListener("keydown", (e) => {
+    // checks a condition before executing this branch
     if (e.key === "Escape" && dropOpen) closeDrop();
   });
 
   // ── Logout ───────────────────────────────────────────────────────────────
   const doLogout = async () => {
+    // declares a constant used in this scope
     const confirmed = await confirmLogout();
+    // checks a condition before executing this branch
     if (!confirmed) return;
 
+    // waits for an asynchronous operation to complete
     await logout();
   };
 
+  // attaches a dom event listener for user interaction
   container.querySelector("#st-dd-logout")?.addEventListener("click", doLogout);
   container
     .querySelector("#st-mobile-logout")
+    // attaches a dom event listener for user interaction
     ?.addEventListener("click", doLogout);
 }
 
+// declares a helper function for a focused task
 function reorderStatCards(container) {
+  // declares a constant used in this scope
   const sectionOrders = {
     "Core Totals": [
       "matches",
@@ -786,29 +853,47 @@ function reorderStatCards(container) {
     ],
   };
 
+  // declares a constant used in this scope
   const sections = container.querySelectorAll(".st-stat-section");
+  // defines an arrow function used by surrounding logic
   sections.forEach((sectionEl) => {
+    // declares a constant used in this scope
     const titleEl = sectionEl.querySelector(".st-section-title");
+    // declares a constant used in this scope
     const gridEl = sectionEl.querySelector(".st-grid--section");
+    // checks a condition before executing this branch
     if (!titleEl || !gridEl) return;
 
+    // declares a constant used in this scope
     const desiredOrder = sectionOrders[titleEl.textContent?.trim()];
+    // checks a condition before executing this branch
     if (!Array.isArray(desiredOrder) || !desiredOrder.length) return;
 
+    // declares a constant used in this scope
     const cards = Array.from(gridEl.querySelectorAll(".st-card"));
+    // declares a constant used in this scope
     const cardsByStat = new Map();
 
+    // defines an arrow function used by surrounding logic
     cards.forEach((cardEl) => {
+      // declares a constant used in this scope
       const valueEl = cardEl.querySelector(".js-st-count[data-stat]");
+      // declares a constant used in this scope
       const statKey = valueEl?.dataset?.stat;
+      // checks a condition before executing this branch
       if (statKey) {
+        // executes this operation step as part of the flow
         cardsByStat.set(statKey, cardEl);
       }
     });
 
+    // defines an arrow function used by surrounding logic
     desiredOrder.forEach((statKey) => {
+      // declares a constant used in this scope
       const cardEl = cardsByStat.get(statKey);
+      // checks a condition before executing this branch
       if (cardEl) {
+        // executes this operation step as part of the flow
         gridEl.appendChild(cardEl);
       }
     });
@@ -816,81 +901,138 @@ function reorderStatCards(container) {
 }
 
 async function loadAllTimeStats(container, user) {
+  // declares a constant used in this scope
   const playerId = resolvePlayerId(user);
+  // declares a constant used in this scope
   const fallbackStats = {
+    // sets a named field inside an object or configuration block
     damageDealt: 0,
+    // sets a named field inside an object or configuration block
     damageTaken: 0,
+    // sets a named field inside an object or configuration block
     enemiesKilled: 0,
+    // sets a named field inside an object or configuration block
     totalMinutesLived: 0,
+    // sets a named field inside an object or configuration block
     matchesPlayed: 0,
+    // sets a named field inside an object or configuration block
     coinsCollected: 0,
+    // sets a named field inside an object or configuration block
     totalLevelsReached: 0,
+    // sets a named field inside an object or configuration block
     averageDamagePerMatch: 0,
+    // sets a named field inside an object or configuration block
     averageKillsPerMatch: 0,
+    // sets a named field inside an object or configuration block
     averageCoinsPerMatch: 0,
+    // sets a named field inside an object or configuration block
     averageKillsPerMinute: 0,
+    // sets a named field inside an object or configuration block
     averageDamagePerMinute: 0,
+    // sets a named field inside an object or configuration block
     averageSurvivalSecondsPerMatch: 0,
+    // sets a named field inside an object or configuration block
     bestMatchDamage: 0,
+    // sets a named field inside an object or configuration block
     bestMatchKills: 0,
+    // sets a named field inside an object or configuration block
     bestMatchSurvivalSeconds: 0,
+    // sets a named field inside an object or configuration block
     highestLevelReached: 0,
+    // sets a named field inside an object or configuration block
     bestMatchCoins: 0,
+    // sets a named field inside an object or configuration block
     bestMatchScore: 0,
+    // sets a named field inside an object or configuration block
     shortMatchRatioPercent: 0,
+    // sets a named field inside an object or configuration block
     longMatchRatioPercent: 0,
+    // sets a named field inside an object or configuration block
     performanceVolatilityPercent: 0,
+    // sets a named field inside an object or configuration block
     recentTimelineMatches: [],
   };
 
+  // checks a condition before executing this branch
   if (!playerId) {
+    // executes this operation step as part of the flow
     applyStatsToCards(container, fallbackStats);
+    // executes this operation step as part of the flow
     renderStatsVisuals(container, fallbackStats);
+    // executes this operation step as part of the flow
     animateStStats(container);
+    // returns a value from the current function
     return;
   }
 
+  // starts guarded logic to catch runtime errors
   try {
+    // declares a constant used in this scope
     const response = await authFetch(
+      // executes this operation step as part of the flow
       `${API_BASE}/api/Match/player?playerId=${encodeURIComponent(playerId)}`,
       {
+        // sets a named field inside an object or configuration block
         method: "GET",
+        // sets a named field inside an object or configuration block
         headers: {
+          // sets a named field inside an object or configuration block
           Accept: "application/json",
         },
       },
     );
 
+    // checks a condition before executing this branch
     if (!response.ok) {
+      // throws an error to be handled by calling code
       throw new Error("Failed to fetch player matches");
     }
 
+    // declares a constant used in this scope
     const apiMatches = await parseResponsePayload(response);
+    // declares a constant used in this scope
     const stats = aggregateMatchStats(apiMatches);
+    // executes this operation step as part of the flow
     applyStatsToCards(container, stats);
+    // executes this operation step as part of the flow
     renderStatsVisuals(container, stats);
   } catch {
+    // executes this operation step as part of the flow
     applyStatsToCards(container, fallbackStats);
+    // executes this operation step as part of the flow
     renderStatsVisuals(container, fallbackStats);
   }
 
+  // executes this operation step as part of the flow
   animateStStats(container);
 }
 
+// declares a helper function for a focused task
 function applyStatsToCards(container, stats) {
+  // declares a constant used in this scope
   const setStatTarget = (statKey, value) => {
+    // declares a constant used in this scope
     const valueEl = container.querySelector(
+      // executes this operation step as part of the flow
       `.js-st-count[data-stat="${statKey}"]`,
     );
+    // checks a condition before executing this branch
     if (!valueEl) return;
+    // executes this operation step as part of the flow
     valueEl.dataset.target = String(value);
   };
 
+  // executes this operation step as part of the flow
   setStatTarget("damage", toNonNegativeInt(stats.damageDealt));
+  // executes this operation step as part of the flow
   setStatTarget("damage-taken", toNonNegativeInt(stats.damageTaken));
+  // executes this operation step as part of the flow
   setStatTarget("kills", toNonNegativeInt(stats.enemiesKilled));
+  // executes this operation step as part of the flow
   setStatTarget("time-lived", toNonNegativeInt(stats.totalMinutesLived));
+  // executes this operation step as part of the flow
   setStatTarget("matches", toNonNegativeInt(stats.matchesPlayed));
+  // executes this operation step as part of the flow
   setStatTarget("coins", toNonNegativeInt(stats.coinsCollected));
   setStatTarget(
     "avg-damage-match",
@@ -916,14 +1058,19 @@ function applyStatsToCards(container, stats) {
     "avg-survival-match",
     toNonNegativeInt(stats.averageSurvivalSecondsPerMatch),
   );
+  // executes this operation step as part of the flow
   setStatTarget("best-damage", toNonNegativeInt(stats.bestMatchDamage));
+  // executes this operation step as part of the flow
   setStatTarget("best-kills", toNonNegativeInt(stats.bestMatchKills));
   setStatTarget(
     "best-survival",
     toNonNegativeInt(stats.bestMatchSurvivalSeconds),
   );
+  // executes this operation step as part of the flow
   setStatTarget("highest-level", toNonNegativeInt(stats.highestLevelReached));
+  // executes this operation step as part of the flow
   setStatTarget("best-coins", toNonNegativeInt(stats.bestMatchCoins));
+  // executes this operation step as part of the flow
   setStatTarget("best-score", toNonNegativeInt(stats.bestMatchScore));
   setStatTarget(
     "short-match-ratio",
@@ -939,121 +1086,205 @@ function applyStatsToCards(container, stats) {
   );
 }
 
+// declares a helper function for a focused task
 function aggregateMatchStats(apiMatches) {
+  // checks a condition before executing this branch
   if (!Array.isArray(apiMatches)) {
+    // returns a value from the current function
     return {
+      // sets a named field inside an object or configuration block
       damageDealt: 0,
+      // sets a named field inside an object or configuration block
       damageTaken: 0,
+      // sets a named field inside an object or configuration block
       enemiesKilled: 0,
+      // sets a named field inside an object or configuration block
       totalMinutesLived: 0,
+      // sets a named field inside an object or configuration block
       matchesPlayed: 0,
+      // sets a named field inside an object or configuration block
       coinsCollected: 0,
+      // sets a named field inside an object or configuration block
       totalLevelsReached: 0,
+      // sets a named field inside an object or configuration block
       averageDamagePerMatch: 0,
+      // sets a named field inside an object or configuration block
       averageKillsPerMatch: 0,
+      // sets a named field inside an object or configuration block
       averageCoinsPerMatch: 0,
+      // sets a named field inside an object or configuration block
       averageKillsPerMinute: 0,
+      // sets a named field inside an object or configuration block
       averageDamagePerMinute: 0,
+      // sets a named field inside an object or configuration block
       averageSurvivalSecondsPerMatch: 0,
+      // sets a named field inside an object or configuration block
       bestMatchDamage: 0,
+      // sets a named field inside an object or configuration block
       bestMatchKills: 0,
+      // sets a named field inside an object or configuration block
       bestMatchSurvivalSeconds: 0,
+      // sets a named field inside an object or configuration block
       highestLevelReached: 0,
+      // sets a named field inside an object or configuration block
       bestMatchCoins: 0,
+      // sets a named field inside an object or configuration block
       bestMatchScore: 0,
+      // sets a named field inside an object or configuration block
       shortMatchRatioPercent: 0,
+      // sets a named field inside an object or configuration block
       longMatchRatioPercent: 0,
+      // sets a named field inside an object or configuration block
       performanceVolatilityPercent: 0,
+      // sets a named field inside an object or configuration block
       recentTimelineMatches: [],
     };
   }
 
+  // declares a constant used in this scope
   const SHORT_MATCH_THRESHOLD_SECONDS = 2 * 60;
+  // declares a constant used in this scope
   const LONG_MATCH_THRESHOLD_SECONDS = 10 * 60;
 
+  // declares mutable state used in this scope
   let totalDamageDealt = 0;
+  // declares mutable state used in this scope
   let totalDamageTaken = 0;
+  // declares mutable state used in this scope
   let totalEnemiesKilled = 0;
+  // declares mutable state used in this scope
   let totalDurationSeconds = 0;
+  // declares mutable state used in this scope
   let totalCoinsCollected = 0;
+  // declares mutable state used in this scope
   let totalLevelsReached = 0;
+  // declares mutable state used in this scope
   let bestMatchDamage = 0;
+  // declares mutable state used in this scope
   let bestMatchKills = 0;
+  // declares mutable state used in this scope
   let bestMatchSurvivalSeconds = 0;
+  // declares mutable state used in this scope
   let highestLevelReached = 0;
+  // declares mutable state used in this scope
   let bestMatchCoins = 0;
+  // declares mutable state used in this scope
   let bestMatchScore = 0;
+  // declares mutable state used in this scope
   let shortMatchesCount = 0;
+  // declares mutable state used in this scope
   let longMatchesCount = 0;
+  // declares a constant used in this scope
   const performanceScores = [];
 
+  // defines an arrow function used by surrounding logic
   apiMatches.forEach((match) => {
+    // declares a constant used in this scope
     const damageDealt = toNonNegativeInt(match?.damageDealt);
+    // declares a constant used in this scope
     const damageTaken = toNonNegativeInt(match?.damageTaken);
+    // declares a constant used in this scope
     const enemiesKilled = toNonNegativeInt(match?.enemiesKilled);
+    // declares a constant used in this scope
     const durationSeconds = normalizeDurationSeconds(match?.time);
+    // declares a constant used in this scope
     const coinsCollected = toNonNegativeInt(match?.coinsCollected);
+    // declares a constant used in this scope
     const levelReached = toNonNegativeInt(match?.level);
 
+    // executes this operation step as part of the flow
     totalDamageDealt += damageDealt;
+    // executes this operation step as part of the flow
     totalDamageTaken += damageTaken;
+    // executes this operation step as part of the flow
     totalEnemiesKilled += enemiesKilled;
+    // executes this operation step as part of the flow
     totalDurationSeconds += durationSeconds;
+    // executes this operation step as part of the flow
     totalCoinsCollected += coinsCollected;
+    // executes this operation step as part of the flow
     totalLevelsReached += levelReached;
 
+    // executes this operation step as part of the flow
     bestMatchDamage = Math.max(bestMatchDamage, damageDealt);
+    // executes this operation step as part of the flow
     bestMatchKills = Math.max(bestMatchKills, enemiesKilled);
+    // executes this operation step as part of the flow
     bestMatchSurvivalSeconds = Math.max(
       bestMatchSurvivalSeconds,
       durationSeconds,
     );
+    // executes this operation step as part of the flow
     highestLevelReached = Math.max(highestLevelReached, levelReached);
+    // executes this operation step as part of the flow
     bestMatchCoins = Math.max(bestMatchCoins, coinsCollected);
 
+    // checks a condition before executing this branch
     if (durationSeconds < SHORT_MATCH_THRESHOLD_SECONDS) {
+      // executes this operation step as part of the flow
       shortMatchesCount += 1;
     }
+    // checks a condition before executing this branch
     if (durationSeconds > LONG_MATCH_THRESHOLD_SECONDS) {
+      // executes this operation step as part of the flow
       longMatchesCount += 1;
     }
 
+    // declares a constant used in this scope
     const performanceScore =
       damageDealt +
       enemiesKilled * 120 +
       coinsCollected * 4 +
+      // executes this operation step as part of the flow
       levelReached * 250;
+    // executes this operation step as part of the flow
     bestMatchScore = Math.max(bestMatchScore, performanceScore);
+    // executes this operation step as part of the flow
     performanceScores.push(performanceScore);
   });
 
+  // declares a constant used in this scope
   const matchesPlayed = apiMatches.length;
+  // declares a constant used in this scope
   const totalDurationMinutes = totalDurationSeconds / 60;
+  // declares a constant used in this scope
   const recentTimelineMatches = buildRecentTimelineMatches(apiMatches);
 
+  // returns a value from the current function
   return {
+    // sets a named field inside an object or configuration block
     damageDealt: totalDamageDealt,
+    // sets a named field inside an object or configuration block
     damageTaken: totalDamageTaken,
+    // sets a named field inside an object or configuration block
     enemiesKilled: totalEnemiesKilled,
+    // sets a named field inside an object or configuration block
     totalMinutesLived: Math.round(totalDurationSeconds / 60),
     matchesPlayed,
+    // sets a named field inside an object or configuration block
     coinsCollected: totalCoinsCollected,
     totalLevelsReached,
+    // sets a named field inside an object or configuration block
     averageDamagePerMatch: toNonNegativeInt(
       safeDivide(totalDamageDealt, matchesPlayed),
     ),
+    // sets a named field inside an object or configuration block
     averageKillsPerMatch: toNonNegativeInt(
       safeDivide(totalEnemiesKilled, matchesPlayed),
     ),
+    // sets a named field inside an object or configuration block
     averageCoinsPerMatch: toNonNegativeInt(
       safeDivide(totalCoinsCollected, matchesPlayed),
     ),
+    // sets a named field inside an object or configuration block
     averageKillsPerMinute: toNonNegativeInt(
       safeDivide(totalEnemiesKilled, totalDurationMinutes),
     ),
+    // sets a named field inside an object or configuration block
     averageDamagePerMinute: toNonNegativeInt(
       safeDivide(totalDamageDealt, totalDurationMinutes),
     ),
+    // sets a named field inside an object or configuration block
     averageSurvivalSecondsPerMatch: toNonNegativeInt(
       safeDivide(totalDurationSeconds, matchesPlayed),
     ),
@@ -1063,12 +1294,15 @@ function aggregateMatchStats(apiMatches) {
     highestLevelReached,
     bestMatchCoins,
     bestMatchScore,
+    // sets a named field inside an object or configuration block
     shortMatchRatioPercent: toNonNegativeInt(
       safeDivide(shortMatchesCount * 100, matchesPlayed),
     ),
+    // sets a named field inside an object or configuration block
     longMatchRatioPercent: toNonNegativeInt(
       safeDivide(longMatchesCount * 100, matchesPlayed),
     ),
+    // sets a named field inside an object or configuration block
     performanceVolatilityPercent: toNonNegativeInt(
       calculateCoefficientOfVariationPercent(performanceScores),
     ),
@@ -1076,31 +1310,47 @@ function aggregateMatchStats(apiMatches) {
   };
 }
 
+// declares a helper function for a focused task
 function buildRecentTimelineMatches(apiMatches) {
+  // checks a condition before executing this branch
   if (!Array.isArray(apiMatches) || !apiMatches.length) return [];
 
+  // declares a constant used in this scope
   const withDate = apiMatches.map((match, index) => {
+    // declares a constant used in this scope
     const createdAtRaw =
+      // executes this operation step as part of the flow
       typeof match?.createdAt === "string" ? match.createdAt.trim() : "";
+    // declares a constant used in this scope
     const createdAt = createdAtRaw
       ? new Date(
           /(?:Z|[+\-]\d{2}:\d{2})$/i.test(createdAtRaw)
             ? createdAtRaw
             : `${createdAtRaw}Z`,
         )
+      // executes this operation step as part of the flow
       : null;
+    // declares a constant used in this scope
     const createdAtTime =
       createdAt && !Number.isNaN(createdAt.getTime())
         ? createdAt.getTime()
+        // executes this operation step as part of the flow
         : index;
 
+    // declares a constant used in this scope
     const damage = toNonNegativeInt(match?.damageDealt);
+    // declares a constant used in this scope
     const kills = toNonNegativeInt(match?.enemiesKilled);
+    // declares a constant used in this scope
     const coins = toNonNegativeInt(match?.coinsCollected);
+    // declares a constant used in this scope
     const level = toNonNegativeInt(match?.level);
+    // declares a constant used in this scope
     const durationSeconds = normalizeDurationSeconds(match?.time);
+    // declares a constant used in this scope
     const performanceScore = damage + kills * 120 + coins * 4 + level * 250;
 
+    // returns a value from the current function
     return {
       damage,
       kills,
@@ -1112,110 +1362,173 @@ function buildRecentTimelineMatches(apiMatches) {
     };
   });
 
+  // returns a value from the current function
   return withDate
+    // executes this operation step as part of the flow
     .sort((left, right) => left.createdAtTime - right.createdAtTime)
     .slice(-10)
+    // executes this operation step as part of the flow
     .map((entry, index) => ({
       ...entry,
+      // sets a named field inside an object or configuration block
       matchNumber: index + 1,
     }));
 }
 
+// declares a helper function for a focused task
 function formatDurationLabel(totalSeconds) {
+  // declares a constant used in this scope
   const seconds = toNonNegativeInt(totalSeconds);
+  // declares a constant used in this scope
   const mins = Math.floor(seconds / 60);
+  // declares a constant used in this scope
   const secs = seconds % 60;
+  // returns a value from the current function
   return `${mins}m ${secs}s`;
 }
 
+// declares a helper function for a focused task
 function calculateCoefficientOfVariationPercent(values) {
+  // checks a condition before executing this branch
   if (!Array.isArray(values) || values.length < 2) return 0;
 
+  // declares a constant used in this scope
   const normalized = values
+    // executes this operation step as part of the flow
     .map((value) => Number(value))
+    // executes this operation step as part of the flow
     .filter((value) => Number.isFinite(value) && value >= 0);
 
+  // checks a condition before executing this branch
   if (normalized.length < 2) return 0;
 
+  // declares a constant used in this scope
   const mean =
+    // executes this operation step as part of the flow
     normalized.reduce((sum, value) => sum + value, 0) / normalized.length;
+  // checks a condition before executing this branch
   if (mean <= 0) return 0;
 
+  // declares a constant used in this scope
   const variance =
     normalized
+      // executes this operation step as part of the flow
       .map((value) => Math.pow(value - mean, 2))
+      // executes this operation step as part of the flow
       .reduce((sum, value) => sum + value, 0) / normalized.length;
 
+  // declares a constant used in this scope
   const standardDeviation = Math.sqrt(variance);
+  // returns a value from the current function
   return safeDivide(standardDeviation * 100, mean);
 }
 
+// declares a helper function for a focused task
 function safeDivide(numerator, denominator) {
+  // declares a constant used in this scope
   const left = Number(numerator);
+  // declares a constant used in this scope
   const right = Number(denominator);
+  // checks a condition before executing this branch
   if (!Number.isFinite(left) || !Number.isFinite(right) || right <= 0) {
+    // returns a value from the current function
     return 0;
   }
 
+  // returns a value from the current function
   return left / right;
 }
 
 async function parseResponsePayload(response) {
+  // declares a constant used in this scope
   const raw = await response.text();
+  // checks a condition before executing this branch
   if (!raw) return [];
 
+  // starts guarded logic to catch runtime errors
   try {
+    // declares a constant used in this scope
     const parsed = JSON.parse(raw);
+    // returns a value from the current function
     return Array.isArray(parsed) ? parsed : [];
   } catch {
+    // returns a value from the current function
     return [];
   }
 }
 
+// declares a helper function for a focused task
 function resolvePlayerId(user) {
   // Check if a userId query parameter is provided
   const queryParams = new URLSearchParams(window.location.search);
+  // declares a constant used in this scope
   const userIdParam = queryParams.get("userId");
+  // checks a condition before executing this branch
   if (userIdParam) {
+    // declares a constant used in this scope
     const value = Number(userIdParam);
+    // checks a condition before executing this branch
     if (Number.isInteger(value) && value > 0) {
+      // returns a value from the current function
       return value;
     }
   }
 
   // Fall back to current user's ID
   const candidates = [user?.id, user?.userId, user?.playerId];
+  // iterates through a sequence of values
   for (const candidate of candidates) {
+    // declares a constant used in this scope
     const value = Number(candidate);
+    // checks a condition before executing this branch
     if (Number.isInteger(value) && value > 0) {
+      // returns a value from the current function
       return value;
     }
   }
 
+  // returns a value from the current function
   return null;
 }
 
+// declares a helper function for a focused task
 function updateNavbarLinksForPlayer(container) {
+  // declares a constant used in this scope
   const queryParams = new URLSearchParams(window.location.search);
+  // declares a constant used in this scope
   const userIdParam = queryParams.get("userId");
 
+  // checks a condition before executing this branch
   if (!userIdParam) return;
 
   // Back-only navbar in viewed-player mode.
   const navLinks = container.querySelector(".st-links");
+  // declares a constant used in this scope
   const backLink = container.querySelector("#stBackToDashboard");
+  // declares a constant used in this scope
   const avatarWrap = container.querySelector(".st-avatar-wrap");
+  // declares a constant used in this scope
   const hamburger = container.querySelector("#st-hamburger");
+  // declares a constant used in this scope
   const mobileMenu = container.querySelector("#st-mobile-menu");
+  // declares a constant used in this scope
   const root = container.querySelector(".st-root");
 
+  // checks a condition before executing this branch
   if (root) root.classList.add("st-view-mode");
+  // checks a condition before executing this branch
   if (navLinks) navLinks.style.display = "none";
+  // checks a condition before executing this branch
   if (avatarWrap) avatarWrap.style.display = "none";
+  // checks a condition before executing this branch
   if (hamburger) hamburger.style.display = "none";
+  // checks a condition before executing this branch
   if (mobileMenu) mobileMenu.style.display = "none";
+  // checks a condition before executing this branch
   if (backLink) {
+    // executes this operation step as part of the flow
     backLink.style.display = "inline-block";
+    // executes this operation step as part of the flow
     backLink.setAttribute("href", "/main");
   }
 
@@ -1224,96 +1537,152 @@ function updateNavbarLinksForPlayer(container) {
 }
 
 async function loadViewedPlayerUsername(userId, container) {
+  // starts guarded logic to catch runtime errors
   try {
+    // declares a constant used in this scope
     const res = await authFetch(
+      // executes this operation step as part of the flow
       `${API_BASE}/api/User/name?id=${encodeURIComponent(userId)}`,
       {
+        // sets a named field inside an object or configuration block
         method: "GET",
+        // sets a named field inside an object or configuration block
         headers: { Accept: "application/json" },
       },
     );
+    // checks a condition before executing this branch
     if (!res.ok) throw new Error("User not found");
 
+    // declares a constant used in this scope
     const data = await res.json();
+    // declares a constant used in this scope
     const username = data?.username || `User #${userId}`;
 
+    // declares a constant used in this scope
     const viewingEl = container.querySelector("#st-viewing-user");
+    // declares a constant used in this scope
     const viewingNameEl = container.querySelector("#st-viewing-name");
+    // checks a condition before executing this branch
     if (viewingEl && viewingNameEl) {
+      // executes this operation step as part of the flow
       viewingNameEl.textContent = username;
+      // executes this operation step as part of the flow
       viewingEl.style.display = "inline-flex";
     }
   } catch {
+    // declares a constant used in this scope
     const viewingEl = container.querySelector("#st-viewing-user");
+    // declares a constant used in this scope
     const viewingNameEl = container.querySelector("#st-viewing-name");
+    // checks a condition before executing this branch
     if (viewingEl && viewingNameEl) {
+      // executes this operation step as part of the flow
       viewingNameEl.textContent = `User #${userId}`;
+      // executes this operation step as part of the flow
       viewingEl.style.display = "inline-flex";
     }
   }
 }
 
+// declares a helper function for a focused task
 function normalizeDurationSeconds(value) {
+  // declares a constant used in this scope
   const parsed = Number(value);
+  // checks a condition before executing this branch
   if (!Number.isFinite(parsed)) return 0;
 
+  // declares a constant used in this scope
   const nonNegative = Math.max(0, parsed);
 
   // Backend match time is stored in ms in current API responses.
   // For compatibility with potential legacy second-based values,
   // only convert to seconds when the number is clearly ms-sized.
   if (nonNegative >= 10_000) {
+    // returns a value from the current function
     return Math.round(nonNegative / 1000);
   }
 
+  // returns a value from the current function
   return Math.round(nonNegative);
 }
 
+// declares a helper function for a focused task
 function toNonNegativeInt(value) {
+  // declares a constant used in this scope
   const parsed = Number(value);
+  // checks a condition before executing this branch
   if (!Number.isFinite(parsed)) return 0;
+  // returns a value from the current function
   return Math.max(0, Math.round(parsed));
 }
 
+// declares a helper function for a focused task
 function clamp(value, min, max) {
+  // returns a value from the current function
   return Math.max(min, Math.min(max, value));
 }
 
+// declares a helper function for a focused task
 function renderStatsVisuals(container, stats) {
+  // declares a constant used in this scope
   const matchesPlayed = toNonNegativeInt(stats.matchesPlayed);
+  // declares a constant used in this scope
   const shortRatio =
     matchesPlayed > 0
       ? clamp(toNonNegativeInt(stats.shortMatchRatioPercent), 0, 100)
+      // executes this operation step as part of the flow
       : 0;
+  // declares a constant used in this scope
   const longRatio =
     matchesPlayed > 0
       ? clamp(toNonNegativeInt(stats.longMatchRatioPercent), 0, 100)
+      // executes this operation step as part of the flow
       : 0;
+  // declares a constant used in this scope
   const normalRatio =
+    // executes this operation step as part of the flow
     matchesPlayed > 0 ? clamp(100 - shortRatio - longRatio, 0, 100) : 0;
 
+  // declares a constant used in this scope
   const shortEl = container.querySelector("#st-ratio-short");
+  // declares a constant used in this scope
   const normalEl = container.querySelector("#st-ratio-normal");
+  // declares a constant used in this scope
   const longEl = container.querySelector("#st-ratio-long");
+  // checks a condition before executing this branch
   if (shortEl) shortEl.style.width = `${shortRatio}%`;
+  // checks a condition before executing this branch
   if (normalEl) normalEl.style.width = `${normalRatio}%`;
+  // checks a condition before executing this branch
   if (longEl) longEl.style.width = `${longRatio}%`;
 
+  // declares a constant used in this scope
   const shortLabel = container.querySelector("#st-ratio-short-label");
+  // declares a constant used in this scope
   const normalLabel = container.querySelector("#st-ratio-normal-label");
+  // declares a constant used in this scope
   const longLabel = container.querySelector("#st-ratio-long-label");
+  // checks a condition before executing this branch
   if (shortLabel) shortLabel.textContent = `${shortRatio}%`;
+  // checks a condition before executing this branch
   if (normalLabel) normalLabel.textContent = `${normalRatio}%`;
+  // checks a condition before executing this branch
   if (longLabel) longLabel.textContent = `${longRatio}%`;
 
+  // declares a constant used in this scope
   const avgDamage = toNonNegativeInt(stats.averageDamagePerMatch);
+  // declares a constant used in this scope
   const avgKills = toNonNegativeInt(stats.averageKillsPerMatch);
+  // declares a constant used in this scope
   const avgCoins = toNonNegativeInt(stats.averageCoinsPerMatch);
 
   // Weight values to put different units onto one comparable visual scale.
   const damageWeighted = avgDamage;
+  // declares a constant used in this scope
   const killsWeighted = avgKills * 120;
+  // declares a constant used in this scope
   const coinsWeighted = avgCoins * 4;
+  // declares a constant used in this scope
   const weightedBase = Math.max(
     damageWeighted,
     killsWeighted,
@@ -1321,201 +1690,324 @@ function renderStatsVisuals(container, stats) {
     1,
   );
 
+  // declares a constant used in this scope
   const damageWidth = clamp(
     Math.round((damageWeighted / weightedBase) * 100),
     0,
     100,
   );
+  // declares a constant used in this scope
   const killsWidth = clamp(
     Math.round((killsWeighted / weightedBase) * 100),
     0,
     100,
   );
+  // declares a constant used in this scope
   const coinsWidth = clamp(
     Math.round((coinsWeighted / weightedBase) * 100),
     0,
     100,
   );
 
+  // declares a constant used in this scope
   const damageBar = container.querySelector("#st-bar-damage");
+  // declares a constant used in this scope
   const killsBar = container.querySelector("#st-bar-kills");
+  // declares a constant used in this scope
   const coinsBar = container.querySelector("#st-bar-coins");
+  // checks a condition before executing this branch
   if (damageBar) damageBar.style.width = `${damageWidth}%`;
+  // checks a condition before executing this branch
   if (killsBar) killsBar.style.width = `${killsWidth}%`;
+  // checks a condition before executing this branch
   if (coinsBar) coinsBar.style.width = `${coinsWidth}%`;
 
+  // declares a constant used in this scope
   const damageValue = container.querySelector("#st-bar-damage-value");
+  // declares a constant used in this scope
   const killsValue = container.querySelector("#st-bar-kills-value");
+  // declares a constant used in this scope
   const coinsValue = container.querySelector("#st-bar-coins-value");
+  // checks a condition before executing this branch
   if (damageValue) damageValue.textContent = avgDamage.toLocaleString("en-US");
+  // checks a condition before executing this branch
   if (killsValue) killsValue.textContent = avgKills.toLocaleString("en-US");
+  // checks a condition before executing this branch
   if (coinsValue) coinsValue.textContent = avgCoins.toLocaleString("en-US");
 
+  // declares a constant used in this scope
   const volatility = clamp(
     toNonNegativeInt(stats.performanceVolatilityPercent),
     0,
     100,
   );
+  // declares a constant used in this scope
   const gauge = container.querySelector("#st-gauge");
+  // checks a condition before executing this branch
   if (gauge) {
+    // executes this operation step as part of the flow
     gauge.style.setProperty("--volatility", String(volatility));
   }
 
+  // declares a constant used in this scope
   const gaugeValue = container.querySelector("#st-gauge-value");
+  // checks a condition before executing this branch
   if (gaugeValue) gaugeValue.textContent = String(volatility);
 
+  // declares a constant used in this scope
   const gaugeNote = container.querySelector("#st-gauge-note");
+  // checks a condition before executing this branch
   if (gaugeNote) {
+    // checks a condition before executing this branch
     if (volatility <= 15) {
+      // executes this operation step as part of the flow
       gaugeNote.textContent = "Very stable";
+    // executes this operation step as part of the flow
     } else if (volatility <= 35) {
+      // executes this operation step as part of the flow
       gaugeNote.textContent = "Stable";
+    // executes this operation step as part of the flow
     } else if (volatility <= 60) {
+      // executes this operation step as part of the flow
       gaugeNote.textContent = "Swingy";
     } else {
+      // executes this operation step as part of the flow
       gaugeNote.textContent = "High variance";
     }
   }
 
+  // declares a constant used in this scope
   const timelineLine = container.querySelector("#st-timeline-line");
+  // declares a constant used in this scope
   const timelinePoints = container.querySelector("#st-timeline-points");
+  // checks a condition before executing this branch
   if (!timelineLine || !timelinePoints) return;
 
+  // declares a constant used in this scope
   const timelineMatches = Array.isArray(stats.recentTimelineMatches)
     ? stats.recentTimelineMatches
+    // executes this operation step as part of the flow
     : [];
+  // executes this operation step as part of the flow
   timelinePoints.innerHTML = "";
 
+  // checks a condition before executing this branch
   if (timelineMatches.length < 2) {
+    // executes this operation step as part of the flow
     timelineLine.style.clipPath = "polygon(0% 65%, 100% 65%, 100% 69%, 0% 69%)";
+    // returns a value from the current function
     return;
   }
 
+  // declares a constant used in this scope
   const scores = timelineMatches.map((entry) =>
     toNonNegativeInt(entry.performanceScore),
   );
+  // declares a constant used in this scope
   const maxScore = Math.max(...scores, 1);
+  // declares a constant used in this scope
   const minScore = Math.min(...scores, 0);
+  // declares a constant used in this scope
   const range = Math.max(1, maxScore - minScore);
 
+  // declares a constant used in this scope
   const points = timelineMatches.map((entry, index) => {
+    // declares a constant used in this scope
     const x = (index / (timelineMatches.length - 1)) * 100;
+    // declares a constant used in this scope
     const y =
+      // executes this operation step as part of the flow
       86 - ((toNonNegativeInt(entry.performanceScore) - minScore) / range) * 72;
+    // returns a value from the current function
     return { x, y, entry };
   });
 
+  // declares a constant used in this scope
   const polygonTop = points
+    // executes this operation step as part of the flow
     .map((point) => `${point.x.toFixed(2)}% ${point.y.toFixed(2)}%`)
+    // executes this operation step as part of the flow
     .join(", ");
+  // executes this operation step as part of the flow
   timelineLine.style.clipPath = `polygon(${polygonTop}, 100% 100%, 0% 100%)`;
 
+  // defines an arrow function used by surrounding logic
   points.forEach((point) => {
+    // declares a constant used in this scope
     const dot = document.createElement("span");
+    // executes this operation step as part of the flow
     dot.className = "st-timeline-point";
+    // executes this operation step as part of the flow
     dot.style.left = `${point.x}%`;
+    // executes this operation step as part of the flow
     dot.style.top = `${point.y}%`;
 
+    // declares a constant used in this scope
     const tooltip =
       `M${point.entry.matchNumber} | Score ${toNonNegativeInt(point.entry.performanceScore).toLocaleString("en-US")} | ` +
       `Dmg ${toNonNegativeInt(point.entry.damage)} | K ${toNonNegativeInt(point.entry.kills)} | ` +
       `C ${toNonNegativeInt(point.entry.coins)} | Lv ${toNonNegativeInt(point.entry.level)} | ` +
+      // executes this operation step as part of the flow
       `${formatDurationLabel(point.entry.durationSeconds)}`;
 
+    // executes this operation step as part of the flow
     dot.setAttribute("data-tip", tooltip);
+    // executes this operation step as part of the flow
     dot.setAttribute("aria-label", tooltip);
+    // executes this operation step as part of the flow
     timelinePoints.appendChild(dot);
   });
 }
 
 /* ======================================================================
    CANVAS — Starry background from Profile
+   // executes this operation step as part of the flow
    ====================================================================== */
+// declares a helper function for a focused task
 function initStCanvas() {
+  // declares a constant used in this scope
   const canvas = document.getElementById("st-canvas");
+  // checks a condition before executing this branch
   if (!canvas) return;
+  // declares a constant used in this scope
   const ctx = canvas.getContext("2d");
 
+  // executes this operation step as part of the flow
   let W, H;
+  // declares mutable state used in this scope
   let stars = [];
 
+  // declares a helper function for a focused task
   function measure() {
+    // executes this operation step as part of the flow
     W = canvas.width = window.innerWidth;
+    // executes this operation step as part of the flow
     H = canvas.height = window.innerHeight;
   }
 
+  // declares a helper function for a focused task
   function initStars() {
+    // executes this operation step as part of the flow
     stars = [];
+    // iterates through a sequence of values
     for (let i = 0; i < 85; i++) {
       stars.push({
+        // sets a named field inside an object or configuration block
         x: Math.random() * W,
+        // sets a named field inside an object or configuration block
         y: Math.random() * H,
+        // sets a named field inside an object or configuration block
         r: Math.random() * 1.3 + 0.3,
+        // sets a named field inside an object or configuration block
         opacity: Math.random() * 0.6 + 0.2,
+        // sets a named field inside an object or configuration block
         vx: (Math.random() - 0.5) * 0.15,
+        // sets a named field inside an object or configuration block
         vy: (Math.random() - 0.5) * 0.15,
       });
     }
   }
 
+  // declares a helper function for a focused task
   function anim() {
     // Full clear each frame so stars remain points without motion trails.
     ctx.clearRect(0, 0, W, H);
+    // executes this operation step as part of the flow
     ctx.fillStyle = "rgb(8,6,6)";
+    // executes this operation step as part of the flow
     ctx.fillRect(0, 0, W, H);
 
+    // defines an arrow function used by surrounding logic
     stars.forEach((s) => {
+      // executes this operation step as part of the flow
       s.x += s.vx;
+      // executes this operation step as part of the flow
       s.y += s.vy;
+      // checks a condition before executing this branch
       if (s.x < 0) s.x = W;
+      // checks a condition before executing this branch
       if (s.x > W) s.x = 0;
+      // checks a condition before executing this branch
       if (s.y < 0) s.y = H;
+      // checks a condition before executing this branch
       if (s.y > H) s.y = 0;
 
+      // declares a constant used in this scope
       const glowRadius = s.r * 6;
+      // declares a constant used in this scope
       const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowRadius);
+      // executes this operation step as part of the flow
       glow.addColorStop(0, `rgba(212,175,55,${Math.min(1, s.opacity * 0.75)})`);
+      // executes this operation step as part of the flow
       glow.addColorStop(0.35, `rgba(212,175,55,${s.opacity * 0.35})`);
+      // executes this operation step as part of the flow
       glow.addColorStop(1, "rgba(212,175,55,0)");
 
+      // executes this operation step as part of the flow
       ctx.fillStyle = glow;
+      // executes this operation step as part of the flow
       ctx.beginPath();
+      // executes this operation step as part of the flow
       ctx.arc(s.x, s.y, glowRadius, 0, Math.PI * 2);
+      // executes this operation step as part of the flow
       ctx.fill();
 
+      // executes this operation step as part of the flow
       ctx.fillStyle = `rgba(255,230,150,${Math.min(1, s.opacity + 0.2)})`;
+      // executes this operation step as part of the flow
       ctx.beginPath();
+      // executes this operation step as part of the flow
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      // executes this operation step as part of the flow
       ctx.fill();
     });
 
+    // executes this operation step as part of the flow
     requestAnimationFrame(anim);
   }
 
+  // executes this operation step as part of the flow
   measure();
+  // executes this operation step as part of the flow
   initStars();
+  // executes this operation step as part of the flow
   anim();
 
+  // attaches a dom event listener for user interaction
   window.addEventListener("resize", () => {
+    // executes this operation step as part of the flow
     measure();
+    // executes this operation step as part of the flow
     initStars();
   });
 }
 
+// declares a helper function for a focused task
 function spawnStParticles() {
+  // declares a constant used in this scope
   const root = document.querySelector(".st-root");
+  // checks a condition before executing this branch
   if (!root) return;
+  // iterates through a sequence of values
   for (let i = 0; i < 18; i++) {
+    // declares a constant used in this scope
     const p = document.createElement("div");
+    // executes this operation step as part of the flow
     p.className = "bw-particle";
+    // declares a constant used in this scope
     const size = Math.random() * 2.2 + 0.4;
+    // declares a constant used in this scope
     const isRed = Math.random() < 0.28;
+    // declares a constant used in this scope
     const isGold = !isRed && Math.random() < 0.15;
+    // declares a constant used in this scope
     const col = isRed
       ? "rgba(192,57,43,0.55)"
       : isGold
         ? "rgba(212,175,55,0.4)"
+        // executes this operation step as part of the flow
         : "rgba(255,230,210,0.28)";
+    // executes this operation step as part of the flow
     p.style.cssText = `
       width:${size}px; height:${size}px;
       left:${Math.random() * 100}%;
@@ -1525,89 +2017,143 @@ function spawnStParticles() {
       animation-delay:${Math.random() * 20}s;
       --drift:${(Math.random() - 0.5) * 90}px;
     `;
+    // executes this operation step as part of the flow
     root.appendChild(p);
   }
 }
 
+// declares a helper function for a focused task
 function animateStStats(container) {
+  // declares a constant used in this scope
   const valueEls = container.querySelectorAll(".js-st-count");
+  // checks a condition before executing this branch
   if (!valueEls.length) return;
 
+  // declares a constant used in this scope
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
+  // declares a helper function for a focused task
   function formatInt(value) {
+    // returns a value from the current function
     return Math.round(value).toLocaleString("en-US");
   }
 
+  // declares a helper function for a focused task
   function formatDecimal(value) {
+    // returns a value from the current function
     return value.toFixed(2);
   }
 
+  // declares a helper function for a focused task
   function formatHoursMinutes(totalMinutesFloat) {
+    // declares a constant used in this scope
     const totalMinutes = Math.max(0, Math.round(totalMinutesFloat));
+    // declares a constant used in this scope
     const hours = Math.floor(totalMinutes / 60);
+    // declares a constant used in this scope
     const minutes = totalMinutes % 60;
+    // returns a value from the current function
     return `${hours}h ${minutes}m`;
   }
 
+  // declares a helper function for a focused task
   function formatHoursMinutesSeconds(totalSecondsFloat) {
+    // declares a constant used in this scope
     const totalSeconds = Math.max(0, Math.round(totalSecondsFloat));
+    // declares a constant used in this scope
     const hours = Math.floor(totalSeconds / 3600);
+    // declares a constant used in this scope
     const minutes = Math.floor((totalSeconds % 3600) / 60);
+    // declares a constant used in this scope
     const seconds = totalSeconds % 60;
+    // returns a value from the current function
     return `${hours}h ${minutes}m ${seconds}s`;
   }
 
+  // defines an arrow function used by surrounding logic
   valueEls.forEach((el, index) => {
+    // declares a constant used in this scope
     const type = el.dataset.type || "int";
+    // declares a constant used in this scope
     const targetValue = Number(el.dataset.target);
+    // checks a condition before executing this branch
     if (!Number.isFinite(targetValue)) return;
 
+    // declares a constant used in this scope
     const startDelay = 140 + index * 80;
+    // declares a constant used in this scope
     const duration = type === "int" ? 900 : 780;
+    // declares a constant used in this scope
     const startValue = 0;
 
+    // executes this operation step as part of the flow
     el.classList.add("is-counting");
 
+    // declares a constant used in this scope
     const render = (value) => {
+      // checks a condition before executing this branch
       if (type === "time-hm") {
+        // executes this operation step as part of the flow
         el.textContent = formatHoursMinutes(value);
+        // returns a value from the current function
         return;
       }
+      // checks a condition before executing this branch
       if (type === "time-hms") {
+        // executes this operation step as part of the flow
         el.textContent = formatHoursMinutesSeconds(value);
+        // returns a value from the current function
         return;
       }
+      // checks a condition before executing this branch
       if (type === "decimal") {
+        // executes this operation step as part of the flow
         el.textContent = formatDecimal(value);
+        // returns a value from the current function
         return;
       }
+      // executes this operation step as part of the flow
       el.textContent = formatInt(value);
     };
 
+    // executes this operation step as part of the flow
     render(startValue);
 
+    // declares a constant used in this scope
     const run = () => {
+      // declares a constant used in this scope
       const startTs = performance.now();
 
+      // declares a constant used in this scope
       const step = (now) => {
+        // declares a constant used in this scope
         const progress = Math.min(1, (now - startTs) / duration);
+        // declares a constant used in this scope
         const eased = easeOutCubic(progress);
+        // declares a constant used in this scope
         const current = startValue + (targetValue - startValue) * eased;
+        // executes this operation step as part of the flow
         render(current);
 
+        // checks a condition before executing this branch
         if (progress < 1) {
+          // executes this operation step as part of the flow
           requestAnimationFrame(step);
+          // returns a value from the current function
           return;
         }
 
+        // executes this operation step as part of the flow
         render(targetValue);
+        // executes this operation step as part of the flow
         el.classList.remove("is-counting");
       };
 
+      // executes this operation step as part of the flow
       requestAnimationFrame(step);
     };
 
+    // executes this operation step as part of the flow
     window.setTimeout(run, startDelay);
   });
 }

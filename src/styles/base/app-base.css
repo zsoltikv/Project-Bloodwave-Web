@@ -1,17 +1,27 @@
+/* app-base base styles: defines shared visual rules used across multiple pages. */
+/* keeps common layout, typography and utility styling in one place. */
+
 @import "tailwindcss";
 
 /* Chrome autofill override: prevents blue background */
 input:-webkit-autofill,
+/* sets the textarea property for this rule */
 textarea:-webkit-autofill,
+/* starts styling rules for this selector block */
 select:-webkit-autofill {
+  /* sets the -webkit-box-shadow property for this rule */
   -webkit-box-shadow: 0 0 0 1000px #000000 inset !important;
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 0 1000px #000000 inset !important;
+  /* sets the -webkit-text-fill-color property for this rule */
   -webkit-text-fill-color: #ffffff !important;
+  /* sets the transition property for this rule */
   transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Smooth transitions for inputs */
 input:focus {
+  /* sets the transition property for this rule */
   transition:
     border-color 0.3s ease,
     box-shadow 0.3s ease;
@@ -19,22 +29,37 @@ input:focus {
 
 /* Body font smoothing */
 body {
+  /* sets the -webkit-font-smoothing property for this rule */
   -webkit-font-smoothing: antialiased;
+  /* sets the -moz-osx-font-smoothing property for this rule */
   -moz-osx-font-smoothing: grayscale;
+  /* sets the background property for this rule */
   background: #080606;
+  /* sets the touch-action property for this rule */
   touch-action: manipulation;
 }
 
+/* starts styling rules for this selector block */
 :root {
+  /* sets the --crimson property for this rule */
   --crimson: #8b0000;
+  /* sets the --crimson-bright property for this rule */
   --crimson-bright: #c0392b;
+  /* sets the --gold property for this rule */
   --gold: #b8960c;
+  /* sets the --gold-light property for this rule */
   --gold-light: #d4af37;
+  /* sets the --obsidian property for this rule */
   --obsidian: #080606;
+  /* sets the --bw-cursor-core property for this rule */
   --bw-cursor-core: rgba(255, 240, 214, 0.95);
+  /* sets the --bw-cursor-gold property for this rule */
   --bw-cursor-gold: rgba(212, 175, 55, 0.95);
+  /* sets the --bw-cursor-blood property for this rule */
   --bw-cursor-blood: rgba(192, 57, 43, 0.75);
+  /* sets the touch-action property for this rule */
   touch-action: pan-x pan-y;
+  /* sets the height property for this rule */
   height: 100%;
 }
 
@@ -42,47 +67,75 @@ body {
 *::before,
 *::after {
   box-sizing: border-box;
+  /* sets the margin property for this rule */
   margin: 0;
+  /* sets the padding property for this rule */
   padding: 0;
 }
+/* starts styling rules for this selector block */
 html {
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the scrollbar-gutter property for this rule */
   scrollbar-gutter: stable;
+  /* sets the overflow-y property for this rule */
   overflow-y: scroll;
+  /* sets the overflow-x property for this rule */
   overflow-x: hidden;
+  /* sets the scroll-behavior property for this rule */
   scroll-behavior: smooth;
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (prefers-reduced-motion: reduce) {
+  /* starts styling rules for this selector block */
   html {
+    /* sets the scroll-behavior property for this rule */
     scroll-behavior: auto;
   }
 }
 
+/* starts styling rules for this selector block */
 body {
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the overflow-x property for this rule */
   overflow-x: hidden;
 }
 
+/* starts styling rules for this selector block */
 #app {
+  /* sets the --bw-content-width property for this rule */
   --bw-content-width: 1120px;
+  /* sets the --bw-content-inset property for this rule */
   --bw-content-inset: clamp(16px, 4vw, 48px);
+  /* sets the min-height property for this rule */
   min-height: 100dvh;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the background property for this rule */
   background: #080606;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/stats"] {
+  /* sets the --bw-content-width property for this rule */
   --bw-content-width: 1100px;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/user-panel"] {
+  /* sets the --bw-content-width property for this rule */
   --bw-content-width: 900px;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] {
+  /* sets the --bw-content-width property for this rule */
   --bw-content-width: min(800px, 90vw);
+  /* sets the --bw-content-inset property for this rule */
   --bw-content-inset: 0px;
 }
 
@@ -90,32 +143,51 @@ body {
 #app[data-route="/register"],
 #app[data-route="/forgot-password"],
 #app[data-route="/reset-password"],
+/* starts styling rules for this selector block */
 #app[data-route="/"] {
+  /* sets the --bw-content-width property for this rule */
   --bw-content-width: 480px;
+  /* sets the --bw-content-inset property for this rule */
   --bw-content-inset: 16px;
 }
 
+/* starts styling rules for this selector block */
 .bw-route-view {
+  /* sets the flex property for this rule */
   flex: 1;
+  /* sets the min-height property for this rule */
   min-height: 0;
 }
 
+/* starts styling rules for this selector block */
 #app[data-has-footer="false"] .bw-route-view {
+  /* sets the min-height property for this rule */
   min-height: 100dvh;
 }
 
+/* starts styling rules for this selector block */
 #app[data-has-footer="false"] .bw-root {
+  /* sets the min-height property for this rule */
   min-height: 100dvh;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-overlay {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the inset property for this rule */
   inset: 0;
+  /* sets the z-index property for this rule */
   z-index: 400;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the padding property for this rule */
   padding: 20px;
+  /* sets the background property for this rule */
   background:
     radial-gradient(
       120% 120% at 50% 100%,
@@ -123,44 +195,70 @@ body {
       transparent 58%
     ),
     rgba(6, 4, 4, 0.75);
+  /* sets the backdrop-filter property for this rule */
   backdrop-filter: blur(6px);
+  /* sets the animation property for this rule */
   animation: bw-confirm-fade 0.24s ease-out;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-overlay--closing {
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the animation property for this rule */
   animation: bw-confirm-fade-out 0.24s ease-in forwards;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-overlay--closing .bw-confirm-card {
+  /* sets the animation property for this rule */
   animation: bw-confirm-exit 0.24s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-card {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the width property for this rule */
   width: min(480px, 100%);
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.3);
+  /* sets the border-radius property for this rule */
   border-radius: 8px;
+  /* sets the background property for this rule */
   background:
     radial-gradient(90% 120% at 50% 0%, rgba(139, 0, 0, 0.2), transparent 68%),
     linear-gradient(150deg, rgba(20, 9, 9, 0.98), rgba(10, 6, 6, 0.97));
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 26px 56px rgba(0, 0, 0, 0.5),
     0 0 44px rgba(139, 0, 0, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  /* sets the padding property for this rule */
   padding: clamp(22px, 4vw, 30px);
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the animation property for this rule */
   animation: bw-confirm-rise 0.34s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-card::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the transform property for this rule */
   transform: translateX(-50%);
+  /* sets the width property for this rule */
   width: 68%;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
@@ -169,184 +267,320 @@ body {
   );
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-corner {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the width property for this rule */
   width: 16px;
+  /* sets the height property for this rule */
   height: 16px;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the opacity property for this rule */
   opacity: 0.7;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-corner--tl {
+  /* sets the top property for this rule */
   top: -1px;
+  /* sets the left property for this rule */
   left: -1px;
+  /* sets the border-top property for this rule */
   border-top: 1px solid rgba(212, 175, 55, 0.68);
+  /* sets the border-left property for this rule */
   border-left: 1px solid rgba(212, 175, 55, 0.68);
 }
+/* starts styling rules for this selector block */
 .bw-confirm-corner--tr {
+  /* sets the top property for this rule */
   top: -1px;
+  /* sets the right property for this rule */
   right: -1px;
+  /* sets the border-top property for this rule */
   border-top: 1px solid rgba(212, 175, 55, 0.68);
+  /* sets the border-right property for this rule */
   border-right: 1px solid rgba(212, 175, 55, 0.68);
 }
+/* starts styling rules for this selector block */
 .bw-confirm-corner--bl {
+  /* sets the bottom property for this rule */
   bottom: -1px;
+  /* sets the left property for this rule */
   left: -1px;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid rgba(212, 175, 55, 0.68);
+  /* sets the border-left property for this rule */
   border-left: 1px solid rgba(212, 175, 55, 0.68);
 }
+/* starts styling rules for this selector block */
 .bw-confirm-corner--br {
+  /* sets the bottom property for this rule */
   bottom: -1px;
+  /* sets the right property for this rule */
   right: -1px;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid rgba(212, 175, 55, 0.68);
+  /* sets the border-right property for this rule */
   border-right: 1px solid rgba(212, 175, 55, 0.68);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-ornament {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the gap property for this rule */
   gap: 12px;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 14px;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-ornament-line {
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the width property for this rule */
   width: clamp(34px, 9vw, 56px);
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, transparent, var(--gold));
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-ornament-line:last-child {
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, var(--gold), transparent);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-ornament-diamond {
+  /* sets the width property for this rule */
   width: 7px;
+  /* sets the height property for this rule */
   height: 7px;
+  /* sets the background property for this rule */
   background: var(--gold-light);
+  /* sets the transform property for this rule */
   transform: rotate(45deg);
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.52);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-title {
+  /* sets the margin property for this rule */
   margin: 0;
+  /* sets the font-family property for this rule */
   font-family: "Cormorant Garamond", serif;
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the font-size property for this rule */
   font-size: clamp(28px, 6vw, 40px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(4px, 1.5vw, 10px);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.9);
+  /* sets the text-shadow property for this rule */
   text-shadow: 0 0 24px rgba(139, 0, 0, 0.35);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-kicker {
+  /* sets the margin property for this rule */
   margin: 8px 0 0;
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(7px, 1.8vw, 9px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(3px, 1.1vw, 6px);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.52);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-copy {
+  /* sets the margin property for this rule */
   margin: 12px 0 0;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(11px, 2.5vw, 13px);
+  /* sets the line-height property for this rule */
   line-height: 1.65;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.65px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.72);
+  /* sets the text-align property for this rule */
   text-align: center;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-field {
+  /* sets the display property for this rule */
   display: block;
+  /* sets the margin property for this rule */
   margin: 16px 0 8px;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: 9px;
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.8px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.62);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-input {
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.25);
+  /* sets the border-radius property for this rule */
   border-radius: 4px;
+  /* sets the padding property for this rule */
   padding: 11px 12px;
+  /* sets the background property for this rule */
   background: rgba(8, 6, 6, 0.6);
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.9);
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: 12px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.5px;
+  /* sets the transition property for this rule */
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-input:focus {
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.6);
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.18);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-caps-lock-hint {
+  /* sets the min-height property for this rule */
   min-height: 14px;
+  /* sets the margin property for this rule */
   margin: 8px 0 0;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: 10px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.2px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.82);
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the transform property for this rule */
   transform: translateY(-2px);
+  /* sets the transition property for this rule */
   transition:
     opacity 0.22s ease,
     transform 0.22s ease;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-caps-lock-hint.is-visible {
+  /* sets the opacity property for this rule */
   opacity: 1;
+  /* sets the transform property for this rule */
   transform: translateY(0);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-error {
+  /* sets the min-height property for this rule */
   min-height: 16px;
+  /* sets the margin property for this rule */
   margin: 8px 0 0;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: 10px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.3px;
+  /* sets the color property for this rule */
   color: rgba(255, 130, 110, 0.95);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-actions {
+  /* sets the margin-top property for this rule */
   margin-top: 22px;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the gap property for this rule */
   gap: 12px;
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-btn {
+  /* sets the min-width property for this rule */
   min-width: 132px;
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.34);
+  /* sets the border-radius property for this rule */
   border-radius: 4px;
+  /* sets the padding property for this rule */
   padding: 11px 15px;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: 10px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.9px;
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.82);
+  /* sets the background property for this rule */
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.03),
     rgba(255, 255, 255, 0.01)
   );
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the transition property for this rule */
   transition:
     border-color 0.24s ease,
     color 0.24s ease,
@@ -355,17 +589,27 @@ body {
 }
 
 .bw-confirm-btn:hover,
+/* starts styling rules for this selector block */
 .bw-confirm-btn:focus-visible {
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.62);
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.96);
+  /* sets the background property for this rule */
   background: rgba(212, 175, 55, 0.1);
+  /* sets the transform property for this rule */
   transform: translateY(-1px);
 }
 
+/* starts styling rules for this selector block */
 .bw-confirm-btn-danger {
+  /* sets the border-color property for this rule */
   border-color: rgba(192, 57, 43, 0.5);
+  /* sets the color property for this rule */
   color: rgba(255, 216, 209, 0.96);
+  /* sets the background property for this rule */
   background: linear-gradient(
     135deg,
     rgba(192, 57, 43, 0.24),
@@ -374,8 +618,11 @@ body {
 }
 
 .bw-confirm-btn-danger:hover,
+/* starts styling rules for this selector block */
 .bw-confirm-btn-danger:focus-visible {
+  /* sets the border-color property for this rule */
   border-color: rgba(220, 80, 60, 0.78);
+  /* sets the background property for this rule */
   background: linear-gradient(
     135deg,
     rgba(212, 66, 49, 0.34),
@@ -383,70 +630,111 @@ body {
   );
 }
 
+/* starts styling rules for this selector block */
 .bw-error-title {
+  /* sets the color property for this rule */
   color: rgba(220, 80, 60, 0.95) !important;
+  /* sets the text-shadow property for this rule */
   text-shadow:
     0 0 24px rgba(192, 57, 43, 0.55),
     0 0 12px rgba(139, 0, 0, 0.45) !important;
 }
 
+/* starts styling rules for this selector block */
 .bw-error-hint {
+  /* sets the margin-top property for this rule */
   margin-top: 16px !important;
+  /* sets the font-size property for this rule */
   font-size: clamp(10px, 2.2vw, 12px) !important;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.68) !important;
+  /* sets the font-style property for this rule */
   font-style: italic;
+  /* sets the opacity property for this rule */
   opacity: 0.88;
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-confirm-fade {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-confirm-fade-out {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-confirm-rise {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the transform property for this rule */
     transform: translateY(10px) scale(0.985);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translateY(0) scale(1);
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-confirm-exit {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translateY(0) scale(1);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the transform property for this rule */
     transform: translateY(8px) scale(0.985);
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-canvas {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the inset property for this rule */
   inset: 0;
+  /* sets the z-index property for this rule */
   z-index: 0;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (pointer: fine) {
   html.bw-cursor-enabled,
   html.bw-cursor-enabled body,
@@ -458,25 +746,40 @@ body {
   html.bw-cursor-enabled select,
   html.bw-cursor-enabled summary,
   html.bw-cursor-enabled label,
+  /* starts styling rules for this selector block */
   html.bw-cursor-enabled [data-link] {
+    /* sets the cursor property for this rule */
     cursor: none !important;
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the width property for this rule */
   width: 0;
+  /* sets the height property for this rule */
   height: 0;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the z-index property for this rule */
   z-index: 1200;
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the transition property for this rule */
   transition: opacity 0.2s ease;
+  /* sets the will-change property for this rule */
   will-change: transform, opacity;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor--visible {
+  /* sets the opacity property for this rule */
   opacity: 1;
 }
 
@@ -484,209 +787,323 @@ body {
 .bw-cursor__core,
 .bw-cursor__aura,
 .bw-cursor__diamond,
+/* starts styling rules for this selector block */
 .bw-cursor__ray {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the top property for this rule */
   top: 50%;
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%);
 }
 
 .bw-cursor__ring,
 .bw-cursor__core,
+/* starts styling rules for this selector block */
 .bw-cursor__aura {
+  /* sets the border-radius property for this rule */
   border-radius: 999px;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor__ring {
+  /* sets the width property for this rule */
   width: 26px;
+  /* sets the height property for this rule */
   height: 26px;
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.72);
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 18px rgba(212, 175, 55, 0.35),
     inset 0 0 8px rgba(255, 245, 220, 0.34);
+  /* sets the transition property for this rule */
   transition:
     transform 0.2s ease,
     border-color 0.2s ease;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor__diamond {
+  /* sets the width property for this rule */
   width: 11px;
+  /* sets the height property for this rule */
   height: 11px;
+  /* sets the border property for this rule */
   border: 1px solid rgba(255, 225, 156, 0.85);
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%) rotate(45deg);
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 10px rgba(192, 57, 43, 0.42);
+  /* sets the transition property for this rule */
   transition:
     transform 0.2s ease,
     border-color 0.2s ease;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor__core {
+  /* sets the width property for this rule */
   width: 4px;
+  /* sets the height property for this rule */
   height: 4px;
+  /* sets the background property for this rule */
   background: var(--bw-cursor-core);
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 10px rgba(255, 245, 220, 0.9),
     0 0 20px rgba(192, 57, 43, 0.4);
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor__aura {
+  /* sets the width property for this rule */
   width: 56px;
+  /* sets the height property for this rule */
   height: 56px;
+  /* sets the background property for this rule */
   background: radial-gradient(
     circle,
     rgba(192, 57, 43, 0.3) 0%,
     rgba(212, 175, 55, 0.12) 36%,
     rgba(212, 175, 55, 0) 72%
   );
+  /* sets the filter property for this rule */
   filter: blur(3px);
+  /* sets the opacity property for this rule */
   opacity: 0.84;
+  /* sets the transition property for this rule */
   transition:
     transform 0.22s ease,
     opacity 0.22s ease;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor__ray {
+  /* sets the width property for this rule */
   width: 1px;
+  /* sets the height property for this rule */
   height: 12px;
+  /* sets the border-radius property for this rule */
   border-radius: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     180deg,
     rgba(255, 225, 156, 0),
     rgba(255, 225, 156, 0.84),
     rgba(255, 225, 156, 0)
   );
+  /* sets the opacity property for this rule */
   opacity: 0.58;
+  /* sets the transition property for this rule */
   transition:
     transform 0.2s ease,
     opacity 0.2s ease;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor__ray--n {
+  /* sets the transform property for this rule */
   transform: translate(-50%, calc(-50% - 16px));
 }
+/* starts styling rules for this selector block */
 .bw-cursor__ray--e {
+  /* sets the transform property for this rule */
   transform: translate(calc(-50% + 16px), -50%) rotate(90deg);
 }
+/* starts styling rules for this selector block */
 .bw-cursor__ray--s {
+  /* sets the transform property for this rule */
   transform: translate(-50%, calc(-50% + 16px));
 }
+/* starts styling rules for this selector block */
 .bw-cursor__ray--w {
+  /* sets the transform property for this rule */
   transform: translate(calc(-50% - 16px), -50%) rotate(90deg);
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor--active .bw-cursor__ring {
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%) scale(1.3);
+  /* sets the border-color property for this rule */
   border-color: rgba(255, 225, 156, 0.96);
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor--active .bw-cursor__diamond {
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%) rotate(45deg) scale(1.18);
+  /* sets the border-color property for this rule */
   border-color: rgba(255, 239, 203, 0.96);
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor--active .bw-cursor__aura {
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%) scale(1.18);
+  /* sets the opacity property for this rule */
   opacity: 1;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor--active .bw-cursor__ray {
+  /* sets the opacity property for this rule */
   opacity: 0.92;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor--pressed .bw-cursor__ring {
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%) scale(0.92);
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor--pressed .bw-cursor__diamond {
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%) rotate(45deg) scale(0.84);
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor-trail {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the z-index property for this rule */
   z-index: 1199;
 }
 
+/* starts styling rules for this selector block */
 .bw-cursor-trail-dot {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the width property for this rule */
   width: 12px;
+  /* sets the height property for this rule */
   height: 12px;
+  /* sets the border-radius property for this rule */
   border-radius: 999px;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the z-index property for this rule */
   z-index: 1199;
+  /* sets the background property for this rule */
   background: radial-gradient(
     circle,
     rgba(255, 241, 211, 0.62) 0%,
     rgba(212, 175, 55, 0.45) 34%,
     rgba(139, 0, 0, 0) 72%
   );
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%);
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the will-change property for this rule */
   will-change: transform, opacity;
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (prefers-reduced-motion: reduce) {
+  /* starts styling rules for this selector block */
   .bw-cursor-trail {
+    /* sets the display property for this rule */
     display: none;
   }
 
   .bw-cursor,
   .bw-cursor__ring,
+  /* starts styling rules for this selector block */
   .bw-cursor__aura {
+    /* sets the transition property for this rule */
     transition: none;
   }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
+  /* sets the width property for this rule */
   width: 8px;
+  /* sets the height property for this rule */
   height: 8px;
 }
 
+/* starts styling rules for this selector block */
 ::-webkit-scrollbar-track {
+  /* sets the background property for this rule */
   background: #0d0904;
 }
 
+/* starts styling rules for this selector block */
 ::-webkit-scrollbar-thumb {
+  /* sets the background property for this rule */
   background: linear-gradient(180deg, #8f6f12, #d4af37);
+  /* sets the border-radius property for this rule */
   border-radius: 4px;
 }
 
+/* starts styling rules for this selector block */
 ::-webkit-scrollbar-thumb:hover {
+  /* sets the background property for this rule */
   background: linear-gradient(180deg, #b8960c, #e3c15a);
 }
 
+/* starts styling rules for this selector block */
 ::selection {
+  /* sets the background property for this rule */
   background: rgba(220, 38, 38, 0.3);
+  /* sets the color property for this rule */
   color: #ffffff;
 }
 
+/* starts styling rules for this selector block */
 ::-moz-selection {
+  /* sets the background property for this rule */
   background: rgba(220, 38, 38, 0.3);
+  /* sets the color property for this rule */
   color: #ffffff;
 }
 
+/* starts styling rules for this selector block */
 .bw-particle {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the border-radius property for this rule */
   border-radius: 50%;
+  /* sets the animation property for this rule */
   animation: bw-float linear infinite;
+  /* sets the z-index property for this rule */
   z-index: 2;
+  /* sets the will-change property for this rule */
   will-change: transform, opacity;
 }
 
+/* starts styling rules for this selector block */
 .bw-site-footer {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the z-index property for this rule */
   z-index: 5;
+  /* sets the margin property for this rule */
   margin: 6px auto 12px;
+  /* sets the width property for this rule */
   width: min(
     calc(var(--bw-content-width) - (var(--bw-content-inset) * 2)),
     calc(100% - (var(--bw-content-inset) * 2))
   );
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.22);
+  /* sets the border-radius property for this rule */
   border-radius: 8px;
+  /* sets the background property for this rule */
   background:
     radial-gradient(
       110% 170% at 100% 0%,
@@ -694,43 +1111,68 @@ body {
       transparent 66%
     ),
     linear-gradient(148deg, rgba(13, 10, 10, 0.95), rgba(7, 6, 6, 0.92));
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 20px 36px rgba(0, 0, 0, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  /* sets the backdrop-filter property for this rule */
   backdrop-filter: blur(8px);
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the animation property for this rule */
   animation: bw-footer-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both 0.2s;
 }
 
+/* starts styling rules for this selector block */
 .bw-site-footer::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the height property for this rule */
   height: 2px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
     rgba(212, 175, 55, 0.7),
     transparent
   );
+  /* sets the opacity property for this rule */
   opacity: 0.75;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-crest {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the gap property for this rule */
   gap: 10px;
+  /* sets the padding property for this rule */
   padding: 13px 22px 5px;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-crest-line {
+  /* sets the width property for this rule */
   width: min(25vw, 180px);
+  /* sets the max-width property for this rule */
   max-width: 180px;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
@@ -739,184 +1181,303 @@ body {
   );
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-crest-mark {
+  /* sets the color property for this rule */
   color: rgba(244, 217, 129, 0.85);
+  /* sets the font-size property for this rule */
   font-size: 0.76rem;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.2em;
+  /* sets the text-shadow property for this rule */
   text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-inner {
+  /* sets the display property for this rule */
   display: grid;
+  /* sets the grid-template-columns property for this rule */
   grid-template-columns: minmax(240px, 1fr) minmax(320px, 1.15fr);
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: 20px;
+  /* sets the padding property for this rule */
   padding: 10px 24px 16px;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-brand {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the align-items property for this rule */
   align-items: flex-start;
+  /* sets the gap property for this rule */
   gap: 5px;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-title {
+  /* sets the font-family property for this rule */
   font-family: "Cinzel", serif;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.7px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the font-size property for this rule */
   font-size: clamp(0.86rem, 1.8vw, 0.98rem);
+  /* sets the color property for this rule */
   color: rgba(245, 214, 117, 0.92);
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-copy {
+  /* sets the font-family property for this rule */
   font-family: "Cormorant Garamond", serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(0.88rem, 1.7vw, 1rem);
+  /* sets the font-style property for this rule */
   font-style: italic;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.2px;
+  /* sets the color property for this rule */
   color: rgba(242, 235, 221, 0.6);
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-nav {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-wrap property for this rule */
   flex-wrap: wrap;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the gap property for this rule */
   gap: 18px;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-link {
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(0.71rem, 1.5vw, 0.76rem);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.35px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.72);
+  /* sets the padding-bottom property for this rule */
   padding-bottom: 4px;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid transparent;
+  /* sets the transition property for this rule */
   transition:
     color 0.2s ease,
     border-color 0.2s ease;
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the animation property for this rule */
   animation: bw-footer-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both 0.2s;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-link:hover {
+  /* sets the color property for this rule */
   color: rgba(244, 217, 129, 0.98);
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.56);
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-link:focus-visible {
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the color property for this rule */
   color: rgba(244, 217, 129, 0.98);
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.65);
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-bottom {
+  /* sets the border-top property for this rule */
   border-top: 1px solid rgba(212, 175, 55, 0.14);
+  /* sets the padding property for this rule */
   padding: 10px 24px 13px;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-meta {
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(0.64rem, 1.3vw, 0.7rem);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.15px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.46);
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (max-width: 860px) {
+  /* starts styling rules for this selector block */
   .bw-site-footer {
+    /* sets the margin-top property for this rule */
     margin-top: 6px;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-crest {
+    /* sets the padding property for this rule */
     padding: 12px 14px 4px;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-crest-line {
+    /* sets the width property for this rule */
     width: min(26vw, 100px);
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-inner {
+    /* sets the grid-template-columns property for this rule */
     grid-template-columns: 1fr;
+    /* sets the gap property for this rule */
     gap: 13px;
+    /* sets the padding property for this rule */
     padding: 11px 14px 12px;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-copy {
+    /* sets the width property for this rule */
     width: 100%;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-nav {
+    /* sets the justify-content property for this rule */
     justify-content: flex-start;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-bottom {
+    /* sets the padding property for this rule */
     padding: 9px 14px 12px;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-meta {
+    /* sets the width property for this rule */
     width: 100%;
+    /* sets the text-align property for this rule */
     text-align: left;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-inner {
+    /* sets the gap property for this rule */
     gap: 12px;
+    /* sets the text-align property for this rule */
     text-align: center;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-brand {
+    /* sets the align-items property for this rule */
     align-items: center;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-copy {
+    /* sets the max-width property for this rule */
     max-width: 34ch;
+    /* sets the margin property for this rule */
     margin: 0 auto;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-nav {
+    /* sets the flex-direction property for this rule */
     flex-direction: column;
+    /* sets the align-items property for this rule */
     align-items: stretch;
+    /* sets the gap property for this rule */
     gap: 8px;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-link {
+    /* sets the width property for this rule */
     width: 100%;
+    /* sets the text-align property for this rule */
     text-align: center;
+    /* sets the padding-bottom property for this rule */
     padding-bottom: 6px;
   }
 
+  /* starts styling rules for this selector block */
   .bw-footer-meta {
+    /* sets the text-align property for this rule */
     text-align: center;
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-footer-in {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the transform property for this rule */
     transform: translateY(10px);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translateY(0);
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-float {
+  /* starts styling rules for this selector block */
   0% {
+    /* sets the transform property for this rule */
     transform: translateY(105vh) translateX(0px);
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
+  /* starts styling rules for this selector block */
   8% {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
+  /* starts styling rules for this selector block */
   92% {
+    /* sets the opacity property for this rule */
     opacity: 0.6;
   }
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the transform property for this rule */
     transform: translateY(-10vh) translateX(var(--drift));
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
 }

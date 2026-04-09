@@ -1,87 +1,146 @@
+/* leaderboard page styles: defines the visual layout and component styling for this page. */
+/* keeps responsive, state and spacing rules scoped to this screen. */
+
 @import "../base/app-base.css";
 
 /* === PAGE ROOT === */
 .lb-root {
+  /* sets the --lb-nav-h property for this rule */
   --lb-nav-h: clamp(56px, 7vh, 68px);
+  /* sets the --lb-ornament-gap property for this rule */
   --lb-ornament-gap: clamp(26px, 4.2vh, 36px);
+  /* sets the min-height property for this rule */
   min-height: auto;
+  /* sets the background property for this rule */
   background: var(--obsidian);
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the overflow-x property for this rule */
   overflow-x: hidden;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/leaderboard"][data-has-footer="true"] .bw-route-view {
+  /* sets the flex property for this rule */
   flex: 0 0 auto;
 }
 
 /* === NAVBAR === */
 .lb-nav {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the right property for this rule */
   right: 0;
+  /* sets the z-index property for this rule */
   z-index: 100;
+  /* sets the background property for this rule */
   background: linear-gradient(
     180deg,
     rgba(8, 4, 4, 0.97) 0%,
     rgba(10, 3, 3, 0.92) 100%
   );
+  /* sets the backdrop-filter property for this rule */
   backdrop-filter: blur(28px);
+  /* sets the -webkit-backdrop-filter property for this rule */
   -webkit-backdrop-filter: blur(28px);
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid rgba(139, 0, 0, 0.2);
+  /* sets the animation property for this rule */
   animation: lb-nav-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* starts styling rules for this selector block */
 .lb-nav::after {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the bottom property for this rule */
   bottom: -1px;
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the transform property for this rule */
   transform: translateX(-50%);
+  /* sets the width property for this rule */
   width: 60%;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
     rgba(212, 175, 55, 0.35),
     transparent
   );
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-nav-in {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the transform property for this rule */
     transform: translateY(-16px);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translateY(0);
   }
 }
 
+/* starts styling rules for this selector block */
 .lb-nav-inner {
+  /* sets the max-width property for this rule */
   max-width: 1280px;
+  /* sets the margin property for this rule */
   margin: 0 auto;
+  /* sets the padding property for this rule */
   padding: 0 clamp(16px, 4vw, 48px);
+  /* sets the height property for this rule */
   height: var(--lb-nav-h);
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the position property for this rule */
   position: relative;
 }
 
+/* starts styling rules for this selector block */
 .lb-logo {
+  /* sets the font-family property for this rule */
   font-family: "Cinzel", "Cormorant Garamond", serif;
+  /* sets the font-weight property for this rule */
   font-weight: 700;
+  /* sets the font-size property for this rule */
   font-size: clamp(18px, 3.2vw, 24px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(3.4px, 1.1vw, 7.2px);
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.94);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the display property for this rule */
   display: inline-block;
+  /* sets the padding property for this rule */
   padding: 2px 0 6px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     100deg,
     rgba(255, 255, 255, 0.96) 8%,
@@ -90,163 +149,259 @@
     rgba(255, 243, 196, 0.98) 62%,
     rgba(255, 255, 255, 0.96) 92%
   );
+  /* sets the background-size property for this rule */
   background-size: 240% 100%;
+  /* sets the background-position property for this rule */
   background-position: 0% 50%;
+  /* sets the text-shadow property for this rule */
   text-shadow:
     0 0 12px rgba(212, 175, 55, 0.2),
     0 0 26px rgba(180, 0, 0, 0.34),
     0 0 56px rgba(139, 0, 0, 0.22);
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
+  /* sets the user-select property for this rule */
   user-select: none;
+  /* sets the transition property for this rule */
   transition:
     text-shadow 0.4s,
     letter-spacing 0.35s,
     filter 0.35s;
+  /* sets the animation property for this rule */
   animation:
     lb-logo-shine 7.5s ease-in-out infinite,
     lb-logo-breathe 4.8s ease-in-out infinite;
 }
 
+/* starts styling rules for this selector block */
 @supports (-webkit-background-clip: text) {
+  /* starts styling rules for this selector block */
   .lb-logo {
+    /* sets the -webkit-background-clip property for this rule */
     -webkit-background-clip: text;
+    /* sets the background-clip property for this rule */
     background-clip: text;
+    /* sets the -webkit-text-fill-color property for this rule */
     -webkit-text-fill-color: transparent;
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-logo-shine {
   0%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the background-position property for this rule */
     background-position: 0% 50%;
   }
+  /* starts styling rules for this selector block */
   50% {
+    /* sets the background-position property for this rule */
     background-position: 100% 50%;
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-logo-breathe {
   0%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the filter property for this rule */
     filter: drop-shadow(0 0 0 rgba(212, 175, 55, 0));
   }
+  /* starts styling rules for this selector block */
   50% {
+    /* sets the filter property for this rule */
     filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.28));
   }
 }
 
+/* starts styling rules for this selector block */
 .lb-logo::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the right property for this rule */
   right: 0;
+  /* sets the bottom property for this rule */
   bottom: 0;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     rgba(212, 175, 55, 0),
     rgba(255, 228, 128, 0.9),
     rgba(212, 175, 55, 0)
   );
+  /* sets the opacity property for this rule */
   opacity: 0.78;
+  /* sets the transform-origin property for this rule */
   transform-origin: center;
+  /* sets the transform property for this rule */
   transform: scaleX(0.76);
+  /* sets the transition property for this rule */
   transition:
     transform 0.35s ease,
     opacity 0.35s ease;
 }
 
+/* starts styling rules for this selector block */
 .lb-logo::after {
+  /* sets the content property for this rule */
   content: "✦";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the right property for this rule */
   right: -12px;
+  /* sets the top property for this rule */
   top: 50%;
+  /* sets the transform property for this rule */
   transform: translateY(-52%) scale(0.9);
+  /* sets the font-size property for this rule */
   font-size: 8px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.72);
+  /* sets the text-shadow property for this rule */
   text-shadow: 0 0 8px rgba(212, 175, 55, 0.38);
+  /* sets the opacity property for this rule */
   opacity: 0.72;
+  /* sets the transition property for this rule */
   transition:
     opacity 0.35s ease,
     transform 0.35s ease;
 }
 
+/* starts styling rules for this selector block */
 .lb-logo:hover {
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(3.6px, 1.15vw, 7.6px);
+  /* sets the text-shadow property for this rule */
   text-shadow:
     0 0 16px rgba(255, 228, 128, 0.3),
     0 0 30px rgba(192, 57, 43, 0.62),
     0 0 80px rgba(139, 0, 0, 0.34);
+  /* sets the animation-duration property for this rule */
   animation-duration: 3.2s, 2.6s;
 }
 
+/* starts styling rules for this selector block */
 .lb-logo:hover::before {
+  /* sets the opacity property for this rule */
   opacity: 0.95;
+  /* sets the transform property for this rule */
   transform: scaleX(1);
 }
 
+/* starts styling rules for this selector block */
 .lb-logo:hover::after {
+  /* sets the opacity property for this rule */
   opacity: 0.95;
+  /* sets the transform property for this rule */
   transform: translateY(-52%) scale(1);
 }
 
+/* starts styling rules for this selector block */
 .lb-links {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: clamp(16px, 2.8vw, 34px);
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the transform property for this rule */
   transform: translateX(-50%);
 }
 
+/* starts styling rules for this selector block */
 .lb-link {
+  /* sets the font-size property for this rule */
   font-size: clamp(8px, 1.1vw, 10px);
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(1.8px, 0.55vw, 3.2px);
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.38);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the padding-bottom property for this rule */
   padding-bottom: 3px;
+  /* sets the transition property for this rule */
   transition: color 0.35s;
+  /* sets the white-space property for this rule */
   white-space: nowrap;
 }
 
+/* starts styling rules for this selector block */
 .lb-link span {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the display property for this rule */
   display: inline-block;
 }
 
+/* starts styling rules for this selector block */
 .lb-link span::after {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the bottom property for this rule */
   bottom: -3px;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the width property for this rule */
   width: calc(100% - clamp(1.8px, 0.55vw, 3.2px));
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     var(--crimson),
     var(--gold-light),
     var(--crimson)
   );
+  /* sets the transform property for this rule */
   transform: scaleX(0);
+  /* sets the transform-origin property for this rule */
   transform-origin: center;
+  /* sets the transition property for this rule */
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* starts styling rules for this selector block */
 .lb-link:hover {
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.92);
 }
+/* starts styling rules for this selector block */
 .lb-link:hover span::after {
+  /* sets the transform property for this rule */
   transform: scaleX(1);
 }
 
+/* starts styling rules for this selector block */
 .lb-link.active {
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.75);
 }
+/* starts styling rules for this selector block */
 .lb-link.active span::after {
+  /* sets the transform property for this rule */
   transform: scaleX(1);
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     var(--gold),
@@ -255,105 +410,170 @@
   );
 }
 
+/* starts styling rules for this selector block */
 .lb-right {
+  /* sets the margin-left property for this rule */
   margin-left: auto;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: 20px;
 }
 
+/* starts styling rules for this selector block */
 .lb-avatar-wrap {
+  /* sets the position property for this rule */
   position: relative;
 }
 
+/* starts styling rules for this selector block */
 .lb-avatar {
+  /* sets the width property for this rule */
   width: clamp(34px, 4.5vw, 40px);
+  /* sets the height property for this rule */
   height: clamp(34px, 4.5vw, 40px);
+  /* sets the border-radius property for this rule */
   border-radius: 50%;
+  /* sets the background property for this rule */
   background: linear-gradient(
     145deg,
     rgba(139, 0, 0, 0.6) 0%,
     rgba(40, 5, 5, 0.9) 100%
   );
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.4);
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the transition property for this rule */
   transition:
     border-color 0.35s,
     box-shadow 0.35s,
     transform 0.25s;
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the -webkit-tap-highlight-color property for this rule */
   -webkit-tap-highlight-color: transparent;
 }
 
+/* starts styling rules for this selector block */
 .lb-avatar::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the inset property for this rule */
   inset: 0;
+  /* sets the border-radius property for this rule */
   border-radius: 50%;
+  /* sets the background property for this rule */
   background: radial-gradient(
     circle at 30% 30%,
     rgba(212, 175, 55, 0.08),
     transparent 65%
   );
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-avatar:hover {
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.45);
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 16px rgba(139, 0, 0, 0.35),
     0 0 36px rgba(139, 0, 0, 0.12);
+  /* sets the transform property for this rule */
   transform: scale(1.07);
 }
 
+/* starts styling rules for this selector block */
 .lb-avatar svg {
+  /* sets the width property for this rule */
   width: 18px;
+  /* sets the height property for this rule */
   height: 18px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.65);
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
+  /* sets the z-index property for this rule */
   z-index: 2;
+  /* sets the transition property for this rule */
   transition: color 0.3s;
 }
+/* starts styling rules for this selector block */
 .lb-avatar:hover svg {
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.95);
 }
 
+/* starts styling rules for this selector block */
 .lb-avatar-dropdown {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the top property for this rule */
   top: calc(100% + 10px);
+  /* sets the right property for this rule */
   right: 0;
+  /* sets the min-width property for this rule */
   min-width: 188px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     160deg,
     rgba(14, 4, 4, 0.98) 0%,
     rgba(8, 2, 2, 0.99) 100%
   );
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.28);
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.65),
     0 0 0 1px rgba(212, 175, 55, 0.06) inset;
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the transform property for this rule */
   transform: translateY(-6px);
+  /* sets the transition property for this rule */
   transition:
     opacity 0.22s ease,
     transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  /* sets the z-index property for this rule */
   z-index: 200;
 }
+/* starts styling rules for this selector block */
 .lb-avatar-dropdown::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the top property for this rule */
   top: -1px;
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the transform property for this rule */
   transform: translateX(-50%);
+  /* sets the width property for this rule */
   width: 60%;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
@@ -361,367 +581,625 @@
     transparent
   );
 }
+/* starts styling rules for this selector block */
 .lb-avatar-dropdown.open {
+  /* sets the opacity property for this rule */
   opacity: 1;
+  /* sets the pointer-events property for this rule */
   pointer-events: all;
+  /* sets the transform property for this rule */
   transform: translateY(0);
 }
 
+/* starts styling rules for this selector block */
 .lb-dd-header {
+  /* sets the padding property for this rule */
   padding: 14px 16px 10px;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid rgba(139, 0, 0, 0.14);
 }
+/* starts styling rules for this selector block */
 .lb-dd-username {
+  /* sets the font-family property for this rule */
   font-family: "Cormorant Garamond", serif;
+  /* sets the font-size property for this rule */
   font-size: 15px;
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 2px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.85);
+  /* sets the white-space property for this rule */
   white-space: nowrap;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the text-overflow property for this rule */
   text-overflow: ellipsis;
 }
+/* starts styling rules for this selector block */
 .lb-dd-role {
+  /* sets the font-size property for this rule */
   font-size: 8px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 3px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.25);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the margin-top property for this rule */
   margin-top: 2px;
 }
 
+/* starts styling rules for this selector block */
 .lb-dd-item {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: 10px;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the padding property for this rule */
   padding: 12px 16px;
+  /* sets the font-size property for this rule */
   font-size: 9px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 3.5px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.4);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the background property for this rule */
   background: none;
+  /* sets the border property for this rule */
   border: none;
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the transition property for this rule */
   transition:
     color 0.25s,
     background 0.25s,
     padding-left 0.25s;
+  /* sets the text-align property for this rule */
   text-align: left;
 }
+/* starts styling rules for this selector block */
 .lb-dd-item svg {
+  /* sets the width property for this rule */
   width: 13px;
+  /* sets the height property for this rule */
   height: 13px;
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
+  /* sets the opacity property for this rule */
   opacity: 0.6;
+  /* sets the transition property for this rule */
   transition: opacity 0.25s;
 }
+/* starts styling rules for this selector block */
 .lb-dd-item:hover {
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.82);
+  /* sets the background property for this rule */
   background: rgba(139, 0, 0, 0.08);
+  /* sets the padding-left property for this rule */
   padding-left: 20px;
 }
+/* starts styling rules for this selector block */
 .lb-dd-item:hover svg {
+  /* sets the opacity property for this rule */
   opacity: 1;
 }
+/* starts styling rules for this selector block */
 .lb-dd-item.logout {
+  /* sets the color property for this rule */
   color: rgba(192, 57, 43, 0.55);
 }
+/* starts styling rules for this selector block */
 .lb-dd-item.logout:hover {
+  /* sets the color property for this rule */
   color: rgba(220, 80, 60, 0.92);
+  /* sets the background property for this rule */
   background: rgba(139, 0, 0, 0.12);
 }
+/* starts styling rules for this selector block */
 .lb-dd-divider {
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: rgba(139, 0, 0, 0.12);
+  /* sets the margin property for this rule */
   margin: 2px 0;
 }
 
+/* starts styling rules for this selector block */
 .lb-hamburger {
+  /* sets the display property for this rule */
   display: none;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the width property for this rule */
   width: 36px;
+  /* sets the height property for this rule */
   height: 36px;
+  /* sets the gap property for this rule */
   gap: 5px;
+  /* sets the background property for this rule */
   background: none;
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.25);
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the padding property for this rule */
   padding: 0;
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the -webkit-tap-highlight-color property for this rule */
   -webkit-tap-highlight-color: transparent;
+  /* sets the transition property for this rule */
   transition: border-color 0.3s;
 }
 
+/* starts styling rules for this selector block */
 .lb-hamburger:hover {
+  /* sets the border-color property for this rule */
   border-color: rgba(192, 57, 43, 0.5);
 }
 
+/* starts styling rules for this selector block */
 .lb-bar {
+  /* sets the display property for this rule */
   display: block;
+  /* sets the width property for this rule */
   width: 18px;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: rgba(212, 175, 55, 0.6);
+  /* sets the transition property for this rule */
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.25s;
+  /* sets the transform-origin property for this rule */
   transform-origin: center;
 }
 
+/* starts styling rules for this selector block */
 .lb-hamburger.open .lb-bar:nth-child(1) {
+  /* sets the transform property for this rule */
   transform: translateY(6px) rotate(45deg);
 }
+/* starts styling rules for this selector block */
 .lb-hamburger.open .lb-bar:nth-child(2) {
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the transform property for this rule */
   transform: scaleX(0);
 }
+/* starts styling rules for this selector block */
 .lb-hamburger.open .lb-bar:nth-child(3) {
+  /* sets the transform property for this rule */
   transform: translateY(-6px) rotate(-45deg);
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-menu {
+  /* sets the display property for this rule */
   display: none;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the max-height property for this rule */
   max-height: 0;
+  /* sets the transition property for this rule */
   transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  /* sets the background property for this rule */
   background: linear-gradient(
     180deg,
     rgba(10, 3, 3, 0.98) 0%,
     rgba(8, 2, 2, 0.99) 100%
   );
+  /* sets the border-top property for this rule */
   border-top: 1px solid rgba(139, 0, 0, 0.12);
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-menu-inner {
+  /* sets the padding property for this rule */
   padding: 10px clamp(16px, 4vw, 48px) 16px;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-link {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the padding property for this rule */
   padding: 14px 8px;
+  /* sets the font-size property for this rule */
   font-size: 9px;
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 4px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.35);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid rgba(139, 0, 0, 0.1);
+  /* sets the transition property for this rule */
   transition:
     color 0.3s,
     padding-left 0.3s;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-link:last-of-type {
+  /* sets the border-bottom property for this rule */
   border-bottom: none;
 }
+/* starts styling rules for this selector block */
 .lb-mobile-link:hover {
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.8);
+  /* sets the padding-left property for this rule */
   padding-left: 14px;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-divider {
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
     rgba(212, 175, 55, 0.18),
     transparent
   );
+  /* sets the margin property for this rule */
   margin: 6px 0;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-profile {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: 12px;
+  /* sets the padding property for this rule */
   padding: 14px 8px;
+  /* sets the font-size property for this rule */
   font-size: 9px;
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 4px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.5);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the background property for this rule */
   background: none;
+  /* sets the border property for this rule */
   border: none;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the transition property for this rule */
   transition:
     color 0.3s,
     padding-left 0.3s;
+  /* sets the -webkit-tap-highlight-color property for this rule */
   -webkit-tap-highlight-color: transparent;
+  /* sets the outline property for this rule */
   outline: none;
 }
+/* starts styling rules for this selector block */
 .lb-mobile-profile:hover {
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.9);
+  /* sets the padding-left property for this rule */
   padding-left: 14px;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-avatar {
+  /* sets the width property for this rule */
   width: 28px;
+  /* sets the height property for this rule */
   height: 28px;
+  /* sets the border-radius property for this rule */
   border-radius: 50%;
+  /* sets the background property for this rule */
   background: linear-gradient(
     145deg,
     rgba(139, 0, 0, 0.6),
     rgba(40, 5, 5, 0.9)
   );
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.35);
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-avatar svg {
+  /* sets the width property for this rule */
   width: 14px;
+  /* sets the height property for this rule */
   height: 14px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.6);
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-logout {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: 12px;
+  /* sets the padding property for this rule */
   padding: 14px 8px;
+  /* sets the font-size property for this rule */
   font-size: 9px;
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 4px;
+  /* sets the color property for this rule */
   color: rgba(192, 57, 43, 0.55);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the background property for this rule */
   background: none;
+  /* sets the border property for this rule */
   border: none;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the transition property for this rule */
   transition:
     color 0.3s,
     padding-left 0.3s;
+  /* sets the -webkit-tap-highlight-color property for this rule */
   -webkit-tap-highlight-color: transparent;
+  /* sets the outline property for this rule */
   outline: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-logout:hover {
+  /* sets the color property for this rule */
   color: rgba(220, 80, 60, 0.9);
+  /* sets the padding-left property for this rule */
   padding-left: 14px;
 }
 
+/* starts styling rules for this selector block */
 .lb-mobile-logout svg {
+  /* sets the width property for this rule */
   width: 14px;
+  /* sets the height property for this rule */
   height: 14px;
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
 }
 
 /* === CONTENT AREA === */
 .lb-content {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the z-index property for this rule */
   z-index: 10;
+  /* sets the padding-top property for this rule */
   padding-top: clamp(56px, 7vh, 68px);
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the justify-content property for this rule */
   justify-content: center;
 }
 
+/* starts styling rules for this selector block */
 .lb-inner {
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the max-width property for this rule */
   max-width: 1120px;
+  /* sets the padding property for this rule */
   padding: clamp(24px, 4.5vh, 48px) clamp(16px, 4vw, 48px)
     clamp(14px, 3vh, 24px);
+  /* sets the margin property for this rule */
   margin: 0 auto;
+  /* sets the animation property for this rule */
   animation: lb-rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) both 0.2s;
 }
 
 /* === HEADER === */
 .lb-header {
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(40px, 8vh, 60px);
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the align-items property for this rule */
   align-items: center;
 }
 
+/* starts styling rules for this selector block */
 .lb-ornament {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the gap property for this rule */
   gap: 14px;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 20px;
 }
 
+/* starts styling rules for this selector block */
 .lb-ornament-line {
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the width property for this rule */
   width: clamp(28px, 6vw, 48px);
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, transparent, var(--gold));
 }
+/* starts styling rules for this selector block */
 .lb-ornament-line:last-child {
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, var(--gold), transparent);
 }
 
+/* starts styling rules for this selector block */
 .lb-ornament-diamond {
+  /* sets the width property for this rule */
   width: 7px;
+  /* sets the height property for this rule */
   height: 7px;
+  /* sets the background property for this rule */
   background: var(--gold-light);
+  /* sets the transform property for this rule */
   transform: rotate(45deg);
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.45);
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
+  /* sets the animation property for this rule */
   animation: lb-diamond-pulse 3s ease-in-out infinite;
 }
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-diamond-pulse {
   0%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the opacity property for this rule */
     opacity: 0.5;
   }
+  /* starts styling rules for this selector block */
   50% {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-rise {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the clip-path property for this rule */
     clip-path: inset(14px 0 0 0);
+    /* sets the filter property for this rule */
     filter: blur(1.8px) saturate(0.9);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the clip-path property for this rule */
     clip-path: inset(0 0 0 0);
+    /* sets the filter property for this rule */
     filter: blur(0) saturate(1);
   }
 }
 
+/* starts styling rules for this selector block */
 .lb-title {
+  /* sets the font-family property for this rule */
   font-family: "Cormorant Garamond", serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(28px, 5.5vw, 44px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(5px, 1.8vw, 12px);
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.88);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the text-shadow property for this rule */
   text-shadow: 0 0 40px rgba(139, 0, 0, 0.4);
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 10px;
 }
 
+/* starts styling rules for this selector block */
 .lb-subtitle {
+  /* sets the font-size property for this rule */
   font-size: clamp(7px, 1.8vw, 9.5px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(3px, 1.2vw, 6px);
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.4);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
 }
 
+/* starts styling rules for this selector block */
 .lb-toolbar {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the margin-top property for this rule */
   margin-top: clamp(18px, 3vh, 24px);
 }
 
+/* starts styling rules for this selector block */
 .lb-sort {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the display property for this rule */
   display: inline-grid;
+  /* sets the grid-template-columns property for this rule */
   grid-template-columns: auto minmax(0, 1fr);
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: 12px;
+  /* sets the min-width property for this rule */
   min-width: min(100%, 340px);
+  /* sets the padding property for this rule */
   padding: 12px 14px 12px 18px;
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.26);
+  /* sets the border-radius property for this rule */
   border-radius: 999px;
+  /* sets the background property for this rule */
   background:
     radial-gradient(
       circle at top left,
@@ -729,95 +1207,142 @@
       transparent 38%
     ),
     linear-gradient(145deg, rgba(30, 11, 11, 0.92), rgba(12, 5, 5, 0.97));
+  /* sets the box-shadow property for this rule */
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 12px 28px rgba(0, 0, 0, 0.22);
+  /* sets the transition property for this rule */
   transition:
     border-color 0.24s ease,
     box-shadow 0.24s ease,
     transform 0.24s ease;
 }
 
+/* starts styling rules for this selector block */
 .lb-sort:hover {
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.42);
+  /* sets the box-shadow property for this rule */
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 16px 34px rgba(0, 0, 0, 0.28),
     0 0 24px rgba(212, 175, 55, 0.08);
+  /* sets the transform property for this rule */
   transform: translateY(-1px);
 }
 
+/* starts styling rules for this selector block */
 .lb-sort:focus-within {
+  /* sets the transform property for this rule */
   transform: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-sort-label {
+  /* sets the font-size property for this rule */
   font-size: 9px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 2.8px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.72);
+  /* sets the white-space property for this rule */
   white-space: nowrap;
 }
 
+/* starts styling rules for this selector block */
 .lb-sort-select {
+  /* sets the min-width property for this rule */
   min-width: 0;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the border property for this rule */
   border: 0;
+  /* sets the border-radius property for this rule */
   border-radius: 999px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     180deg,
     rgba(18, 8, 8, 0.84),
     rgba(9, 4, 4, 0.94)
   );
+  /* sets the color property for this rule */
   color: rgba(255, 247, 226, 0.94);
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: 11px;
+  /* sets the font-weight property for this rule */
   font-weight: 600;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.1px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the padding property for this rule */
   padding: 10px 42px 10px 14px;
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the appearance property for this rule */
   appearance: none;
+  /* sets the -webkit-appearance property for this rule */
   -webkit-appearance: none;
+  /* sets the background-image property for this rule */
   background-image:
     linear-gradient(45deg, transparent 50%, rgba(255, 236, 188, 0.88) 50%),
     linear-gradient(135deg, rgba(255, 236, 188, 0.88) 50%, transparent 50%),
     linear-gradient(180deg, rgba(18, 8, 8, 0.84), rgba(9, 4, 4, 0.94));
+  /* sets the background-position property for this rule */
   background-position:
     calc(100% - 20px) calc(50% - 2px),
     calc(100% - 14px) calc(50% - 2px),
     0 0;
+  /* sets the background-size property for this rule */
   background-size:
     6px 6px,
     6px 6px,
     100% 100%;
+  /* sets the background-repeat property for this rule */
   background-repeat: no-repeat;
+  /* sets the box-shadow property for this rule */
   box-shadow: inset 0 0 0 1px rgba(139, 0, 0, 0.24);
+  /* sets the cursor property for this rule */
   cursor: pointer;
 }
 
+/* starts styling rules for this selector block */
 .lb-sort-select:focus {
+  /* sets the box-shadow property for this rule */
   box-shadow:
     inset 0 0 0 1px rgba(212, 175, 55, 0.42),
     0 0 0 3px rgba(212, 175, 55, 0.12);
 }
 
 .lb-sort-select option,
+/* starts styling rules for this selector block */
 .lb-sort-select optgroup {
+  /* sets the background property for this rule */
   background: #130707;
+  /* sets the color property for this rule */
   color: rgba(255, 244, 214, 0.96);
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (hover: none), (pointer: coarse) {
+  /* starts styling rules for this selector block */
   .lb-sort {
+    /* sets the transition property for this rule */
     transition:
       border-color 0.24s ease,
       box-shadow 0.24s ease;
   }
 
   .lb-sort:hover,
+  /* starts styling rules for this selector block */
   .lb-sort:focus-within {
+    /* sets the transform property for this rule */
     transform: none;
+    /* sets the box-shadow property for this rule */
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.04),
       0 12px 28px rgba(0, 0, 0, 0.22);
@@ -826,51 +1351,81 @@
 
 /* === LEADERBOARD GRID === */
 .lb-grid {
+  /* sets the display property for this rule */
   display: grid;
+  /* sets the grid-template-columns property for this rule */
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  /* sets the gap property for this rule */
   gap: clamp(16px, 3vw, 24px);
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 0;
 }
 
+/* starts styling rules for this selector block */
 .lb-card {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the background property for this rule */
   background: linear-gradient(
     135deg,
     rgba(30, 10, 10, 0.8) 0%,
     rgba(15, 8, 8, 0.9) 100%
   );
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.25);
+  /* sets the border-radius property for this rule */
   border-radius: 2px;
+  /* sets the padding property for this rule */
   padding: clamp(18px, 4vw, 24px);
+  /* sets the min-height property for this rule */
   min-height: 200px;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the justify-content property for this rule */
   justify-content: space-between;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the transition property for this rule */
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  /* sets the backdrop-filter property for this rule */
   backdrop-filter: blur(8px);
 }
 
+/* starts styling rules for this selector block */
 .lb-card::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the inset property for this rule */
   inset: 0;
+  /* sets the background property for this rule */
   background: radial-gradient(
     circle at var(--x, 50%) var(--y, 50%),
     rgba(212, 175, 55, 0.05),
     transparent 80%
   );
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the transition property for this rule */
   transition: opacity 0.3s;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-card:hover {
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.4);
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 20px rgba(212, 175, 55, 0.1),
     inset 0 0 20px rgba(212, 175, 55, 0.05);
+  /* sets the transform property for this rule */
   transform: translateY(-4px);
+  /* sets the background property for this rule */
   background: linear-gradient(
     135deg,
     rgba(40, 12, 12, 0.9) 0%,
@@ -878,193 +1433,312 @@
   );
 }
 
+/* starts styling rules for this selector block */
 .lb-card:hover::before {
+  /* sets the opacity property for this rule */
   opacity: 1;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-corner {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the width property for this rule */
   width: 12px;
+  /* sets the height property for this rule */
   height: 12px;
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
+/* starts styling rules for this selector block */
 .lb-card-corner--tl {
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the border-right property for this rule */
   border-right: none;
+  /* sets the border-bottom property for this rule */
   border-bottom: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-corner--tr {
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the right property for this rule */
   right: 0;
+  /* sets the border-left property for this rule */
   border-left: none;
+  /* sets the border-bottom property for this rule */
   border-bottom: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-corner--bl {
+  /* sets the bottom property for this rule */
   bottom: 0;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the border-right property for this rule */
   border-right: none;
+  /* sets the border-top property for this rule */
   border-top: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-corner--br {
+  /* sets the bottom property for this rule */
   bottom: 0;
+  /* sets the right property for this rule */
   right: 0;
+  /* sets the border-left property for this rule */
   border-left: none;
+  /* sets the border-top property for this rule */
   border-top: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-body {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the z-index property for this rule */
   z-index: 1;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the gap property for this rule */
   gap: 12px;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-rank {
+  /* sets the font-size property for this rule */
   font-size: 20px;
+  /* sets the font-weight property for this rule */
   font-weight: 700;
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 4px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.8);
 }
 
+/* starts styling rules for this selector block */
 .lb-card-username {
+  /* sets the font-size property for this rule */
   font-size: clamp(11px, 2vw, 14px);
+  /* sets the font-weight property for this rule */
   font-weight: 600;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.5px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.92);
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the word-break property for this rule */
   word-break: break-word;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-username-wrap {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the gap property for this rule */
   gap: 8px;
 }
 
+/* starts styling rules for this selector block */
 .lb-you-badge {
+  /* sets the display property for this rule */
   display: inline-flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the padding property for this rule */
   padding: 2px 7px;
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.55);
+  /* sets the background property for this rule */
   background: linear-gradient(
     180deg,
     rgba(212, 175, 55, 0.24),
     rgba(170, 24, 24, 0.18)
   );
+  /* sets the color property for this rule */
   color: rgba(255, 247, 214, 0.95);
+  /* sets the font-size property for this rule */
   font-size: 8px;
+  /* sets the font-weight property for this rule */
   font-weight: 700;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.8px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the border-radius property for this rule */
   border-radius: 999px;
+  /* sets the white-space property for this rule */
   white-space: nowrap;
 }
 
+/* starts styling rules for this selector block */
 .lb-you-badge.is-hidden {
+  /* sets the display property for this rule */
   display: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-you {
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.55);
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 24px rgba(212, 175, 55, 0.14),
     inset 0 0 20px rgba(212, 175, 55, 0.05);
 }
 
+/* starts styling rules for this selector block */
 .lb-card-you .lb-card-username {
+  /* sets the color property for this rule */
   color: rgba(255, 247, 210, 0.98);
 }
 
+/* starts styling rules for this selector block */
 .lb-card-sep {
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
     rgba(212, 175, 55, 0.3),
     transparent
   );
+  /* sets the margin property for this rule */
   margin: 8px 0;
 }
 
+/* starts styling rules for this selector block */
 .lb-card-stats {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the gap property for this rule */
   gap: 12px;
 }
 
+/* starts styling rules for this selector block */
 .lb-stat {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the justify-content property for this rule */
   justify-content: space-between;
+  /* sets the align-items property for this rule */
   align-items: center;
 }
 
+/* starts styling rules for this selector block */
 .lb-stat-label {
+  /* sets the font-size property for this rule */
   font-size: 8px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 2px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.65);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
 }
 
+/* starts styling rules for this selector block */
 .lb-stat-value {
+  /* sets the font-size property for this rule */
   font-size: clamp(11px, 1.8vw, 14px);
+  /* sets the font-weight property for this rule */
   font-weight: 700;
+  /* sets the color property for this rule */
   color: rgba(255, 230, 150, 0.95);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1px;
 }
 
+/* starts styling rules for this selector block */
 .lb-stat-value.is-counting {
+  /* sets the animation property for this rule */
   animation: lb-count-pulse 0.42s ease-in-out infinite alternate;
+  /* sets the color property for this rule */
   color: rgba(255, 245, 215, 0.98);
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-count-pulse {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the text-shadow property for this rule */
     text-shadow:
       0 0 8px rgba(212, 175, 55, 0.2),
       0 0 18px rgba(139, 0, 0, 0.2);
+    /* sets the transform property for this rule */
     transform: translateY(1px);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the text-shadow property for this rule */
     text-shadow:
       0 0 14px rgba(212, 175, 55, 0.34),
       0 0 26px rgba(139, 0, 0, 0.24);
+    /* sets the transform property for this rule */
     transform: translateY(0);
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-top-glow {
   0%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the box-shadow property for this rule */
     box-shadow:
       0 0 22px rgba(212, 175, 55, 0.12),
       inset 0 0 18px rgba(212, 175, 55, 0.04);
   }
+  /* starts styling rules for this selector block */
   50% {
+    /* sets the box-shadow property for this rule */
     box-shadow:
       0 0 34px rgba(212, 175, 55, 0.22),
       inset 0 0 24px rgba(212, 175, 55, 0.08);
   }
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes lb-top-drama-in {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the transform property for this rule */
     transform: translateY(14px) scale(0.992);
+    /* sets the filter property for this rule */
     filter: blur(1.6px);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translateY(0) scale(1);
+    /* sets the filter property for this rule */
     filter: blur(0);
   }
 }
@@ -1072,197 +1746,302 @@
 /* Top 3 Rankings */
 .lb-rank-1,
 .lb-rank-2,
+/* starts styling rules for this selector block */
 .lb-rank-3 {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the overflow property for this rule */
   overflow: visible;
+  /* sets the animation property for this rule */
   animation: lb-top-glow 3.8s ease-in-out infinite;
 }
 
 .lb-rank-1 .lb-card-body,
 .lb-rank-2 .lb-card-body,
+/* starts styling rules for this selector block */
 .lb-rank-3 .lb-card-body {
+  /* sets the animation property for this rule */
   animation: lb-top-drama-in 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* sets the will-change property for this rule */
   will-change: transform, opacity, filter;
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-1 .lb-card-body {
+  /* sets the animation-delay property for this rule */
   animation-delay: 120ms;
 }
+/* starts styling rules for this selector block */
 .lb-rank-2 .lb-card-body {
+  /* sets the animation-delay property for this rule */
   animation-delay: 340ms;
+  /* sets the animation-duration property for this rule */
   animation-duration: 820ms;
 }
+/* starts styling rules for this selector block */
 .lb-rank-3 .lb-card-body {
+  /* sets the animation-delay property for this rule */
   animation-delay: 560ms;
+  /* sets the animation-duration property for this rule */
   animation-duration: 920ms;
 }
 
 .lb-rank-1::after,
 .lb-rank-2::after,
+/* starts styling rules for this selector block */
 .lb-rank-3::after {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the top property for this rule */
   top: -10px;
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the transform property for this rule */
   transform: translateX(-50%);
+  /* sets the font-size property for this rule */
   font-size: 8px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 3px;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the padding property for this rule */
   padding: 3px 9px;
+  /* sets the border property for this rule */
   border: 1px solid rgba(212, 175, 55, 0.25);
+  /* sets the background property for this rule */
   background: linear-gradient(
     180deg,
     rgba(28, 8, 8, 0.94),
     rgba(14, 5, 5, 0.9)
   );
+  /* sets the color property for this rule */
   color: rgba(255, 240, 190, 0.82);
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-1 {
+  /* sets the grid-column property for this rule */
   grid-column: 1 / 2;
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.5);
+  /* sets the transform property for this rule */
   transform: translateY(-8px) scale(1.015);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-1::after {
+  /* sets the content property for this rule */
   content: "Top 1";
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-1 .lb-card-rank {
+  /* sets the color property for this rule */
   color: #ffd700;
+  /* sets the text-shadow property for this rule */
   text-shadow:
     0 0 12px rgba(255, 215, 0, 0.45),
     0 0 24px rgba(255, 215, 0, 0.2);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-1 .lb-card-username {
+  /* sets the color property for this rule */
   color: rgba(255, 247, 210, 0.98);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-2 {
+  /* sets the grid-column property for this rule */
   grid-column: 2 / 3;
+  /* sets the border-color property for this rule */
   border-color: rgba(192, 192, 192, 0.35);
+  /* sets the transform property for this rule */
   transform: translateY(-4px) scale(1.01);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-2::after {
+  /* sets the content property for this rule */
   content: "Top 2";
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-2 .lb-card-rank {
+  /* sets the color property for this rule */
   color: #c0c0c0;
+  /* sets the text-shadow property for this rule */
   text-shadow:
     0 0 10px rgba(192, 192, 192, 0.3),
     0 0 20px rgba(192, 192, 192, 0.16);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-3 {
+  /* sets the grid-column property for this rule */
   grid-column: 3 / 4;
+  /* sets the border-color property for this rule */
   border-color: rgba(205, 127, 50, 0.35);
+  /* sets the transform property for this rule */
   transform: translateY(-2px) scale(1.006);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-3::after {
+  /* sets the content property for this rule */
   content: "Top 3";
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-3 .lb-card-rank {
+  /* sets the color property for this rule */
   color: #cd7f32;
+  /* sets the text-shadow property for this rule */
   text-shadow:
     0 0 10px rgba(205, 127, 50, 0.3),
     0 0 20px rgba(205, 127, 50, 0.15);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-1:hover {
+  /* sets the transform property for this rule */
   transform: translateY(-12px) scale(1.02);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-2:hover {
+  /* sets the transform property for this rule */
   transform: translateY(-8px) scale(1.015);
 }
 
+/* starts styling rules for this selector block */
 .lb-rank-3:hover {
+  /* sets the transform property for this rule */
   transform: translateY(-6px) scale(1.012);
 }
 
 .lb-loading,
+/* starts styling rules for this selector block */
 .lb-empty {
+  /* sets the grid-column property for this rule */
   grid-column: 1 / -1;
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the padding property for this rule */
   padding: clamp(40px, 8vh, 80px) 20px;
+  /* sets the font-size property for this rule */
   font-size: clamp(12px, 2vw, 16px);
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.6);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1px;
 }
 
 /* === RESPONSIVE === */
 @media (max-width: 1024px) {
+  /* starts styling rules for this selector block */
   .lb-links {
+    /* sets the gap property for this rule */
     gap: 16px;
   }
 
+  /* starts styling rules for this selector block */
   .lb-grid {
+    /* sets the grid-template-columns property for this rule */
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 
   .lb-rank-1,
   .lb-rank-2,
+  /* starts styling rules for this selector block */
   .lb-rank-3 {
+    /* sets the grid-column property for this rule */
     grid-column: auto;
+    /* sets the transform property for this rule */
     transform: none;
   }
 
   .lb-rank-1:hover,
   .lb-rank-2:hover,
+  /* starts styling rules for this selector block */
   .lb-rank-3:hover {
+    /* sets the transform property for this rule */
     transform: translateY(-4px);
   }
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (max-width: 1024px) {
+  /* starts styling rules for this selector block */
   .lb-links {
+    /* sets the display property for this rule */
     display: none;
   }
+  /* starts styling rules for this selector block */
   .lb-hamburger {
+    /* sets the display property for this rule */
     display: flex;
   }
+  /* starts styling rules for this selector block */
   .lb-mobile-menu {
+    /* sets the display property for this rule */
     display: block;
   }
+  /* starts styling rules for this selector block */
   .lb-avatar {
+    /* sets the display property for this rule */
     display: none;
   }
 
+  /* starts styling rules for this selector block */
   .lb-header {
+    /* sets the margin-bottom property for this rule */
     margin-bottom: clamp(16px, 3vh, 24px);
   }
 
+  /* starts styling rules for this selector block */
   .lb-grid {
+    /* sets the grid-template-columns property for this rule */
     grid-template-columns: 1fr;
   }
 
+  /* starts styling rules for this selector block */
   .lb-card {
+    /* sets the min-height property for this rule */
     min-height: 160px;
   }
 
+  /* starts styling rules for this selector block */
   .lb-toolbar {
+    /* sets the width property for this rule */
     width: 100%;
+    /* sets the justify-content property for this rule */
     justify-content: center;
+    /* sets the margin-top property for this rule */
     margin-top: 14px;
   }
 
+  /* starts styling rules for this selector block */
   .lb-sort {
+    /* sets the width property for this rule */
     width: 100%;
+    /* sets the max-width property for this rule */
     max-width: 100%;
   }
 
+  /* starts styling rules for this selector block */
   .lb-sort-select {
+    /* sets the max-width property for this rule */
     max-width: none;
   }
 }
 
 /* Disable native pointer cursor on your own card while keeping custom cursor visible */
 .lb-card[aria-disabled="true"],
+/* starts styling rules for this selector block */
 .lb-card[aria-disabled="true"] * {
+  /* sets the cursor property for this rule */
   cursor: none !important;
 }

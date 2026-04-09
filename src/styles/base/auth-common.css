@@ -1,23 +1,39 @@
+/* auth-common base styles: defines shared visual rules used across multiple pages. */
+/* keeps common layout, typography and utility styling in one place. */
+
 @import "../base/app-base.css";
 
 /* ============================================
    BW PAGE ROOT
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-root {
+  /* sets the min-height property for this rule */
   min-height: 100%;
+  /* sets the background property for this rule */
   background: var(--obsidian);
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the padding property for this rule */
   padding: 20px 16px;
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (max-width: 400px) {
+  /* starts styling rules for this selector block */
   .bw-root {
+    /* sets the padding property for this rule */
     padding: 14px 10px;
   }
 }
@@ -26,12 +42,19 @@
    BW CANVAS
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-canvas {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the inset property for this rule */
   inset: 0;
+  /* sets the z-index property for this rule */
   z-index: 0;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
 
@@ -39,33 +62,52 @@
    BW GLOW
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-glow-center {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the width property for this rule */
   width: min(700px, 140vw);
+  /* sets the height property for this rule */
   height: min(700px, 140vw);
+  /* sets the background property for this rule */
   background: radial-gradient(
     circle,
     rgba(139, 0, 0, 0.18) 0%,
     rgba(80, 0, 0, 0.07) 40%,
     transparent 70%
   );
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the top property for this rule */
   top: 50%;
+  /* sets the transform property for this rule */
   transform: translate(-50%, -50%);
+  /* sets the z-index property for this rule */
   z-index: 1;
+  /* sets the animation property for this rule */
   animation: bw-breathe 5s ease-in-out infinite;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the border-radius property for this rule */
   border-radius: 50%;
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-breathe {
   0%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the opacity property for this rule */
     opacity: 0.7;
+    /* sets the transform property for this rule */
     transform: translate(-50%, -50%) scale(1);
   }
+  /* starts styling rules for this selector block */
   50% {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translate(-50%, -50%) scale(1.1);
   }
 }
@@ -74,37 +116,58 @@
    BW CARD
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-card {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the z-index property for this rule */
   z-index: 10;
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the max-width property for this rule */
   max-width: 480px;
+  /* sets the animation property for this rule */
   animation: bw-rise 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-rise {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the transform property for this rule */
     transform: translateY(32px) scale(0.97);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translateY(0) scale(1);
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-card-inner {
+  /* sets the background property for this rule */
   background: linear-gradient(
     160deg,
     rgba(22, 8, 8, 0.98) 0%,
     rgba(12, 4, 4, 1) 50%,
     rgba(22, 6, 6, 0.98) 100%
   );
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.3);
+  /* sets the backdrop-filter property for this rule */
   backdrop-filter: blur(40px);
+  /* sets the -webkit-backdrop-filter property for this rule */
   -webkit-backdrop-filter: blur(40px);
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 0 1px rgba(212, 175, 55, 0.04),
     0 8px 40px rgba(0, 0, 0, 0.8),
@@ -112,25 +175,37 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+/* starts styling rules for this selector block */
 .bw-card-inner::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the inset property for this rule */
   inset: 0;
+  /* sets the background property for this rule */
   background: radial-gradient(
     ellipse at 50% 0%,
     rgba(139, 0, 0, 0.08) 0%,
     transparent 60%
   );
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the animation property for this rule */
   animation: bw-inner-glow 4s ease-in-out infinite;
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-inner-glow {
   0%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the opacity property for this rule */
     opacity: 0.5;
   }
+  /* starts styling rules for this selector block */
   50% {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
 }
@@ -139,45 +214,77 @@
    BW CORNER ORNAMENTS
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-corner {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the width property for this rule */
   width: 24px;
+  /* sets the height property for this rule */
   height: 24px;
+  /* sets the z-index property for this rule */
   z-index: 5;
+  /* sets the animation property for this rule */
   animation: bw-corner-pulse 4s ease-in-out infinite;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
+/* starts styling rules for this selector block */
 .bw-corner--tl {
+  /* sets the top property for this rule */
   top: -1px;
+  /* sets the left property for this rule */
   left: -1px;
+  /* sets the border-top property for this rule */
   border-top: 1.5px solid var(--gold-light);
+  /* sets the border-left property for this rule */
   border-left: 1.5px solid var(--gold-light);
 }
+/* starts styling rules for this selector block */
 .bw-corner--tr {
+  /* sets the top property for this rule */
   top: -1px;
+  /* sets the right property for this rule */
   right: -1px;
+  /* sets the border-top property for this rule */
   border-top: 1.5px solid var(--gold-light);
+  /* sets the border-right property for this rule */
   border-right: 1.5px solid var(--gold-light);
 }
+/* starts styling rules for this selector block */
 .bw-corner--bl {
+  /* sets the bottom property for this rule */
   bottom: -1px;
+  /* sets the left property for this rule */
   left: -1px;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1.5px solid var(--gold-light);
+  /* sets the border-left property for this rule */
   border-left: 1.5px solid var(--gold-light);
 }
+/* starts styling rules for this selector block */
 .bw-corner--br {
+  /* sets the bottom property for this rule */
   bottom: -1px;
+  /* sets the right property for this rule */
   right: -1px;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1.5px solid var(--gold-light);
+  /* sets the border-right property for this rule */
   border-right: 1.5px solid var(--gold-light);
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-corner-pulse {
   0%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the opacity property for this rule */
     opacity: 0.35;
   }
+  /* starts styling rules for this selector block */
   50% {
+    /* sets the opacity property for this rule */
     opacity: 0.9;
   }
 }
@@ -186,22 +293,37 @@
    BW HEADER
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-header {
+  /* sets the padding property for this rule */
   padding: clamp(36px, 6vw, 56px) clamp(24px, 8vw, 52px) clamp(28px, 5vw, 44px);
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid rgba(139, 0, 0, 0.18);
+  /* sets the overflow property for this rule */
   overflow: hidden;
 }
 
+/* starts styling rules for this selector block */
 .bw-header::after {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the bottom property for this rule */
   bottom: -1px;
+  /* sets the left property for this rule */
   left: 50%;
+  /* sets the transform property for this rule */
   transform: translateX(-50%);
+  /* sets the width property for this rule */
   width: 55%;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
@@ -210,77 +332,129 @@
   );
 }
 
+/* starts styling rules for this selector block */
 .bw-ornament {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the gap property for this rule */
   gap: 14px;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(14px, 3vw, 22px);
+  /* sets the animation property for this rule */
   animation: bw-fade-in 1s ease both 0.3s;
 }
 
+/* starts styling rules for this selector block */
 .bw-ornament-line {
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the width property for this rule */
   width: clamp(30px, 8vw, 52px);
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, transparent, var(--gold));
+  /* sets the animation property for this rule */
   animation: bw-expand 1s ease both 0.5s;
 }
+/* starts styling rules for this selector block */
 .bw-ornament-line:last-child {
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, var(--gold), transparent);
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-expand {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the width property for this rule */
     width: 0;
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-ornament-diamond {
+  /* sets the width property for this rule */
   width: 7px;
+  /* sets the height property for this rule */
   height: 7px;
+  /* sets the background property for this rule */
   background: var(--gold-light);
+  /* sets the transform property for this rule */
   transform: rotate(45deg);
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+  /* sets the animation property for this rule */
   animation: bw-fade-in 1s ease both 0.6s;
+  /* sets the flex-shrink property for this rule */
   flex-shrink: 0;
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-fade-in {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-title {
+  /* sets the font-family property for this rule */
   font-family: "Cormorant Garamond", serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(32px, 7vw, 48px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(4px, 1.2vw, 8px);
+  /* sets the color property for this rule */
   color: #fff;
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the line-height property for this rule */
   line-height: 1;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 10px;
+  /* sets the animation property for this rule */
   animation: bw-fade-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both 0.15s;
+  /* sets the text-shadow property for this rule */
   text-shadow:
     0 0 30px rgba(180, 0, 0, 0.6),
     0 0 70px rgba(139, 0, 0, 0.25),
     0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
+/* starts styling rules for this selector block */
 .bw-subtitle {
+  /* sets the font-size property for this rule */
   font-size: clamp(8px, 1.8vw, 10px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(3px, 1.2vw, 6px);
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.55);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the margin-top property for this rule */
   margin-top: clamp(8px, 2vw, 14px);
+  /* sets the animation property for this rule */
   animation: bw-fade-in 1s ease both 0.75s;
 }
 
@@ -288,202 +462,340 @@
    BW FORM
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-form {
+  /* sets the padding property for this rule */
   padding: clamp(28px, 6vw, 48px) clamp(20px, 8vw, 52px) clamp(32px, 6vw, 52px);
 }
 
+/* starts styling rules for this selector block */
 .bw-field {
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(18px, 3.5vw, 26px);
+  /* sets the animation property for this rule */
   animation: bw-field-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* starts styling rules for this selector block */
 .bw-field:nth-child(1) {
+  /* sets the animation-delay property for this rule */
   animation-delay: 0.5s;
 }
+/* starts styling rules for this selector block */
 .bw-field:nth-child(2) {
+  /* sets the animation-delay property for this rule */
   animation-delay: 0.62s;
 }
+/* starts styling rules for this selector block */
 .bw-field:nth-child(3) {
+  /* sets the animation-delay property for this rule */
   animation-delay: 0.74s;
 }
+/* starts styling rules for this selector block */
 .bw-field:nth-child(4) {
+  /* sets the animation-delay property for this rule */
   animation-delay: 0.86s;
 }
 
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-field-in {
+  /* starts styling rules for this selector block */
   from {
+    /* sets the opacity property for this rule */
     opacity: 0;
+    /* sets the transform property for this rule */
     transform: translateX(-18px);
   }
+  /* starts styling rules for this selector block */
   to {
+    /* sets the opacity property for this rule */
     opacity: 1;
+    /* sets the transform property for this rule */
     transform: translateX(0);
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-label {
+  /* sets the display property for this rule */
   display: block;
+  /* sets the font-size property for this rule */
   font-size: clamp(8px, 2vw, 9.5px);
+  /* sets the font-weight property for this rule */
   font-weight: 500;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(2px, 1vw, 4px);
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.7);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(8px, 2vw, 13px);
 }
 
+/* starts styling rules for this selector block */
 .bw-input-wrap {
+  /* sets the position property for this rule */
   position: relative;
 }
 
+/* starts styling rules for this selector block */
 .bw-input {
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the padding property for this rule */
   padding: clamp(13px, 3vw, 18px) clamp(14px, 4vw, 22px);
+  /* sets the background property for this rule */
   background: rgba(0, 0, 0, 0.55);
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.25);
+  /* sets the color-scheme property for this rule */
   color-scheme: dark;
+  /* sets the color property for this rule */
   color: #f2eaea !important;
+  /* sets the -webkit-text-fill-color property for this rule */
   -webkit-text-fill-color: #f2eaea !important;
+  /* sets the caret-color property for this rule */
   caret-color: #f2eaea;
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(12px, 3.2vw, 14px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.5px;
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the transition property for this rule */
   transition:
     border-color 0.4s,
     box-shadow 0.4s,
     background 0.4s;
+  /* sets the border-radius property for this rule */
   border-radius: 0;
+  /* sets the -webkit-appearance property for this rule */
   -webkit-appearance: none;
+  /* sets the appearance property for this rule */
   appearance: none;
 }
 
+/* starts styling rules for this selector block */
 .bw-input::placeholder {
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.15);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 2px;
+  /* sets the font-size property for this rule */
   font-size: clamp(10px, 2.5vw, 12px);
 }
 
+/* starts styling rules for this selector block */
 .bw-input:focus {
+  /* sets the border-color property for this rule */
   border-color: rgba(192, 57, 43, 0.55);
+  /* sets the color property for this rule */
   color: #f2eaea !important;
+  /* sets the -webkit-text-fill-color property for this rule */
   -webkit-text-fill-color: #f2eaea !important;
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 0 1px rgba(139, 0, 0, 0.12),
     0 4px 28px rgba(139, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  /* sets the background property for this rule */
   background: rgba(12, 2, 2, 0.75);
 }
 
 .bw-input:active,
+/* starts styling rules for this selector block */
 .bw-input:focus-visible {
+  /* sets the color property for this rule */
   color: #f2eaea !important;
+  /* sets the -webkit-text-fill-color property for this rule */
   -webkit-text-fill-color: #f2eaea !important;
 }
 
 .bw-input:-webkit-autofill,
 .bw-input:-webkit-autofill:hover,
 .bw-input:-webkit-autofill:focus,
+/* starts styling rules for this selector block */
 .bw-input:-webkit-autofill:active {
+  /* sets the color property for this rule */
   color: #f2eaea !important;
+  /* sets the -webkit-text-fill-color property for this rule */
   -webkit-text-fill-color: #f2eaea !important;
+  /* sets the text-shadow property for this rule */
   text-shadow: 0 0 0 #f2eaea;
+  /* sets the caret-color property for this rule */
   caret-color: #f2eaea;
+  /* sets the -webkit-box-shadow property for this rule */
   -webkit-box-shadow: 0 0 0 1000px rgba(12, 2, 2, 0.75) inset !important;
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 0 1000px rgba(12, 2, 2, 0.75) inset !important;
+  /* sets the transition property for this rule */
   transition: background-color 9999s ease-in-out 0s;
 }
 
 .bw-input:-moz-autofill,
+/* starts styling rules for this selector block */
 .bw-input:-moz-autofill:focus {
+  /* sets the color property for this rule */
   color: #f2eaea !important;
+  /* sets the caret-color property for this rule */
   caret-color: #f2eaea;
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 0 1000px rgba(12, 2, 2, 0.75) inset !important;
 }
 
+/* starts styling rules for this selector block */
 .bw-input-line {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the bottom property for this rule */
   bottom: 0;
+  /* sets the left property for this rule */
   left: 0;
+  /* sets the right property for this rule */
   right: 0;
+  /* sets the width property for this rule */
   width: auto;
+  /* sets the transform property for this rule */
   transform: scaleX(0);
+  /* sets the transform-origin property for this rule */
   transform-origin: center;
+  /* sets the height property for this rule */
   height: 1.5px;
+  /* sets the background-image property for this rule */
   background-image: linear-gradient(
     90deg,
     var(--crimson),
     var(--gold-light),
     var(--crimson)
   );
+  /* sets the background-size property for this rule */
   background-size: 200% 100%;
+  /* sets the transition property for this rule */
   transition:
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.55s ease;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
+/* starts styling rules for this selector block */
 .bw-input:focus ~ .bw-input-line {
+  /* sets the transform property for this rule */
   transform: scaleX(1);
 }
 
+/* starts styling rules for this selector block */
 .bw-pw-toggle {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the right property for this rule */
   right: clamp(10px, 3vw, 16px);
+  /* sets the top property for this rule */
   top: 50%;
+  /* sets the transform property for this rule */
   transform: translateY(-50%);
+  /* sets the background property for this rule */
   background: none;
+  /* sets the border property for this rule */
   border: none;
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the padding property for this rule */
   padding: 4px;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the justify-content property for this rule */
   justify-content: center;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.25);
+  /* sets the transition property for this rule */
   transition: color 0.3s;
+  /* sets the outline property for this rule */
   outline: none;
+  /* sets the z-index property for this rule */
   z-index: 2;
 }
+/* starts styling rules for this selector block */
 .bw-pw-toggle:hover {
+  /* sets the color property for this rule */
   color: rgba(192, 57, 43, 0.8);
 }
+/* starts styling rules for this selector block */
 .bw-pw-toggle svg {
+  /* sets the width property for this rule */
   width: 18px;
+  /* sets the height property for this rule */
   height: 18px;
+  /* sets the display property for this rule */
   display: block;
 }
 
+/* starts styling rules for this selector block */
 .bw-error {
+  /* sets the font-size property for this rule */
   font-size: clamp(8px, 2vw, 9.5px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.5px;
+  /* sets the color property for this rule */
   color: rgba(192, 57, 43, 0.75);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the margin-top property for this rule */
   margin-top: 8px;
+  /* sets the min-height property for this rule */
   min-height: 14px;
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the display property for this rule */
   display: block;
+  /* sets the padding-left property for this rule */
   padding-left: 2px;
+  /* sets the transition property for this rule */
   transition: opacity 0.3s;
 }
 
+/* starts styling rules for this selector block */
 .bw-caps-lock-hint {
+  /* sets the display property for this rule */
   display: block;
+  /* sets the min-height property for this rule */
   min-height: 14px;
+  /* sets the margin-top property for this rule */
   margin-top: 8px;
+  /* sets the padding-left property for this rule */
   padding-left: 2px;
+  /* sets the font-size property for this rule */
   font-size: clamp(8px, 2vw, 9.5px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.4px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.78);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the opacity property for this rule */
   opacity: 0;
+  /* sets the transform property for this rule */
   transform: translateY(-2px);
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the transition property for this rule */
   transition:
     opacity 0.22s ease,
     transform 0.22s ease;
 }
 
+/* starts styling rules for this selector block */
 .bw-caps-lock-hint.is-visible {
+  /* sets the opacity property for this rule */
   opacity: 1;
+  /* sets the transform property for this rule */
   transform: translateY(0);
 }
 
@@ -491,92 +803,146 @@
    BW BUTTON
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-btn {
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the padding property for this rule */
   padding: clamp(15px, 4vw, 20px);
+  /* sets the background property for this rule */
   background: transparent;
+  /* sets the border property for this rule */
   border: 1px solid rgba(139, 0, 0, 0.55);
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.85);
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(9px, 2.5vw, 11px);
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(4px, 1.5vw, 7px);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the transition property for this rule */
   transition:
     border-color 0.4s,
     color 0.4s,
     box-shadow 0.4s;
+  /* sets the animation property for this rule */
   animation: bw-fade-in 0.8s ease both 1s;
+  /* sets the -webkit-tap-highlight-color property for this rule */
   -webkit-tap-highlight-color: transparent;
 }
 
+/* starts styling rules for this selector block */
 .bw-btn::before {
+  /* sets the content property for this rule */
   content: "";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the inset property for this rule */
   inset: 0;
+  /* sets the background property for this rule */
   background: linear-gradient(
     120deg,
     rgba(139, 0, 0, 0) 0%,
     rgba(160, 0, 0, 0.85) 50%,
     rgba(139, 0, 0, 0) 100%
   );
+  /* sets the transform property for this rule */
   transform: translateX(-110%) skewX(-12deg);
+  /* sets the transition property for this rule */
   transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
+/* starts styling rules for this selector block */
 .bw-btn:hover::before {
+  /* sets the transform property for this rule */
   transform: translateX(110%) skewX(-12deg);
 }
 
+/* starts styling rules for this selector block */
 .bw-btn:hover {
+  /* sets the border-color property for this rule */
   border-color: rgba(192, 57, 43, 0.85);
+  /* sets the color property for this rule */
   color: #fff;
+  /* sets the box-shadow property for this rule */
   box-shadow:
     0 0 24px rgba(139, 0, 0, 0.22),
     0 0 60px rgba(139, 0, 0, 0.08),
     inset 0 0 20px rgba(139, 0, 0, 0.05);
 }
+/* starts styling rules for this selector block */
 .bw-btn:active {
+  /* sets the transform property for this rule */
   transform: scale(0.99);
 }
 
+/* starts styling rules for this selector block */
 .bw-btn-text {
+  /* sets the position property for this rule */
   position: relative;
+  /* sets the z-index property for this rule */
   z-index: 2;
 }
 
+/* starts styling rules for this selector block */
 .bw-btn-shimmer {
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the top property for this rule */
   top: 0;
+  /* sets the left property for this rule */
   left: -80%;
+  /* sets the width property for this rule */
   width: 50%;
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the background property for this rule */
   background: linear-gradient(
     90deg,
     transparent,
     rgba(255, 255, 255, 0.05),
     transparent
   );
+  /* sets the animation property for this rule */
   animation: bw-shimmer 5s ease-in-out infinite;
+  /* sets the z-index property for this rule */
   z-index: 1;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
 }
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-shimmer {
   0%,
+  /* starts styling rules for this selector block */
   35% {
+    /* sets the left property for this rule */
     left: -80%;
   }
   55%,
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the left property for this rule */
     left: 170%;
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-btn.success {
+  /* sets the border-color property for this rule */
   border-color: rgba(212, 175, 55, 0.65);
+  /* sets the color property for this rule */
   color: var(--gold-light);
+  /* sets the box-shadow property for this rule */
   box-shadow: 0 0 30px rgba(212, 175, 55, 0.12);
 }
 
@@ -584,25 +950,42 @@
    BW DIVIDER
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-divider {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: center;
+  /* sets the gap property for this rule */
   gap: 14px;
+  /* sets the margin property for this rule */
   margin: clamp(20px, 4vw, 30px) 0;
+  /* sets the animation property for this rule */
   animation: bw-fade-in 0.8s ease both 1.1s;
 }
+/* starts styling rules for this selector block */
 .bw-divider-line {
+  /* sets the flex property for this rule */
   flex: 1;
+  /* sets the height property for this rule */
   height: 1px;
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.22));
 }
+/* starts styling rules for this selector block */
 .bw-divider-line:last-child {
+  /* sets the background property for this rule */
   background: linear-gradient(90deg, rgba(139, 0, 0, 0.22), transparent);
 }
+/* starts styling rules for this selector block */
 .bw-divider-text {
+  /* sets the font-size property for this rule */
   font-size: 8px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 3px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.12);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
 }
 
@@ -610,31 +993,51 @@
    BW FOOTER LINK
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-footer-link {
+  /* sets the text-align property for this rule */
   text-align: center;
+  /* sets the animation property for this rule */
   animation: bw-fade-in 0.8s ease both 1.2s;
+  /* sets the padding-bottom property for this rule */
   padding-bottom: 0;
+  /* sets the border-bottom property for this rule */
   border-bottom: none;
 }
 .bw-root .bw-footer-link:hover,
+/* starts styling rules for this selector block */
 .bw-root .bw-footer-link:focus-visible {
+  /* sets the border-bottom property for this rule */
   border-bottom: none;
+  /* sets the border-color property for this rule */
   border-color: transparent;
 }
+/* starts styling rules for this selector block */
 .bw-footer-link p {
+  /* sets the font-size property for this rule */
   font-size: clamp(8px, 2vw, 10px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 2.5px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.22);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the font-weight property for this rule */
   font-weight: 300;
 }
+/* starts styling rules for this selector block */
 .bw-footer-link a {
+  /* sets the margin-left property for this rule */
   margin-left: 6px;
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
 }
 .bw-footer-link a:focus-visible,
+/* starts styling rules for this selector block */
 .bw-footer-link a:active {
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the border-bottom property for this rule */
   border-bottom: none;
 }
 
@@ -642,27 +1045,45 @@
    BW PARTICLES
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-particle {
+  /* sets the position property for this rule */
   position: fixed;
+  /* sets the pointer-events property for this rule */
   pointer-events: none;
+  /* sets the border-radius property for this rule */
   border-radius: 50%;
+  /* sets the animation property for this rule */
   animation: bw-float linear infinite;
+  /* sets the z-index property for this rule */
   z-index: 2;
+  /* sets the will-change property for this rule */
   will-change: transform, opacity;
 }
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-float {
+  /* starts styling rules for this selector block */
   0% {
+    /* sets the transform property for this rule */
     transform: translateY(105vh) translateX(0px);
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
+  /* starts styling rules for this selector block */
   8% {
+    /* sets the opacity property for this rule */
     opacity: 1;
   }
+  /* starts styling rules for this selector block */
   92% {
+    /* sets the opacity property for this rule */
     opacity: 0.6;
   }
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the transform property for this rule */
     transform: translateY(-10vh) translateX(var(--drift));
+    /* sets the opacity property for this rule */
     opacity: 0;
   }
 }

@@ -1,197 +1,334 @@
+/* tos page styles: defines the visual layout and component styling for this page. */
+/* keeps responsive, state and spacing rules scoped to this screen. */
+
 @import "../base/auth-common.css";
 
 /* ============================================
    TERMS OF SERVICE PAGE
    ============================================ */
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] {
+  /* sets the height property for this rule */
   height: 100dvh;
+  /* sets the min-height property for this rule */
   min-height: 100dvh;
+  /* sets the overflow property for this rule */
   overflow: hidden;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] .bw-route-view {
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the min-height property for this rule */
   min-height: 0;
+  /* sets the overflow property for this rule */
   overflow: hidden;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] .bw-root {
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the min-height property for this rule */
   min-height: 0;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the padding property for this rule */
   padding: clamp(10px, 2.4vh, 20px) clamp(10px, 2.4vw, 16px);
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] .bw-card {
+  /* sets the width property for this rule */
   width: min(90vw, 800px) !important;
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the max-height property for this rule */
   max-height: 100%;
+  /* sets the display property for this rule */
   display: flex;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] .bw-card-inner {
+  /* sets the width property for this rule */
   width: 100%;
+  /* sets the height property for this rule */
   height: 100%;
+  /* sets the max-height property for this rule */
   max-height: 100%;
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the flex-direction property for this rule */
   flex-direction: column;
+  /* sets the overflow property for this rule */
   overflow: hidden;
+  /* sets the padding property for this rule */
   padding: clamp(16px, 3.2vw, 28px) !important;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] .bw-header {
+  /* sets the padding property for this rule */
   padding: clamp(14px, 2.8vh, 22px) clamp(10px, 2vw, 16px)
     clamp(12px, 2.2vh, 18px);
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(10px, 1.8vh, 16px) !important;
+  /* sets the overflow property for this rule */
   overflow: visible;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] .bw-title {
+  /* sets the font-size property for this rule */
   font-size: clamp(20px, 3.2vw, 34px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(2px, 0.7vw, 5px);
+  /* sets the line-height property for this rule */
   line-height: 1.18;
+  /* sets the margin property for this rule */
   margin: 2px 0 8px;
+  /* sets the text-wrap property for this rule */
   text-wrap: balance;
+  /* sets the overflow-wrap property for this rule */
   overflow-wrap: anywhere;
 }
 
+/* starts styling rules for this selector block */
 #app[data-route="/tos"] .bw-subtitle {
+  /* sets the font-size property for this rule */
   font-size: clamp(7px, 1.3vw, 9px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(2px, 0.55vw, 4px);
+  /* sets the margin-top property for this rule */
   margin-top: 4px;
+  /* sets the white-space property for this rule */
   white-space: normal;
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-content {
+  /* sets the flex property for this rule */
   flex: 1 1 auto;
+  /* sets the min-height property for this rule */
   min-height: 0;
+  /* sets the max-height property for this rule */
   max-height: none;
+  /* sets the overflow-y property for this rule */
   overflow-y: auto;
+  /* sets the scroll-behavior property for this rule */
   scroll-behavior: smooth;
+  /* sets the margin-top property for this rule */
   margin-top: clamp(6px, 1.4vh, 12px);
+  /* sets the padding-right property for this rule */
   padding-right: 12px;
+  /* sets the animation property for this rule */
   animation: bw-fade-in 0.8s ease both 0.3s;
 }
 
+/* starts a responsive override block for specific viewport conditions */
 @media (max-width: 700px) {
+  /* starts styling rules for this selector block */
   #app[data-route="/tos"] .bw-card-inner {
+    /* sets the padding property for this rule */
     padding: 10px !important;
   }
 
+  /* starts styling rules for this selector block */
   #app[data-route="/tos"] .bw-header {
+    /* sets the padding property for this rule */
     padding: 11px 8px 9px;
+    /* sets the margin-bottom property for this rule */
     margin-bottom: 8px !important;
   }
 
+  /* starts styling rules for this selector block */
   #app[data-route="/tos"] .bw-ornament {
+    /* sets the margin-bottom property for this rule */
     margin-bottom: 8px;
+    /* sets the gap property for this rule */
     gap: 8px;
   }
 
+  /* starts styling rules for this selector block */
   #app[data-route="/tos"] .bw-ornament-line {
+    /* sets the width property for this rule */
     width: clamp(16px, 6vw, 26px);
   }
 
+  /* starts styling rules for this selector block */
   #app[data-route="/tos"] .bw-title {
+    /* sets the font-size property for this rule */
     font-size: clamp(14px, 5.2vw, 20px);
+    /* sets the letter-spacing property for this rule */
     letter-spacing: clamp(0.6px, 0.35vw, 1.5px);
+    /* sets the line-height property for this rule */
     line-height: 1.2;
+    /* sets the margin property for this rule */
     margin: 1px 0 5px;
   }
 
+  /* starts styling rules for this selector block */
   #app[data-route="/tos"] .bw-subtitle {
+    /* sets the font-size property for this rule */
     font-size: clamp(6px, 1.8vw, 7px);
+    /* sets the letter-spacing property for this rule */
     letter-spacing: clamp(0.9px, 0.45vw, 1.8px);
+    /* sets the line-height property for this rule */
     line-height: 1.2;
   }
 
+  /* starts styling rules for this selector block */
   .bw-tos-content {
+    /* sets the margin-top property for this rule */
     margin-top: 6px;
+    /* sets the padding-right property for this rule */
     padding-right: 8px;
   }
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-content::-webkit-scrollbar {
+  /* sets the width property for this rule */
   width: 6px;
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-content::-webkit-scrollbar-track {
+  /* sets the background property for this rule */
   background: rgba(18, 12, 5, 0.55);
+  /* sets the border-radius property for this rule */
   border-radius: 3px;
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-content::-webkit-scrollbar-thumb {
+  /* sets the background property for this rule */
   background: linear-gradient(180deg, #8f6f12, #d4af37);
+  /* sets the border-radius property for this rule */
   border-radius: 3px;
+  /* sets the transition property for this rule */
   transition: background 0.3s;
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-content::-webkit-scrollbar-thumb:hover {
+  /* sets the background property for this rule */
   background: linear-gradient(180deg, #b8960c, #e3c15a);
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-section {
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(24px, 5vw, 36px);
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-heading {
+  /* sets the font-family property for this rule */
   font-family: "Cormorant Garamond", serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(18px, 4vw, 24px);
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: clamp(2px, 0.8vw, 4px);
+  /* sets the color property for this rule */
   color: var(--gold-light);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(12px, 3vw, 18px);
+  /* sets the text-shadow property for this rule */
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  /* sets the border-bottom property for this rule */
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  /* sets the padding-bottom property for this rule */
   padding-bottom: 8px;
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-subheading {
+  /* sets the font-family property for this rule */
   font-family: "Montserrat", sans-serif;
+  /* sets the font-size property for this rule */
   font-size: clamp(12px, 2.8vw, 16px);
+  /* sets the font-weight property for this rule */
   font-weight: 400;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.5px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.7);
+  /* sets the margin-top property for this rule */
   margin-top: clamp(16px, 3.5vw, 22px);
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(8px, 2vw, 12px);
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-text {
+  /* sets the font-size property for this rule */
   font-size: clamp(10px, 2.3vw, 13px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.8px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.45);
+  /* sets the line-height property for this rule */
   line-height: 1.8;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(12px, 3vw, 16px);
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-text strong {
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.65);
+  /* sets the font-weight property for this rule */
   font-weight: 400;
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-list {
+  /* sets the list-style property for this rule */
   list-style: none;
+  /* sets the padding-left property for this rule */
   padding-left: clamp(16px, 4vw, 24px);
+  /* sets the margin-bottom property for this rule */
   margin-bottom: clamp(12px, 3vw, 16px);
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-list li {
+  /* sets the font-size property for this rule */
   font-size: clamp(10px, 2.3vw, 13px);
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 0.8px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.45);
+  /* sets the line-height property for this rule */
   line-height: 1.8;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 8px;
+  /* sets the position property for this rule */
   position: relative;
 }
 
+/* starts styling rules for this selector block */
 .bw-tos-list li::before {
+  /* sets the content property for this rule */
   content: "*";
+  /* sets the position property for this rule */
   position: absolute;
+  /* sets the left property for this rule */
   left: -16px;
+  /* sets the color property for this rule */
   color: var(--crimson);
+  /* sets the font-size property for this rule */
   font-size: 8px;
 }

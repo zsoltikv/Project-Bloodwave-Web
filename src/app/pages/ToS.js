@@ -1,11 +1,21 @@
+// tos page module: renders the view and wires user interactions.
+// keeps page state, events and data loading logic in one place.
+
 import "../../styles/pages/ToS.css";
+// imports dependencies used by this module
 import { isLoggedIn } from "../services/auth.js";
+// imports dependencies used by this module
 import { ensureGlobalStarfield } from "../effects/global-starfield.js";
+// exports the main function for this module
 export default function ToS(container) {
+  // declares a constant used in this scope
   const loggedIn = isLoggedIn();
+  // declares a constant used in this scope
   const ctaHref = loggedIn ? "/main" : "/register";
+  // declares a constant used in this scope
   const ctaLabel = loggedIn ? "Back to Dashboard" : "Back to Registration";
 
+  // executes this operation step as part of the flow
   container.innerHTML = `
     <div class="bw-root">
       <div class="bw-glow-center"></div>
@@ -134,107 +144,175 @@ export default function ToS(container) {
     </div>
   `;
 
+  // executes this operation step as part of the flow
   ensureGlobalStarfield();
 }
 
 /* ============================================================
    CANVAS – minimal star field for ToS page
+   // executes this operation step as part of the flow
    ============================================================ */
+// declares a helper function for a focused task
 function initToSCanvas() {
+  // declares a constant used in this scope
   const canvas = document.getElementById("tos-canvas");
+  // checks a condition before executing this branch
   if (!canvas) return;
+  // declares a constant used in this scope
   const ctx = canvas.getContext("2d");
 
+  // executes this operation step as part of the flow
   let W, H;
+  // declares mutable state used in this scope
   let stars = [];
+  // executes this operation step as part of the flow
   let animId;
 
+  // declares a helper function for a focused task
   function measure() {
+    // executes this operation step as part of the flow
     W = canvas.width = window.innerWidth;
+    // executes this operation step as part of the flow
     H = canvas.height = window.innerHeight;
   }
 
+  // declares a helper function for a focused task
   function initStars() {
+    // executes this operation step as part of the flow
     stars = [];
+    // iterates through a sequence of values
     for (let i = 0; i < 100; i++) {
       stars.push({
+        // sets a named field inside an object or configuration block
         x: Math.random() * W,
+        // sets a named field inside an object or configuration block
         y: Math.random() * H,
+        // sets a named field inside an object or configuration block
         r: Math.random() * 1.2 + 0.2,
+        // sets a named field inside an object or configuration block
         opacity: Math.random() * 0.5 + 0.2,
+        // sets a named field inside an object or configuration block
         flicker: Math.random() * Math.PI * 2,
+        // sets a named field inside an object or configuration block
         flickerSpeed: Math.random() * 0.02 + 0.003,
+        // sets a named field inside an object or configuration block
         vx: (Math.random() - 0.5) * 0.15,
+        // sets a named field inside an object or configuration block
         vy: (Math.random() - 0.5) * 0.15,
+        // sets a named field inside an object or configuration block
         isRed: Math.random() < 0.08,
+        // sets a named field inside an object or configuration block
         isGold: Math.random() < 0.05,
       });
     }
   }
 
+  // defines an arrow function used by surrounding logic
   requestAnimationFrame(() => {
+    // executes this operation step as part of the flow
     measure();
+    // executes this operation step as part of the flow
     initStars();
 
+    // attaches a dom event listener for user interaction
     window.addEventListener("resize", () => {
+      // executes this operation step as part of the flow
       measure();
+      // executes this operation step as part of the flow
       initStars();
     });
 
+    // declares a helper function for a focused task
     function draw() {
+      // checks a condition before executing this branch
       if (!document.getElementById("tos-canvas")) {
+        // executes this operation step as part of the flow
         cancelAnimationFrame(animId);
+        // returns a value from the current function
         return;
       }
 
+      // executes this operation step as part of the flow
       ctx.clearRect(0, 0, W, H);
 
+      // defines an arrow function used by surrounding logic
       stars.forEach((s) => {
+        // executes this operation step as part of the flow
         s.flicker += s.flickerSpeed;
+        // declares a constant used in this scope
         const alpha = s.opacity * (0.6 + 0.4 * Math.sin(s.flicker));
 
+        // executes this operation step as part of the flow
         ctx.globalAlpha = alpha;
+        // executes this operation step as part of the flow
         ctx.beginPath();
+        // executes this operation step as part of the flow
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        // executes this operation step as part of the flow
         ctx.fillStyle = s.isRed ? "#CC1A1A" : s.isGold ? "#D4AF37" : "#FFE8D8";
+        // executes this operation step as part of the flow
         ctx.fill();
+        // executes this operation step as part of the flow
         ctx.globalAlpha = 1;
 
+        // executes this operation step as part of the flow
         s.x += s.vx;
+        // executes this operation step as part of the flow
         s.y += s.vy;
 
+        // checks a condition before executing this branch
         if (s.x < 0) s.x = W;
+        // checks a condition before executing this branch
         if (s.x > W) s.x = 0;
+        // checks a condition before executing this branch
         if (s.y < 0) s.y = H;
+        // checks a condition before executing this branch
         if (s.y > H) s.y = 0;
       });
 
+      // executes this operation step as part of the flow
       animId = requestAnimationFrame(draw);
     }
 
+    // executes this operation step as part of the flow
     draw();
   });
 }
 
+// declares a helper function for a focused task
 function spawnToSParticles() {
+  // declares a constant used in this scope
   const root = document.querySelector(".bw-root");
+  // checks a condition before executing this branch
   if (!root) return;
 
+  // iterates through a sequence of values
   for (let i = 0; i < 12; i++) {
+    // declares a constant used in this scope
     const p = document.createElement("div");
+    // executes this operation step as part of the flow
     p.className = "bw-particle";
+    // declares a constant used in this scope
     const size = Math.random() * 2 + 0.4;
+    // declares a constant used in this scope
     const delay = Math.random() * 15;
+    // declares a constant used in this scope
     const duration = 15 + Math.random() * 20;
+    // declares a constant used in this scope
     const drift = (Math.random() - 0.5) * 80;
+    // declares a constant used in this scope
     const isRed = Math.random() < 0.25;
+    // declares a constant used in this scope
     const isGold = !isRed && Math.random() < 0.12;
+    // declares a constant used in this scope
     const col = isRed
       ? "rgba(192,57,43,0.5)"
       : isGold
         ? "rgba(212,175,55,0.35)"
+        // executes this operation step as part of the flow
         : "rgba(255,230,210,0.25)";
 
+    // executes this operation step as part of the flow
     p.style.cssText = `
       width:${size}px; height:${size}px;
       left:${Math.random() * 100}%;
@@ -244,6 +322,7 @@ function spawnToSParticles() {
       animation-delay:${delay}s;
       --drift:${drift}px;
     `;
+    // executes this operation step as part of the flow
     root.appendChild(p);
   }
 }

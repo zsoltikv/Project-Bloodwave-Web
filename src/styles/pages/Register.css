@@ -1,42 +1,65 @@
+/* register page styles: defines the visual layout and component styling for this page. */
+/* keeps responsive, state and spacing rules scoped to this screen. */
+
 @import "../base/auth-common.css";
 
 /* ============================================
    REGISTER-SPECIFIC (password strength)
    ============================================ */
 
+/* starts styling rules for this selector block */
 #pwStrengthLine {
+  /* sets the height property for this rule */
   height: 2px;
+  /* sets the background-image property for this rule */
   background-image: var(
     --pw-gradient,
     linear-gradient(90deg, var(--crimson), var(--gold-light), var(--crimson))
   );
+  /* sets the animation property for this rule */
   animation: bw-pw-shimmer 2.2s linear infinite paused;
 }
+/* starts styling rules for this selector block */
 #pwStrengthLine.bw-pw-active {
+  /* sets the animation-play-state property for this rule */
   animation-play-state: running;
 }
+/* defines keyframe animation steps for motion effects */
 @keyframes bw-pw-shimmer {
+  /* starts styling rules for this selector block */
   0% {
+    /* sets the background-position property for this rule */
     background-position: 100% 0;
   }
+  /* starts styling rules for this selector block */
   100% {
+    /* sets the background-position property for this rule */
     background-position: -100% 0;
   }
 }
+/* starts styling rules for this selector block */
 #pwStrengthLine.bw-pw-pulse {
+  /* sets the transform property for this rule */
   transform: scaleX(1) scaleY(2.5);
 }
 
+/* starts styling rules for this selector block */
 .bw-form {
+  /* sets the padding-bottom property for this rule */
   padding-bottom: clamp(4px, 1.4vw, 8px);
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-link {
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 0;
+  /* sets the padding-bottom property for this rule */
   padding-bottom: 0;
 }
 
+/* starts styling rules for this selector block */
 .bw-footer-link p {
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 0;
 }
 
@@ -44,11 +67,17 @@
    TOS & COOKIE POLICY CHECKBOX
    ============================================ */
 
+/* starts styling rules for this selector block */
 .bw-checkbox-wrapper {
+  /* sets the display property for this rule */
   display: flex;
+  /* sets the align-items property for this rule */
   align-items: flex-start;
+  /* sets the gap property for this rule */
   gap: 12px;
+  /* sets the cursor property for this rule */
   cursor: pointer;
+  /* sets the user-select property for this rule */
   user-select: none;
 }
 
@@ -57,63 +86,104 @@
 #rxName.bw-input::-webkit-input-placeholder,
 #rxEmail.bw-input::-webkit-input-placeholder,
 #rxName.bw-input::-moz-placeholder,
+/* starts styling rules for this selector block */
 #rxEmail.bw-input::-moz-placeholder {
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.04) !important;
 }
 
+/* starts styling rules for this selector block */
 .bw-field--tos {
+  /* sets the margin-top property for this rule */
   margin-top: -2px;
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 6px;
+  /* sets the animation property for this rule */
   animation: bw-fade-in 0.8s ease both 0.95s;
 }
 
+/* starts styling rules for this selector block */
 .bw-field--confirm {
+  /* sets the margin-bottom property for this rule */
   margin-bottom: 6px;
 }
 
+/* starts styling rules for this selector block */
 .bw-field--confirm .bw-error {
+  /* sets the margin-top property for this rule */
   margin-top: 4px;
+  /* sets the min-height property for this rule */
   min-height: 0;
 }
 
+/* starts styling rules for this selector block */
 .bw-field--confirm .bw-error:empty {
+  /* sets the display property for this rule */
   display: none;
 }
 
+/* starts styling rules for this selector block */
 .bw-checkbox-label {
+  /* sets the font-size property for this rule */
   font-size: clamp(9px, 2.2vw, 11px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.2px;
+  /* sets the color property for this rule */
   color: rgba(255, 255, 255, 0.4);
+  /* sets the line-height property for this rule */
   line-height: 1.6;
+  /* sets the font-weight property for this rule */
   font-weight: 300;
 }
 
+/* starts styling rules for this selector block */
 .bw-forgot {
+  /* sets the font-size property for this rule */
   font-size: clamp(8px, 2vw, 10px);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 2.5px;
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.5);
+  /* sets the text-transform property for this rule */
   text-transform: uppercase;
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the font-weight property for this rule */
   font-weight: 300;
+  /* sets the transition property for this rule */
   transition:
     color 0.3s,
     letter-spacing 0.3s;
+  /* sets the white-space property for this rule */
   white-space: nowrap;
 }
+/* starts styling rules for this selector block */
 .bw-forgot:hover {
+  /* sets the color property for this rule */
   color: rgba(212, 175, 55, 0.85);
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 3px;
 }
 
+/* starts styling rules for this selector block */
 .bw-checkbox-label .bw-forgot {
+  /* sets the display property for this rule */
   display: inline;
+  /* sets the margin-left property for this rule */
   margin-left: 2px;
+  /* sets the letter-spacing property for this rule */
   letter-spacing: 1.2px;
+  /* sets the white-space property for this rule */
   white-space: normal;
+  /* sets the overflow-wrap property for this rule */
   overflow-wrap: anywhere;
+  /* sets the word-break property for this rule */
   word-break: normal;
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
+  /* sets the transform-origin property for this rule */
   transform-origin: left center;
+  /* sets the transition property for this rule */
   transition:
     color 0.3s,
     letter-spacing 0.3s,
@@ -122,26 +192,40 @@
 
 .bw-checkbox-label .bw-forgot:hover,
 .bw-checkbox-label .bw-forgot:focus-visible,
+/* starts styling rules for this selector block */
 .bw-checkbox-label .bw-forgot:active {
+  /* sets the display property for this rule */
   display: inline-block;
+  /* sets the transform property for this rule */
   transform: scale(1.035);
+  /* sets the text-decoration property for this rule */
   text-decoration: none;
 }
 
+/* starts styling rules for this selector block */
 .bw-field--tos .bw-error {
+  /* sets the margin-top property for this rule */
   margin-top: 4px;
+  /* sets the min-height property for this rule */
   min-height: 0;
 }
 
+/* starts styling rules for this selector block */
 .bw-field--tos .bw-error:empty {
+  /* sets the display property for this rule */
   display: none;
 }
 
+/* starts styling rules for this selector block */
 .bw-checkbox-label a {
+  /* sets the transition property for this rule */
   transition: color 0.3s ease;
 }
 
+/* starts styling rules for this selector block */
 .bw-checkbox-label a:hover {
+  /* sets the color property for this rule */
   color: var(--bw-gold-light, #d4af37);
+  /* sets the text-decoration property for this rule */
   text-decoration: underline;
 }
