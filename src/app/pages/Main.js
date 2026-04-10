@@ -351,11 +351,8 @@ export default function Main(container) {
         ${stats
           .map(
             (stat) => `
-          // executes this operation step as part of the flow
           <div class="mn-panel-stat">
-            // executes this operation step as part of the flow
             <div class="mn-panel-label">${stat.label}</div>
-            // executes this operation step as part of the flow
             <div class="mn-panel-value">${stat.value}</div>
           </div>
         `,
@@ -1235,22 +1232,17 @@ function renderEntityTable(title, entities, type) {
       ${
         rows.length
           ? `
-            // executes this operation step as part of the flow
             <div class="mn-summary-table-wrap">
-              // executes this operation step as part of the flow
               <table class="mn-summary-table" aria-label="${title}">
                 <thead>
                   <tr>
-                    // executes this operation step as part of the flow
                     <th scope="col">Image</th>
-                    // executes this operation step as part of the flow
                     <th scope="col">Name</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${rows
                     .map(
-                      // executes this operation step as part of the flow
                       (entry) => `
                     <tr>
                       <td>
@@ -1534,16 +1526,11 @@ function renderPlayerStats(container, stats) {
       ${sections
         .map(
           (section) => `
-        // executes this operation step as part of the flow
         <section class="st-stat-section">
-          // executes this operation step as part of the flow
           <div class="st-section-head">
-            // executes this operation step as part of the flow
             <h2 class="st-section-title">${section.title}</h2>
-            // executes this operation step as part of the flow
             <p class="st-section-subtitle">${section.subtitle}</p>
           </div>
-          // executes this operation step as part of the flow
           <div class="st-grid st-grid--section">
             ${section.cards
               .map(
